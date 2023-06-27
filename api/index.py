@@ -1,15 +1,19 @@
 from flask import jsonify, request
 import json
 
-import database
-from models import *
-from utils.input_serializer import *
-from utils.output_serializer import serialize_queryset
-
-app = database.app
+from api.database import app
+from api.models import *
+from api.utils.input_serializer import *
+from api.utils.output_serializer import serialize_queryset
 
 
 @app.route("/")
+def hello():
+    if request.method == "GET":
+        return "Hello world"
+
+
+@app.route("/api")
 def serve():
     if request.method == "GET":
         cities, countries = region_input_manager(json.loads(request.args.get("Region")))
