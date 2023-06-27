@@ -1,4 +1,4 @@
-from utils import infer_region
+from api.utils import infer_region
 
 
 # Takes an array or a region, output will be two different arrays of city and country
@@ -29,8 +29,11 @@ def year_input_manager(year_or_tuple_or_array):
     if isinstance(year_or_tuple_or_array, list):
         years = year_or_tuple_or_array
     elif isinstance(year_or_tuple_or_array, str):
-        start, stop, step = tuple(int(element) for element in tuple(year_or_tuple_or_array.split(',', maxsplit=2)))
-        years = [year for year in range(start, stop+1, step)]
+        start, stop, step = tuple(
+            int(element)
+            for element in tuple(year_or_tuple_or_array.split(",", maxsplit=2))
+        )
+        years = [year for year in range(start, stop + 1, step)]
     else:
         years = [year_or_tuple_or_array]
     return years
