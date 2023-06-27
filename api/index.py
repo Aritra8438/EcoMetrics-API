@@ -1,7 +1,7 @@
 from flask import jsonify, request
 import json
 
-import database as database
+import database
 from models import *
 from utils.input_serializer import *
 from utils.output_serializer import serialize_queryset
