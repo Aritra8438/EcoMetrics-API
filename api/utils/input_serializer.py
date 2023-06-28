@@ -2,9 +2,9 @@ from api.utils import infer_region
 
 
 # Takes an array or a region, output will be two different arrays of city and country
-# Input "India" => output cities = [], countries=["India"]
-# Input "Kolkata" => output cities = ["Kolkata"], countries=[]
-# Input ["India", "Kolkata"] => output cities = ["Kolkata"], countries=["India"]
+# Input "India" => output cities = [], countries = ["India"]
+# Input "Kolkata" => output cities = ["Kolkata"], countries = []
+# Input ["India", "Kolkata"] => output cities = ["Kolkata"], countries = ["India"]
 def region_input_manager(region_or_array):
     cities = []
     countries = []
