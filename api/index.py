@@ -1,20 +1,40 @@
-from flask import jsonify, request
+from flask import jsonify, request, render_template
 import json
 
 from api.database import app
 from api.models import *
 from api.utils.input_serializer import *
 from api.utils.output_serializer import *
+from api.utils.json_response_to_table import *
 
 
 @app.route("/")
 def hello():
     if request.method == "GET":
-        return "Hello world"
+        return render_template("index.html", content=69)
+
+
+@app.route("/table")
+def get_table_response():
+    if request.method == "GET":
+        cities, countries = region_input_manager(json.loads(request.args.get("Region")))
+        years = year_input_manager(json.loads(request.args.get("Year")))
+        pivot = request.args.get("pivot")
+        if pivot is None:
+            pivot = "Year"
+        queryset = Population.query.filter(
+            Population.year.in_(years), Population.country.in_(countries)
+        )
+        if pivot == "Region":
+            table = convert_to_table(queryset, years, cities + countries, 1)
+            return render_template("table_view.html", table=table)
+        elif pivot == "Year":
+            table = convert_to_table(queryset, years, cities + countries)
+            return render_template("table_view.html", table=table)
 
 
 @app.route("/api")
-def serve():
+def get_json_response():
     if request.method == "GET":
         cities, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
