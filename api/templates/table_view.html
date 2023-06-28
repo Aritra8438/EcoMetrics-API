@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table</title>
+    <style>
+    table, th, td {
+        border: 1px solid black;
+    }
+    .fixed-width {
+        width: 120px;
+        word-wrap: break-word;
+    }
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            {% for column_header in table[0] %}
+                <td class="fixed-width">{{ column_header }}</td>
+            {% endfor %}
+        </tr>
+            {% for rows in table[1:] %}
+                <tr>
+                    {% for row in rows %}
+                        <td class="fixed-width">{{ row }}</td>
+                    {% endfor %}                
+                </tr>
+            {% endfor %}
+    </table>
+</body>
+</html>
