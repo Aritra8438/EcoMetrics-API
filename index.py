@@ -9,6 +9,8 @@ from flask import send_file
 
 
 import matplotlib
+from plotly.subplots import make_subplots
+from queue import PriorityQueue
 from json import dumps
 import plotly
 from plotly import utils
@@ -52,10 +54,7 @@ def serve():
 
 @app.route('/get_plot')
 def get_image():
-    # app = QtWidgets.QApplication()
-    # win = QtWidgets.QWidget()
-    # win.show()
-    # app.exec()
+    
     if request.method == "GET":
         cities, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
@@ -65,8 +64,7 @@ def get_image():
         json_response = serialize_queryset(queryset)
         country_year = {}
         country_pop = {}
-        years_array = []
-        pop_array = []
+        
         for obj in json_response:
             if(obj['country'] not in country_year):
                 country_year[obj['country']]=[]
@@ -74,12 +72,45 @@ def get_image():
                 country_pop[obj['country']]=[]    
             country_year[obj['country']].append(int(obj['year']))
             country_pop[obj['country']].append(obj['population'])
-            
-            years_array.append(obj['year'])
-            pop_array.append(obj['population'])
-    
+               
         # fig = create_figure(years_array,pop_array)
         return create_fig(country_year,country_pop)
+
+@app.route('/get_stats')
+def get_stats():
+    if request.method == "GET":
+        num = json.loads(request.args.get("Number"))
+        
+        years = year_input_manager(json.loads(request.args.get("Year")))
+        queryset = Population.query.filter(Population.year.in_(years))
+        
+        json_response = serialize_queryset(queryset)
+        res = []
+        for obj in json_response:
+            if(obj['country']!='World' and obj['country']!='Less developed regions'):
+                res.append((obj['population'], obj['country']))
+        result = res[:num]
+        values=[]
+        labels=[]
+        for item in result:
+            values.append(item[0])
+            labels.append(item[1]) 
+        
+        fig = make_subplots(rows=1, cols=2, specs=[[{"type": "pie"}, {"type": "pie"}]], 
+                            subplot_titles=[ "Top {} countries".format(num), "Bottom {} countries".format(num)])
+                                            
+ 
+        fig.add_trace(go.Pie(values=values, labels=labels, name="Least Populated {} countries".format(num)),row=1, col=1)           
+        res.sort(reverse=True)    
+        result = res[:num]
+        values=[]
+        labels=[]
+        for item in result:
+            values.append(item[0])
+            labels.append(item[1])
+        fig.add_trace(go.Pie(values=values, labels=labels, name ="Most Populated {} countries".format(num)), row=1, col=2)  
+                       
+        return fig.to_html(full_html=False)
 
 def fig_response(fig):
     """Turn a matplotlib Figure into Flask response"""
