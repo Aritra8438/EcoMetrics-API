@@ -89,14 +89,12 @@ def get_image():
         return create_figure(country_year, country_population)
 
 
-@app.route("/get_stats")
+@app.route("/stats")
 def get_stats():
     if request.method == "GET":
         num = json.loads(request.args.get("Number"))
-
         years = year_input_manager(json.loads(request.args.get("Year")))
         queryset = Population.query.filter(Population.year.in_(years))
-
         json_response = serialize_queryset(queryset)
         res = []
         for obj in json_response:
