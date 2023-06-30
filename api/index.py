@@ -4,30 +4,16 @@ import json
 from api.database import app
 from api.models import *
 from api.utils.input_serializer import *
-from api.utils.output_serializer import serialize_queryset
+from api.utils.output_serializer import *
+from api.utils.json_response_to_table import *
 from flask import send_file
 
 
-import matplotlib
 from json import dumps
-import plotly
-from plotly import utils
 import plotly.graph_objects as go
-import matplotlib.pyplot as plt
 
-matplotlib.use("Agg")
 
-import ipywidgets
-
-# plt.switch_backend('QtAgg4')
-# plt.ion()
-# matplotlib.use('QtAgg')
-from matplotlib.figure import Figure
-from matplotlib import *
-
-import numpy as np
 from io import BytesIO
-from PySide6 import QtWidgets
 
 
 @app.route("/")
@@ -55,7 +41,7 @@ def get_table_response():
             return render_template("table_view.html", table=table)
 
 
-@app.route("/api")
+@app.route("/json")
 def get_json_response():
     if request.method == "GET":
         cities, countries = region_input_manager(json.loads(request.args.get("Region")))
@@ -117,14 +103,6 @@ def get_image():
 
         # fig = create_figure(years_array,pop_array)
         return create_fig(country_year, country_pop)
-
-
-def fig_response(fig):
-    """Turn a matplotlib Figure into Flask response"""
-    img_bytes = BytesIO()
-    fig.savefig(img_bytes)
-    img_bytes.seek(0)
-    return send_file(img_bytes, mimetype="image/png")
 
 
 def create_figure(country_year, country_pop):
