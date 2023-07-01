@@ -8,7 +8,7 @@ from api.models import *
 from api.utils.input_serializer import *
 from api.utils.output_serializer import *
 from api.utils.queryset_to_structures import *
-from api.utils.create_figure import create_figure
+from api.utils.create_figure import *
 
 
 @app.route("/")
@@ -75,7 +75,7 @@ def get_json_response():
 
 
 @app.route("/graph")
-def get_image():
+def get_graph_response():
     if request.method == "GET":
         cities, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
@@ -83,61 +83,14 @@ def get_image():
             Population.year.in_(years), Population.country.in_(countries)
         )
         country_year, country_population = convert_to_dicts(queryset)
-        return create_figure(country_year, country_population)
+        return create_scatter(country_year, country_population)
 
 
 @app.route("/stats")
-def get_stats():
+def get_stats_response():
     if request.method == "GET":
         num = json.loads(request.args.get("Number"))
-        years = year_input_manager(json.loads(request.args.get("Year")))
+        years = year_input_manager(json.loads(request.args.get("Year")))[:1]
         queryset = Population.query.filter(Population.year.in_(years))
-        json_response = serialize_queryset(queryset)
-        res = []
-        for obj in json_response:
-            if obj["country"] != "World" and obj["country"] != "Less developed regions":
-                res.append((obj["population"], obj["country"]))
-        result = res[:num]
-        values = []
-        labels = []
-        for item in result:
-            values.append(item[0])
-            labels.append(item[1])
-
-        fig = make_subplots(
-            rows=1,
-            cols=2,
-            specs=[[{"type": "pie"}, {"type": "pie"}]],
-            subplot_titles=[
-                "Top {} countries".format(num),
-                "Bottom {} countries".format(num),
-            ],
-        )
-
-        fig.add_trace(
-            go.Pie(
-                values=values,
-                labels=labels,
-                name="Least Populated {} countries".format(num),
-            ),
-            row=1,
-            col=1,
-        )
-        res.sort(reverse=True)
-        result = res[:num]
-        values = []
-        labels = []
-        for item in result:
-            values.append(item[0])
-            labels.append(item[1])
-        fig.add_trace(
-            go.Pie(
-                values=values,
-                labels=labels,
-                name="Most Populated {} countries".format(num),
-            ),
-            row=1,
-            col=2,
-        )
-
-        return fig.to_html(full_html=False)
+        array1, label1, array2, label2 = convert_to_double_lists(queryset, num)
+        return create_pie(array1, label1, array2, label2, num)
