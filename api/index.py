@@ -1,11 +1,13 @@
 from flask import jsonify, request, render_template
 import json
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
 
 from api.database import app
 from api.models import *
 from api.utils.input_serializer import *
 from api.utils.output_serializer import *
-from api.utils.json_response_to_table import *
+from api.utils.queryset_to_structures import *
 from api.utils.create_figure import create_figure
 
 
@@ -26,7 +28,7 @@ def get_table_response():
     if request.method == "GET":
         cities, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
-        pivot = request.args.get("Pivot")        
+        pivot = request.args.get("Pivot")
         if pivot != "Region" and pivot != "Year":
             pivot = "Year"
         queryset = Population.query.filter(
@@ -80,18 +82,7 @@ def get_image():
         queryset = Population.query.filter(
             Population.year.in_(years), Population.country.in_(countries)
         )
-        json_response = serialize_queryset(queryset)
-        # Create two dictionaries to store the array corresponding to coutries. Will look like:
-        # country_year["India"] = [2010, 2011, ...]
-        country_year = {}
-        country_population = {}
-        for obj in json_response:
-            if obj["country"] not in country_year:
-                country_year[obj["country"]] = []
-            if obj["country"] not in country_population:
-                country_population[obj["country"]] = []
-            country_year[obj["country"]].append(int(obj["year"]))
-            country_population[obj["country"]].append(obj["population"])
+        country_year, country_population = convert_to_dicts(queryset)
         return create_figure(country_year, country_population)
 
 
