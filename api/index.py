@@ -5,8 +5,8 @@ from api.database import app
 from api.models import *
 from api.utils.input_serializer import *
 from api.utils.output_serializer import *
-from api.utils.json_response_to_table import *
-from api.utils.create_figure import create_figure
+from api.utils.queryset_to_structures import *
+from api.utils.create_figure import *
 
 
 @app.route("/")
@@ -26,7 +26,7 @@ def get_table_response():
     if request.method == "GET":
         cities, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
-        pivot = request.args.get("Pivot")        
+        pivot = request.args.get("Pivot")
         if pivot != "Region" and pivot != "Year":
             pivot = "Year"
         queryset = Population.query.filter(
@@ -73,23 +73,40 @@ def get_json_response():
 
 
 @app.route("/graph")
-def get_image():
+def get_graph_response():
     if request.method == "GET":
         cities, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
         queryset = Population.query.filter(
             Population.year.in_(years), Population.country.in_(countries)
         )
-        json_response = serialize_queryset(queryset)
-        # Create two dictionaries to store the array corresponding to coutries. Will look like:
-        # country_year["India"] = [2010, 2011, ...]
-        country_year = {}
-        country_population = {}
-        for obj in json_response:
-            if obj["country"] not in country_year:
-                country_year[obj["country"]] = []
-            if obj["country"] not in country_population:
-                country_population[obj["country"]] = []
-            country_year[obj["country"]].append(int(obj["year"]))
-            country_population[obj["country"]].append(obj["population"])
-        return create_figure(country_year, country_population)
+        country_year, country_population = convert_to_dicts(queryset)
+        return create_scatter(country_year, country_population)
+
+
+@app.route("/stats")
+def get_stats_response():
+    if request.method == "GET":
+        from api.utils.infer_region import countries
+
+        num = json.loads(request.args.get("Number"))
+        num = min(num, 10)
+        years = year_input_manager(json.loads(request.args.get("Year")))[:1]
+        queryset = (
+            Population.query.filter(
+                Population.year.in_(years), Population.country.in_(countries)
+            )
+            .order_by(Population.population)
+            .limit(num)
+            .all()
+        )
+        queryset += (
+            Population.query.filter(
+                Population.year.in_(years), Population.country.in_(countries)
+            )
+            .order_by(Population.population.desc())
+            .limit(num)
+            .all()
+        )
+        array1, label1, array2, label2 = convert_to_double_lists(queryset, num)
+        return create_pie(array1, label1, array2, label2, num)
