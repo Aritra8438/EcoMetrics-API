@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Query Builder</title>
+    <style>
+      .flex-parent {
+        display: flex;
+      }
+      .flex-child {
+        flex: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h3>Welcome to the QueryBuilder Page</h3>
+      <p>Fetching data from APIs is even easier now</p>
+      <hr />
+      <br />
+      <label>Select an API from the dropdown</label>
+      <br /><br />
+      <select v-model="dropdownSelectedAPI">
+        <option disabled value="">Please select one</option>
+        <option
+          v-for="dropdownAPI in dropdownAPIs"
+          v-bind:value="dropdownAPI[0]"
+        >
+          ((dropdownAPI[1]))
+        </option>
+      </select>
+      <br />
+      <div
+        v-if="dropdownSelectedAPI==`table` || dropdownSelectedAPI==`json` || dropdownSelectedAPI==`graph`"
+      >
+        <div class="flex-parent">
+          <div class="flex-child">
+            <p>Select at least one country</p>
+            <ul style="list-style: none">
+              <li v-for="(country, index) in countries" :key="index">
+                <input
+                  type="checkbox"
+                  :id="index"
+                  :value="country"
+                  @change="toggleCheckedCountry(index)"
+                />
+                <label :for="index">((country))</label>
+              </li>
+            </ul>
+          </div>
+          <div class="flex-child">
+            <p>Select at least a year</p>
+            <ul style="list-style: none">
+              <li v-for="(year,index) in years" :key="index">
+                <input
+                  type="checkbox"
+                  :id="index"
+                  :value="year"
+                  @change="toggleCheckedYear(index)"
+                />
+                <label :for="index">((year))</label>
+              </li>
+            </ul>
+          </div>
+          <div class="flex-child" v-if="dropdownSelectedAPI!=`graph`">
+            <p>Select pivot</p>
+            <select v-model="dropdownSelectedPivot">
+              <option
+                v-for="dropdownPivot in dropdownPivots"
+                v-bind:value="dropdownPivot"
+              >
+                ((dropdownPivot))
+              </option>
+            </select>
+          </div>
+          <br />
+        </div>
+        <br />
+        <button @click="buildUrl">Generate Response 🪄</button>
+        <div v-if="responseGenerated">
+          <br />
+          <a target="_blank" rel="noopener" :href="finalUrl">
+            Open in new tab
+          </a>
+          <br />
+          <br />
+          <iframe
+            :src="finalUrl"
+            height="400"
+            width="800"
+            frameborder="0"
+          ></iframe>
+        </div>
+      </div>
+      <div v-if="dropdownSelectedAPI==`stat`">
+        <br />
+        We will be adding this page shortly, stay tuned
+      </div>
+      <br />
+      <br />
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="utils/regions.js"></script>
+    <script>
+      const { createApp } = Vue;
+      createApp({
+        delimiters: ["((", "))"],
+        data() {
+          return {
+            url: "https://eco-metrics-api.vercel.app/",
+            finalUrl: "https://eco-metrics-api.vercel.app/",
+            dropdownAPIs: [
+              ["json", "JSON Response"],
+              ["table", "Table"],
+              ["graph", "Graph"],
+              ["stat", "Statistics"],
+            ],
+            dropdownSelectedAPI: "",
+            dropdownPivots: ["None", "Year", "Region"],
+            dropdownSelectedPivot: "None",
+            countries: [
+              "Afghanistan",
+              "Albania",
+              "Algeria",
+              "Andorra",
+              "Angola",
+              "Antigua and Barbuda",
+              "Argentina",
+              "Armenia",
+              "Australia",
+              "Austria",
+              "Azerbaijan",
+              "Bahamas",
+              "Bahrain",
+              "Bangladesh",
+              "Barbados",
+              "Belarus",
+              "Belgium",
+              "Belize",
+              "Benin",
+              "Bhutan",
+              "Bolivia",
+              "Bosnia and Herzegovina",
+              "Botswana",
+              "Brazil",
+              "Brunei",
+              "Bulgaria",
+              "Burkina Faso",
+              "Burundi",
+              "Cabo Verde",
+              "Cambodia",
+              "Cameroon",
+              "Canada",
+              "Central African Republic",
+              "Chad",
+              "Chile",
+              "China",
+              "Colombia",
+              "Comoros",
+              "Congo, Democratic Republic of the",
+              "Congo, Republic of the",
+              "Costa Rica",
+              "Cote d'Ivoire",
+              "Croatia",
+              "Cuba",
+              "Cyprus",
+              "Czech Republic",
+              "Denmark",
+              "Djibouti",
+              "Dominica",
+              "Dominican Republic",
+              "Ecuador",
+              "Egypt",
+              "El Salvador",
+              "Equatorial Guinea",
+              "Eritrea",
+              "Estonia",
+              "Eswatini",
+              "Ethiopia",
+              "Fiji",
+              "Finland",
+              "France",
+              "Gabon",
+              "Gambia",
+              "Georgia",
+              "Germany",
+              "Ghana",
+              "Greece",
+              "Grenada",
+              "Guatemala",
+              "Guinea",
+              "Guinea-Bissau",
+              "Guyana",
+              "Haiti",
+              "Honduras",
+              "Hungary",
+              "Iceland",
+              "India",
+              "Indonesia",
+              "Iran",
+              "Iraq",
+              "Ireland",
+              "Israel",
+              "Italy",
+              "Jamaica",
+              "Japan",
+              "Jordan",
+              "Kazakhstan",
+              "Kenya",
+              "Kiribati",
+              "Korea, North",
+              "Korea, South",
+              "Kosovo",
+              "Kuwait",
+              "Kyrgyzstan",
+              "Laos",
+              "Latvia",
+              "Lebanon",
+              "Lesotho",
+              "Liberia",
+              "Libya",
+              "Liechtenstein",
+              "Lithuania",
+              "Luxembourg",
+              "Madagascar",
+              "Malawi",
+              "Malaysia",
+              "Maldives",
+              "Mali",
+              "Malta",
+              "Marshall Islands",
+              "Mauritania",
+              "Mauritius",
+              "Mexico",
+              "Micronesia",
+              "Moldova",
+              "Monaco",
+              "Mongolia",
+              "Montenegro",
+              "Morocco",
+              "Mozambique",
+              "Myanmar",
+              "Namibia",
+              "Nauru",
+              "Nepal",
+              "Netherlands",
+              "New Zealand",
+              "Nicaragua",
+              "Niger",
+              "Nigeria",
+              "North Macedonia",
+              "Norway",
+              "Oman",
+              "Pakistan",
+              "Palau",
+              "Panama",
+              "Papua New Guinea",
+              "Paraguay",
+              "Peru",
+              "Philippines",
+              "Poland",
+              "Portugal",
+              "Qatar",
+              "Romania",
+              "Russia",
+              "Rwanda",
+              "Saint Kitts and Nevis",
+              "Saint Lucia",
+              "Saint Vincent and the Grenadines",
+              "Samoa",
+              "San Marino",
+              "Sao Tome and Principe",
+              "Saudi Arabia",
+              "Senegal",
+              "Serbia",
+              "Seychelles",
+              "Sierra Leone",
+              "Singapore",
+              "Slovakia",
+              "Slovenia",
+              "Solomon Islands",
+              "Somalia",
+              "South Africa",
+              "South Sudan",
+              "Spain",
+              "Sri Lanka",
+              "Sudan",
+              "Sudan, South",
+              "Suriname",
+              "Sweden",
+              "Switzerland",
+              "Syria",
+              "Taiwan",
+              "Tajikistan",
+              "Tanzania",
+              "Thailand",
+              "Timor-Leste",
+              "Togo",
+              "Tonga",
+              "Trinidad and Tobago",
+              "Tunisia",
+              "Turkey",
+              "Turkmenistan",
+              "Tuvalu",
+              "Uganda",
+              "Ukraine",
+              "United Arab Emirates",
+              "United Kingdom",
+              "United States",
+              "Uruguay",
+              "Uzbekistan",
+              "Vanuatu",
+              "Vatican City",
+              "Venezuela",
+              "Vietnam",
+              "Yemen",
+              "Zambia",
+              "Zimbabwe",
+            ],
+            checkedCountries: [],
+            years: [
+              1950, 1951, 1952, 1953, 1954, 1955, 1956, 1957, 1958, 1959, 1960,
+              1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968, 1969, 1970, 1971,
+              1972, 1973, 1974, 1975, 1976, 1977, 1978, 1979, 1980, 1981, 1982,
+              1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993,
+              1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004,
+              2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015,
+              2016, 2017, 2018, 2019, 2020, 2021,
+            ],
+            checkedYears: [],
+            responseGenerated: false,
+          };
+        },
+        methods: {
+          toggleCheckedCountry(index) {
+            this.checkedCountries[index] = !this.checkedCountries[index];
+          },
+          toggleCheckedYear(index) {
+            this.checkedYears[index] = !this.checkedYears[index];
+          },
+          buildUrl() {
+            let selectedCountries = "Region=[";
+            for (let i = 0; i < this.countries.length; i++) {
+              if (this.checkedCountries[i] === true) {
+                selectedCountries += `"` + this.countries[i] + `",`;
+              }
+            }
+            selectedCountries = selectedCountries.substring(
+              0,
+              selectedCountries.length - 1
+            );
+            selectedCountries += `]`;
+            let selectedYears = "Year=[";
+            for (let i = 0; i < this.years.length; i++) {
+              if (this.checkedYears[i] === true) {
+                selectedYears += this.years[i] + `,`;
+              }
+            }
+            selectedYears = selectedYears.substring(
+              0,
+              selectedYears.length - 1
+            );
+            selectedYears += `]`;
+            this.finalUrl =
+              this.url +
+              this.dropdownSelectedAPI +
+              "?" +
+              selectedCountries +
+              "&" +
+              selectedYears +
+              "&Pivot=" +
+              this.dropdownSelectedPivot;
+            this.responseGenerated = true;
+          },
+        },
+        mounted() {
+          this.countries = countries;
+          this.checkedCountries = Array(countries.length).fill(false);
+          this.years = Array.apply(null, Array(72)).map(function (x, i) {
+            return i + 1950;
+          });
+          this.checkedYears = Array(72).fill(false);
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>
