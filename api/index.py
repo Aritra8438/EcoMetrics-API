@@ -1,7 +1,5 @@
 from flask import jsonify, request, render_template
 import json
-from plotly.subplots import make_subplots
-import plotly.graph_objects as go
 
 from api.database import app
 from api.models import *
@@ -89,8 +87,26 @@ def get_graph_response():
 @app.route("/stats")
 def get_stats_response():
     if request.method == "GET":
+        from api.utils.infer_region import countries
+
         num = json.loads(request.args.get("Number"))
+        num = min(num, 10)
         years = year_input_manager(json.loads(request.args.get("Year")))[:1]
-        queryset = Population.query.filter(Population.year.in_(years))
+        queryset = (
+            Population.query.filter(
+                Population.year.in_(years), Population.country.in_(countries)
+            )
+            .order_by(Population.population)
+            .limit(num)
+            .all()
+        )
+        queryset += (
+            Population.query.filter(
+                Population.year.in_(years), Population.country.in_(countries)
+            )
+            .order_by(Population.population.desc())
+            .limit(num)
+            .all()
+        )
         array1, label1, array2, label2 = convert_to_double_lists(queryset, num)
         return create_pie(array1, label1, array2, label2, num)

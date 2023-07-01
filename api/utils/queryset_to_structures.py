@@ -59,9 +59,7 @@ def convert_to_double_lists(queryset, num):
     json_response = serialize_queryset(queryset)
     population_country_list = []
     for obj in json_response:
-        _, region = infer_region(obj["country"])
-        if region == obj["country"] and obj["population"] != 0:
-            population_country_list.append((obj["population"], obj["country"]))
+        population_country_list.append((obj["population"], obj["country"]))
     population_country_list.sort(reverse=True)
     top_num_countries = population_country_list[:num]
     bottom_num_countries = population_country_list[-num:]
