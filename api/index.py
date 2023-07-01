@@ -4,77 +4,109 @@ import json
 from api.database import app
 from api.models import *
 from api.utils.input_serializer import *
-from api.utils.output_serializer import serialize_queryset
-from api.utils.create_figure import create_pie, create_bar, create_fig 
-
+from api.utils.output_serializer import *
+from api.utils.queryset_to_structures import *
+from api.utils.create_figure import *
 
 
 @app.route("/")
-def hello():
+def home():
     if request.method == "GET":
-        return "Hello world"
+        return render_template("index.html")
 
 
-@app.route("/api")
-def serve():
+@app.route("/querybuilder")
+def build_query():
+    if request.method == "GET":
+        return render_template("query_builder.html")
+
+
+@app.route("/table")
+def get_table_response():
+    if request.method == "GET":
+        cities, countries = region_input_manager(json.loads(request.args.get("Region")))
+        years = year_input_manager(json.loads(request.args.get("Year")))
+        pivot = request.args.get("Pivot")
+        if pivot != "Region" and pivot != "Year":
+            pivot = "Year"
+        queryset = Population.query.filter(
+            Population.year.in_(years), Population.country.in_(countries)
+        )
+        if pivot == "Region":
+            table = convert_to_table(queryset, years, cities + countries, 1)
+            return render_template("table_view.html", table=table)
+        elif pivot == "Year":
+            table = convert_to_table(queryset, years, cities + countries)
+            return render_template("table_view.html", table=table)
+
+
+@app.route("/json")
+def get_json_response():
+    if request.method == "GET":
+        cities, countries = region_input_manager(json.loads(request.args.get("Region")))
+        years = year_input_manager(json.loads(request.args.get("Year")))
+        pivot = request.args.get("Pivot")
+        if pivot == "Region":
+            pivoted_queryset = []
+            for country in countries:
+                queryset = Population.query.filter(
+                    Population.year.in_(years), Population.country == country
+                )
+                pivoted_queryset.append((country, queryset))
+            json_response = serialize_pivoted_queryset(pivoted_queryset, "Year")
+            return jsonify(json_response)
+        elif pivot == "Year":
+            pivoted_queryset = []
+            for year in years:
+                queryset = Population.query.filter(
+                    Population.country.in_(countries), Population.year == year
+                )
+                pivoted_queryset.append((year, queryset))
+            json_response = serialize_pivoted_queryset(pivoted_queryset, "Region")
+            return jsonify(json_response)
+        else:
+            queryset = Population.query.filter(
+                Population.year.in_(years), Population.country.in_(countries)
+            )
+            json_response = serialize_queryset(queryset)
+            return jsonify(json_response)
+
+
+@app.route("/graph")
+def get_graph_response():
     if request.method == "GET":
         cities, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
         queryset = Population.query.filter(
             Population.year.in_(years), Population.country.in_(countries)
         )
-        json_response = serialize_queryset(queryset)
-        
-        # print(json_response)
-        return jsonify(json_response)
+        country_year, country_population = convert_to_dicts(queryset)
+        return create_scatter(country_year, country_population)
 
 
-@app.route('/get_plot')
-def get_image():
-    
+@app.route("/stats")
+def get_stats_response():
     if request.method == "GET":
-        cities, countries = region_input_manager(json.loads(request.args.get("Region")))
-        years = year_input_manager(json.loads(request.args.get("Year")))
-        queryset = Population.query.filter(
-            Population.year.in_(years), Population.country.in_(countries)
-        )
-        json_response = serialize_queryset(queryset)
-        country_year = {}
-        country_pop = {}
-        
-        for obj in json_response:
-            if(obj['country'] not in country_year):
-                country_year[obj['country']]=[]
-            if(obj['country'] not in country_pop):
-                country_pop[obj['country']]=[]    
-            country_year[obj['country']].append(int(obj['year']))
-            country_pop[obj['country']].append(obj['population'])
-               
-        # fig = create_figure(years_array,pop_array)
-        return create_fig(country_year,country_pop)
+        from api.utils.infer_region import countries
 
-@app.route('/get_stats')
-def get_stats():
-    if request.method == "GET":
         num = json.loads(request.args.get("Number"))
-        
-        years = year_input_manager(json.loads(request.args.get("Year")))
-        queryset = Population.query.filter(Population.year.in_(years))
-        
-        json_response = serialize_queryset(queryset)
-        
-        return create_pie(json_response, num)
-
-    
-@app.route('/get_bar')
-def get_bar():
-    if request.method == "GET": 
-        cities, countries = region_input_manager(json.loads(request.args.get("Region")))
-        years = year_input_manager(json.loads(request.args.get("Year")))
-        queryset = Population.query.filter(
-            Population.year.in_(years), Population.country.in_(countries)
+        num = min(num, 10)
+        years = year_input_manager(json.loads(request.args.get("Year")))[:1]
+        queryset = (
+            Population.query.filter(
+                Population.year.in_(years), Population.country.in_(countries)
+            )
+            .order_by(Population.population)
+            .limit(num)
+            .all()
         )
-        json_response = serialize_queryset(queryset)   
-                
-        return create_bar(json_response) 
-
+        queryset += (
+            Population.query.filter(
+                Population.year.in_(years), Population.country.in_(countries)
+            )
+            .order_by(Population.population.desc())
+            .limit(num)
+            .all()
+        )
+        array1, label1, array2, label2 = convert_to_double_lists(queryset, num)
+        return create_pie(array1, label1, array2, label2, num)
