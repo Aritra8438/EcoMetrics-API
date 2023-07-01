@@ -27,11 +27,10 @@ def create_bar(plot_dict):
     fig = px.bar(
         plot_dict,
         x="country",
-        y="year",
+        y="population",
         color="country",
         animation_frame="year",
         animation_group="country",
-        range_y=[0, 2000000000],
         barmode="group",
     )
     return fig.to_html(full_html=False)

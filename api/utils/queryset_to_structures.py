@@ -83,8 +83,8 @@ def convert_to_single_dict(queryset):
     plot_dict = {}
     for element in queryset:
         years.append(element.year)
-        countries.append(element.year)
-        populations.append(element.year)
+        countries.append(element.country)
+        populations.append(element.population)
     plot_dict["year"] = years
     plot_dict["country"] = countries
     plot_dict["population"] = populations
