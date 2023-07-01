@@ -10,9 +10,15 @@ from api.utils.create_figure import create_figure
 
 
 @app.route("/")
-def hello():
+def home():
     if request.method == "GET":
-        return render_template("index.html", content=69)
+        return render_template("index.html")
+
+
+@app.route("/querybuilder")
+def build_query():
+    if request.method == "GET":
+        return render_template("query_builder.html")
 
 
 @app.route("/table")
@@ -20,8 +26,8 @@ def get_table_response():
     if request.method == "GET":
         cities, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
-        pivot = request.args.get("pivot")
-        if pivot is None:
+        pivot = request.args.get("Pivot")        
+        if pivot != "Region" and pivot != "Year":
             pivot = "Year"
         queryset = Population.query.filter(
             Population.year.in_(years), Population.country.in_(countries)
@@ -39,7 +45,7 @@ def get_json_response():
     if request.method == "GET":
         cities, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
-        pivot = request.args.get("pivot")
+        pivot = request.args.get("Pivot")
         if pivot == "Region":
             pivoted_queryset = []
             for country in countries:
