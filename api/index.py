@@ -77,9 +77,13 @@ def get_graph_response():
     if request.method == "GET":
         cities, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
+        plot = request.args.get("plot")
         queryset = Population.query.filter(
             Population.year.in_(years), Population.country.in_(countries)
         )
+        if plot == "bar":
+            plot_dict = convert_to_single_dict(queryset)
+            return create_bar(plot_dict)
         country_year, country_population = convert_to_dicts(queryset)
         return create_scatter(country_year, country_population)
 
