@@ -26,9 +26,8 @@ def get_table_response():
     if request.method == "GET":
         cities, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
-        pivot = request.args.get("Pivot")
-        print(pivot)
-        if pivot != "Region" or pivot != "Year":
+        pivot = request.args.get("Pivot")        
+        if pivot != "Region" and pivot != "Year":
             pivot = "Year"
         queryset = Population.query.filter(
             Population.year.in_(years), Population.country.in_(countries)
