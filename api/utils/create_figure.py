@@ -1,4 +1,5 @@
 import plotly.graph_objects as go
+import plotly.express as px
 from plotly.subplots import make_subplots
 
 
@@ -19,6 +20,20 @@ def create_scatter(country_year_dict, country_pop_dict):
             )
         )
     fig.update_layout(layout)
+    return fig.to_html(full_html=False)
+
+
+def create_bar(plot_dict):
+    fig = px.bar(
+        plot_dict,
+        x="country",
+        y="year",
+        color="country",
+        animation_frame="year",
+        animation_group="country",
+        range_y=[0, 2000000000],
+        barmode="group",
+    )
     return fig.to_html(full_html=False)
 
 

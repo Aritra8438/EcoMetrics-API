@@ -74,3 +74,18 @@ def convert_to_double_lists(queryset, num):
         array2.append(country[0])
         label2.append(country[1])
     return array1, label1, array2, label2
+
+
+def convert_to_single_dict(queryset):
+    years = []
+    countries = []
+    populations = []
+    plot_dict = {}
+    for element in queryset:
+        years.append(element.year)
+        countries.append(element.year)
+        populations.append(element.year)
+    plot_dict["year"] = years
+    plot_dict["country"] = countries
+    plot_dict["population"] = populations
+    return plot_dict
