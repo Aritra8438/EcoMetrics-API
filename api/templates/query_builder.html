@@ -36,30 +36,30 @@
           <div class="flex-child">
             <p>Select at least one country</p>
             <ul style="list-style: none">
-              <li v-for="(country, index) in countries" :key="index">
+              <li v-for="(country, index) in countries">
                 <input
                   type="checkbox"
-                  :id="index"
-                  :value="country"
-                  @change="toggleCheckedCountry(index)"
+                  v-model="checkedCountries[index]"
+                  @click="toggleCheckedCountry(index)"
                 />
-                <label :for="index">((country))</label>
+                <label> ((country)) </label>
               </li>
             </ul>
           </div>
           <div class="flex-child">
-            <p>Select at least a year</p>
-            <ul style="list-style: none">
-              <li v-for="(year,index) in years" :key="index">
-                <input
-                  type="checkbox"
-                  :id="index"
-                  :value="year"
-                  @change="toggleCheckedYear(index)"
-                />
-                <label :for="index">((year))</label>
-              </li>
-            </ul>
+            <div>
+              <p>Select at least a year</p>
+              <ul style="list-style: none">
+                <li v-for="(year,index) in years">
+                  <input
+                    type="checkbox"
+                    v-model="checkedYears[index]"
+                    @click="toggleCheckedYear(index)"
+                  />
+                  <label> ((year)) </label>
+                </li>
+              </ul>
+            </div>
           </div>
           <div class="flex-child" v-if="dropdownSelectedAPI!=`graph`">
             <p>Select pivot</p>
@@ -75,12 +75,23 @@
           <br />
         </div>
         <br />
-        <button @click="buildUrl">Generate Response 🪄</button>
-        <div v-if="responseGenerated">
+        <button
+          @click="buildUrl"
+          :disabled="!checkedCountriesCount || !checkedYearsCount"
+        >
+          Generate Response 🪄
+        </button>
+        <div v-if="urlGenerated">
           <br />
           <a target="_blank" rel="noopener" :href="finalUrl">
             Open in new tab
           </a>
+          <p>This might take a while to load.</p>
+          <p>
+            You can paste the following iframe tag to embed this response on
+            your site.
+          </p>
+          <p>&lt;iframe&nbsp;src="((finalUrl))"&gt;&lt;/iframe&gt;</p>
           <br />
           <br />
           <iframe
@@ -327,21 +338,29 @@
               2016, 2017, 2018, 2019, 2020, 2021,
             ],
             checkedYears: [],
-            responseGenerated: false,
+            urlGenerated: false,
+            checkedCountriesCount: 0,
+            checkedYearsCount: 0,
           };
         },
         methods: {
           toggleCheckedCountry(index) {
+            if (this.checkedCountries[index]) {
+              this.checkedCountriesCount--;
+            } else this.checkedCountriesCount++;
             this.checkedCountries[index] = !this.checkedCountries[index];
           },
           toggleCheckedYear(index) {
+            if (this.checkedYears[index]) {
+              this.checkedYearsCount--;
+            } else this.checkedYearsCount++;
             this.checkedYears[index] = !this.checkedYears[index];
           },
           buildUrl() {
             let selectedCountries = "Region=[";
             for (let i = 0; i < this.countries.length; i++) {
               if (this.checkedCountries[i] === true) {
-                selectedCountries += `"` + this.countries[i] + `",`;
+                selectedCountries += `%22` + this.countries[i] + `%22,`;
               }
             }
             selectedCountries = selectedCountries.substring(
@@ -369,15 +388,11 @@
               selectedYears +
               "&Pivot=" +
               this.dropdownSelectedPivot;
-            this.responseGenerated = true;
+            this.urlGenerated = true;
           },
         },
         mounted() {
-          this.countries = countries;
-          this.checkedCountries = Array(countries.length).fill(false);
-          this.years = Array.apply(null, Array(72)).map(function (x, i) {
-            return i + 1950;
-          });
+          this.checkedCountries = Array(this.countries.length).fill(false);
           this.checkedYears = Array(72).fill(false);
         },
       }).mount("#app");
