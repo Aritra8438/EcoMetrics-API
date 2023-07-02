@@ -116,6 +116,5 @@ def get_stats_response():
         return create_pie(array1, label1, array2, label2, num)
 
 
-if __name__ == "__main__":
-    # app.run(host="0.0.0.0", port=5000, debug=True)
+if __name__ == "__main__":    
     app.run()
