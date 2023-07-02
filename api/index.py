@@ -1,12 +1,12 @@
 from flask import jsonify, request, render_template
 import json
 
-from api.database import app
-from api.models import *
-from api.utils.input_serializer import *
-from api.utils.output_serializer import *
-from api.utils.queryset_to_structures import *
-from api.utils.create_figure import *
+from database import app
+from models import *
+from utils.input_serializer import *
+from utils.output_serializer import *
+from utils.queryset_to_structures import *
+from utils.create_figure import *
 
 
 @app.route("/")
@@ -116,5 +116,5 @@ def get_stats_response():
         return create_pie(array1, label1, array2, label2, num)
 
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
     app.run()
