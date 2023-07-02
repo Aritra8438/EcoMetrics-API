@@ -1,7 +1,3 @@
-# pylint: disable=missing-module-docstring
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
-
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy

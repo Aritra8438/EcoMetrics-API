@@ -1,9 +1,4 @@
-# pylint: disable=missing-module-docstring
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
-
 from .output_serializer import serialize_queryset
-
 
 
 def transpose_table(table):
@@ -31,9 +26,9 @@ def convert_to_table(queryset, years, regions, pivot=0):
     num_regions = len(regions) + 1
     table = [[0] * num_regions for _ in range(num_years)]
     table[0][0] = "↘"
-    for i , _ in enumerate(regions):
+    for i, _ in enumerate(regions):
         table[0][i + 1] = regions[i]
-    for i , _ in enumerate(years):
+    for i, _ in enumerate(years):
         table[i + 1][0] = years[i]
     for element in queryset:
         country = element.country

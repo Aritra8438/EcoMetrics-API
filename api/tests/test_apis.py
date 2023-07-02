@@ -1,6 +1,3 @@
-# pylint: disable=missing-module-docstring
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
 def test_home(client):
     response = client.get("/")
     assert response.status_code == 200
