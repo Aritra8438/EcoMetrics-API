@@ -7,8 +7,8 @@ def create_scatter(country_year_dict, country_pop_dict):
     fig = go.Figure()
     layout = go.Layout(
         title="Population vs Year Index",
-        xaxis=dict(title="Year"),
-        yaxis=dict(title="Population"),
+        xaxis="Year",
+        yaxis="Population",
     )
     for country in country_year_dict:
         fig.add_trace(
@@ -43,15 +43,15 @@ def create_pie(array1, label1, array2, label2, num):
         cols=2,
         specs=[[pie, pie]],
         subplot_titles=[
-            "Top {} countries".format(num),
-            "Bottom {} countries".format(num),
+            f"Top {num} countries",
+            "Bottom {num} countries",
         ],
     )
     fig.add_trace(
         go.Pie(
             values=array1,
             labels=label1,
-            name="Top {}".format(num),
+            name=f"Top {num}",
         ),
         row=1,
         col=1,
@@ -60,7 +60,7 @@ def create_pie(array1, label1, array2, label2, num):
         go.Pie(
             values=array2,
             labels=label2,
-            name="Bottom {}".format(num),
+            name=f"Bottom {num}",
         ),
         row=1,
         col=2,

@@ -16,8 +16,7 @@ def region_input_manager(region_or_array):
             else:
                 countries.append(region)
         return cities, countries
-    else:
-        return region_input_manager([region_or_array])
+    return region_input_manager([region_or_array])
 
 
 # Takes year or tuple or array, outputs an array
@@ -33,7 +32,7 @@ def year_input_manager(year_or_tuple_or_array):
             int(element)
             for element in tuple(year_or_tuple_or_array.split(",", maxsplit=2))
         )
-        years = [year for year in range(start, stop + 1, step)]
+        years = list(range(start, stop + 1, step))
     else:
         years = [year_or_tuple_or_array]
     return years

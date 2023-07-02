@@ -1,18 +1,19 @@
 from .output_serializer import serialize_queryset
-from .infer_region import infer_region
 
 
 def transpose_table(table):
-    n = len(table)
-    m = len(table[0])
-    transposed_table = [[0] * n for _ in range(m)]
-    for i in range(m):
-        for j in range(n):
+    """Function transposes the table"""
+    num_rows = len(table)
+    num_columns = len(table[0])
+    transposed_table = [[0] * num_rows for _ in range(num_columns)]
+    for i in range(num_columns):
+        for j in range(num_rows):
             transposed_table[i][j] = table[j][i]
     return transposed_table
 
 
 def convert_to_table(queryset, years, regions, pivot=0):
+    """Converts queryset to table"""
     years.sort()
     regions.sort()
     country_dict = {}
@@ -21,13 +22,13 @@ def convert_to_table(queryset, years, regions, pivot=0):
         country_dict[country] = index
     for index, year in enumerate(years, start=1):
         year_dict[year] = index
-    n = len(years) + 1
-    m = len(regions) + 1
-    table = [[0] * m for _ in range(n)]
+    num_years = len(years) + 1
+    num_regions = len(regions) + 1
+    table = [[0] * num_regions for _ in range(num_years)]
     table[0][0] = "↘"
-    for i in range(len(regions)):
+    for i, _ in enumerate(regions):
         table[0][i + 1] = regions[i]
-    for i in range(len(years)):
+    for i, _ in enumerate(years):
         table[i + 1][0] = years[i]
     for element in queryset:
         country = element.country
@@ -40,7 +41,7 @@ def convert_to_table(queryset, years, regions, pivot=0):
 
 
 def convert_to_dicts(queryset):
-    # Create two dictionaries to store the array corresponding to coutries. Will look like:
+    """Create two dictionaries to store the array corresponding to coutries. Will look like:"""
     # country_year["India"] = [2010, 2011, ...]
     json_response = serialize_queryset(queryset)
     country_year = {}
