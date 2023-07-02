@@ -1,12 +1,20 @@
-from flask import jsonify, request, render_template
-import json
+# pylint: disable=missing-module-docstring
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
 
+"""Module produces json objects"""
+import json
+from flask import jsonify, request, render_template
+
+from api.utils.infer_region import countries as country_list
 from .database import app
-from .models import *
-from .utils.input_serializer import *
-from .utils.output_serializer import *
-from .utils.queryset_to_structures import *
-from .utils.create_figure import *
+from .models import Population
+from .utils.input_serializer import region_input_manager, year_input_manager
+from .utils.output_serializer import serialize_queryset, serialize_pivoted_queryset
+from .utils.queryset_to_structures import (
+    convert_to_table, convert_to_dicts, convert_to_single_dict, convert_to_double_lists)
+from .utils.create_figure import create_bar, create_pie, create_scatter
+
 
 
 @app.route("/")
@@ -43,7 +51,7 @@ def get_table_response():
 @app.route("/json")
 def get_json_response():
     if request.method == "GET":
-        cities, countries = region_input_manager(json.loads(request.args.get("Region")))
+        _ , countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
         pivot = request.args.get("Pivot")
         if pivot == "Region":
@@ -75,7 +83,7 @@ def get_json_response():
 @app.route("/graph")
 def get_graph_response():
     if request.method == "GET":
-        cities, countries = region_input_manager(json.loads(request.args.get("Region")))
+        _, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
         plot = request.args.get("plot")
         queryset = Population.query.filter(
@@ -91,14 +99,11 @@ def get_graph_response():
 @app.route("/stats")
 def get_stats_response():
     if request.method == "GET":
-        from api.utils.infer_region import countries
-
         num = json.loads(request.args.get("Number"))
-        num = min(num, 10)
         years = year_input_manager(json.loads(request.args.get("Year")))[:1]
         queryset = (
             Population.query.filter(
-                Population.year.in_(years), Population.country.in_(countries)
+                Population.year.in_(years), Population.country.in_(country_list)
             )
             .order_by(Population.population)
             .limit(num)
@@ -106,7 +111,7 @@ def get_stats_response():
         )
         queryset += (
             Population.query.filter(
-                Population.year.in_(years), Population.country.in_(countries)
+                Population.year.in_(years), Population.country.in_(country_list)
             )
             .order_by(Population.population.desc())
             .limit(num)

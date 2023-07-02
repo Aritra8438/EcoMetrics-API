@@ -1,6 +1,11 @@
+# pylint: disable=missing-module-docstring
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
+
 import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
+
 
 
 def create_scatter(country_year_dict, country_pop_dict):

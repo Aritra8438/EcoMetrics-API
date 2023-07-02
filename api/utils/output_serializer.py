@@ -1,5 +1,9 @@
+# pylint: disable=missing-module-docstring
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
+
 # serialize the queryset to create an array
-def serialize_queryset(queryset, many=True):
+def serialize_queryset(queryset):
     json_response = []
     for element in queryset:
         json_response.append(
@@ -14,9 +18,9 @@ def serialize_queryset(queryset, many=True):
 
 def serialize_pivoted_queryset(pivoted_queryset, not_pivot):
     json_response = []
-    for tuple in pivoted_queryset:
-        pivot = tuple[0]
-        queryset = tuple[1]
+    for query in pivoted_queryset:
+        pivot = query[0]
+        queryset = query[1]
         json_array = []
         for obj in queryset:
             if not_pivot == "Year":
