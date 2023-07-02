@@ -1,33 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Table</title>
     <style>
-    table, th, td {
-        border: 1px solid black;
-    }
-    .fixed-width {
+      .content-table {
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 0.9em;
+        min-width: 400px;
+        border-radius: 5px 5px 0 0;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .content-table thead tr {
+        background-color: #009879;
+        color: #ffffff;
+        text-align: left;
+        font-weight: bold;
+      }
+
+      .content-table th,
+      .content-table td {
+        padding: 12px 15px;
+      }
+
+      .content-table tbody tr {
+        border-bottom: 1px solid #dddddd;
+      }
+
+      .content-table tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+      }
+
+      .content-table tbody tr:last-of-type {
+        border-bottom: 2px solid #009879;
+      }
+
+      .fixed-width {
         width: 120px;
         word-wrap: break-word;
-    }
+      }
     </style>
-</head>
-<body>
-    <table>
+  </head>
+  <body>
+    <table class="content-table">
+      <thead>
         <tr>
-            {% for column_header in table[0] %}
-                <td class="fixed-width">{{ column_header }}</td>
-            {% endfor %}
+          {% for column_header in table[0] %}
+          <th class="fixed-width">{{ column_header }}</th>
+          {% endfor %}
         </tr>
-            {% for rows in table[1:] %}
-                <tr>
-                    {% for row in rows %}
-                        <td class="fixed-width">{{ row }}</td>
-                    {% endfor %}                
-                </tr>
-            {% endfor %}
+      </thead>
+      {% for rows in table[1:] %}
+      <tr>
+        {% for row in rows %}
+        <td class="fixed-width">{{ row }}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
     </table>
-</body>
+  </body>
 </html>
