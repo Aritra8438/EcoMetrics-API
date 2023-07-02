@@ -1,4 +1,4 @@
-from api.utils import infer_region
+from . import infer_region
 
 
 # Takes an array or a region, output will be two different arrays of city and country
