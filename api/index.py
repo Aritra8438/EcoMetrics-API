@@ -114,3 +114,8 @@ def get_stats_response():
         )
         array1, label1, array2, label2 = convert_to_double_lists(queryset, num)
         return create_pie(array1, label1, array2, label2, num)
+
+
+if __name__ == "__main__":
+    # app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run()
