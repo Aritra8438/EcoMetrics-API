@@ -1,5 +1,5 @@
-from utils.output_serializer import serialize_queryset
-from utils.infer_region import infer_region
+from .output_serializer import serialize_queryset
+from .infer_region import infer_region
 
 
 def transpose_table(table):

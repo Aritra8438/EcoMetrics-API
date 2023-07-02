@@ -1,12 +1,12 @@
 from flask import jsonify, request, render_template
 import json
 
-from database import app
-from models import *
-from utils.input_serializer import *
-from utils.output_serializer import *
-from utils.queryset_to_structures import *
-from utils.create_figure import *
+from .database import app
+from .models import *
+from .utils.input_serializer import *
+from .utils.output_serializer import *
+from .utils.queryset_to_structures import *
+from .utils.create_figure import *
 
 
 @app.route("/")
