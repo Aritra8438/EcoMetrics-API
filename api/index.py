@@ -2,9 +2,9 @@
 import json
 from flask import jsonify, request, render_template, abort
 
-from api.utils.infer_region import countries as country_list
 from .database import app
 from .models import Population
+from .utils.infer_region import countries as country_list
 from .utils.input_serializer import region_input_manager, year_input_manager
 from .utils.output_serializer import serialize_queryset, serialize_pivoted_queryset
 from .utils.queryset_to_structures import (
@@ -14,6 +14,7 @@ from .utils.queryset_to_structures import (
     convert_to_double_lists,
 )
 from .utils.create_figure import create_bar, create_pie, create_scatter
+from .exceptions.custom import MissingParameterException, InvalidParameterException
 
 
 @app.route("/")
@@ -33,8 +34,24 @@ def build_query():
 @app.route("/table")
 def get_table_response():
     if request.method == "GET":
-        cities, countries = region_input_manager(json.loads(request.args.get("Region")))
-        years = year_input_manager(json.loads(request.args.get("Year")))
+        if "Region" not in request.args:
+            raise MissingParameterException("Region must be specified in the url")
+        if "Year" not in request.args:
+            raise MissingParameterException("Year must be specified in the url")
+        try:
+            cities, countries = region_input_manager(
+                json.loads(request.args.get("Region"))
+            )
+        except json.decoder.JSONDecodeError as json_decode_error:
+            raise InvalidParameterException(
+                "The Region should either be a string enclosed by quotation or an array of them"
+            ) from json_decode_error
+        try:
+            years = year_input_manager(json.loads(request.args.get("Year")))
+        except json.decoder.JSONDecodeError as json_decode_error:
+            raise InvalidParameterException(
+                "The Year should either be a Number, array of number or a string of tuple"
+            ) from json_decode_error
         pivot = request.args.get("Pivot")
         if pivot not in ["Region", "Year"]:
             pivot = "Year"
@@ -52,8 +69,22 @@ def get_table_response():
 @app.route("/json")
 def get_json_response():
     if request.method == "GET":
-        _, countries = region_input_manager(json.loads(request.args.get("Region")))
-        years = year_input_manager(json.loads(request.args.get("Year")))
+        if "Region" not in request.args:
+            raise MissingParameterException("Region must be specified in the url")
+        if "Year" not in request.args:
+            raise MissingParameterException("Year must be specified in the url")
+        try:
+            _, countries = region_input_manager(json.loads(request.args.get("Region")))
+        except json.decoder.JSONDecodeError as json_decode_error:
+            raise InvalidParameterException(
+                "The Region should either be a string enclosed by quotation or an array of them"
+            ) from json_decode_error
+        try:
+            years = year_input_manager(json.loads(request.args.get("Year")))
+        except json.decoder.JSONDecodeError as json_decode_error:
+            raise InvalidParameterException(
+                "The Year should either be a Number, array of number or a string of tuple"
+            ) from json_decode_error
         pivot = request.args.get("Pivot")
         if pivot == "Region":
             pivoted_queryset = []
@@ -84,8 +115,22 @@ def get_json_response():
 @app.route("/graph")
 def get_graph_response():
     if request.method == "GET":
-        _, countries = region_input_manager(json.loads(request.args.get("Region")))
-        years = year_input_manager(json.loads(request.args.get("Year")))
+        if "Region" not in request.args:
+            raise MissingParameterException("Region must be specified in the url")
+        if "Year" not in request.args:
+            raise MissingParameterException("Year must be specified in the url")
+        try:
+            _, countries = region_input_manager(json.loads(request.args.get("Region")))
+        except json.decoder.JSONDecodeError as json_decode_error:
+            raise InvalidParameterException(
+                "The Region should either be a string enclosed by quotation or an array of them"
+            ) from json_decode_error
+        try:
+            years = year_input_manager(json.loads(request.args.get("Year")))
+        except json.decoder.JSONDecodeError as json_decode_error:
+            raise InvalidParameterException(
+                "The Year should either be a Number, array of number or a string of tuple"
+            ) from json_decode_error
         plot = request.args.get("plot")
         queryset = Population.query.filter(
             Population.year.in_(years), Population.country.in_(countries)
@@ -102,7 +147,12 @@ def get_graph_response():
 def get_stats_response():
     if request.method == "GET":
         num = json.loads(request.args.get("Number"))
-        years = year_input_manager(json.loads(request.args.get("Year")))[:1]
+        try:
+            years = year_input_manager(json.loads(request.args.get("Year")))[:1]
+        except json.decoder.JSONDecodeError as json_decode_error:
+            raise InvalidParameterException(
+                "The Year should either be a Number, array of number or a string of tuple"
+            ) from json_decode_error
         queryset = (
             Population.query.filter(
                 Population.year.in_(years), Population.country.in_(country_list)
