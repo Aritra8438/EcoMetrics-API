@@ -2,9 +2,9 @@
 import json
 from flask import jsonify, request, render_template, abort
 
-from api.utils.infer_region import countries as country_list
 from .database import app
 from .models import Population
+from .utils.infer_region import countries as country_list
 from .utils.input_serializer import region_input_manager, year_input_manager
 from .utils.output_serializer import serialize_queryset, serialize_pivoted_queryset
 from .utils.queryset_to_structures import (
@@ -14,6 +14,7 @@ from .utils.queryset_to_structures import (
     convert_to_double_lists,
 )
 from .utils.create_figure import create_bar, create_pie, create_scatter
+from .exceptions.custom import MissingParameterException
 
 
 @app.route("/")
@@ -33,6 +34,10 @@ def build_query():
 @app.route("/table")
 def get_table_response():
     if request.method == "GET":
+        if "Region" not in request.args:
+            raise MissingParameterException("Region must be specified in the url")
+        if "Year" not in request.args:
+            raise MissingParameterException("Year must be specified in the url")
         cities, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
         pivot = request.args.get("Pivot")
@@ -51,6 +56,10 @@ def get_table_response():
 
 @app.route("/json")
 def get_json_response():
+    if "Region" not in request.args:
+        raise MissingParameterException("Region must be specified in the url")
+    if "Year" not in request.args:
+        raise MissingParameterException("Year must be specified in the url")
     if request.method == "GET":
         _, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
