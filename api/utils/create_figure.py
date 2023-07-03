@@ -1,12 +1,7 @@
-# pylint: disable=missing-module-docstring
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
-
 import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
 from .theme import AquaMarine, light, dark, fluroscent, blackPink
-
 
 def create_scatter(country_year_dict, country_pop_dict, user_theme ):
     fig = go.Figure()
@@ -77,7 +72,7 @@ def create_pie(array1, label1, array2, label2, num, user_theme):
         go.Pie(
             values=array2,
             labels=label2,
-            name= f"Bottom {num}",
+            name=f"Bottom {num}",
         ),
         row=1,
         col=2,

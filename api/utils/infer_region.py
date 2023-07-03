@@ -1,7 +1,3 @@
-# pylint: disable=missing-module-docstring
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
-
 from thefuzz import process
 
 countries = [
@@ -201,7 +197,7 @@ countries = [
     "Vietnam",
     "Yemen",
     "Zambia",
-    "Zimbabwe"
+    "Zimbabwe",
 ]
 cities = [
     "Abidjan",
@@ -477,7 +473,7 @@ cities = [
     "Yaoundé",
     "Yerevan",
     "Zagreb",
-    "Zurich"
+    "Zurich",
 ]
 
 
