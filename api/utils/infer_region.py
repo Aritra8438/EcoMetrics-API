@@ -197,7 +197,7 @@ countries = [
     "Vietnam",
     "Yemen",
     "Zambia",
-    "Zimbabwe"
+    "Zimbabwe",
 ]
 cities = [
     "Abidjan",
@@ -473,7 +473,7 @@ cities = [
     "Yaoundé",
     "Yerevan",
     "Zagreb",
-    "Zurich"
+    "Zurich",
 ]
 
 

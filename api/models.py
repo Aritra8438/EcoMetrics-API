@@ -1,4 +1,4 @@
-from api.database import db
+from .database import db
 
 
 class Population(db.Model):

@@ -1,24 +1,33 @@
-from flask import jsonify, request, render_template
+"""Module produces json objects"""
 import json
+from flask import jsonify, request, render_template, abort
 
-from api.database import app
-from api.models import *
-from api.utils.input_serializer import *
-from api.utils.output_serializer import *
-from api.utils.queryset_to_structures import *
-from api.utils.create_figure import *
+from api.utils.infer_region import countries as country_list
+from .database import app
+from .models import Population
+from .utils.input_serializer import region_input_manager, year_input_manager
+from .utils.output_serializer import serialize_queryset, serialize_pivoted_queryset
+from .utils.queryset_to_structures import (
+    convert_to_table,
+    convert_to_dicts,
+    convert_to_single_dict,
+    convert_to_double_lists,
+)
+from .utils.create_figure import create_bar, create_pie, create_scatter
 
 
 @app.route("/")
 def home():
     if request.method == "GET":
         return render_template("index.html")
+    abort("Method not allowed", 405)
 
 
 @app.route("/querybuilder")
 def build_query():
     if request.method == "GET":
         return render_template("query_builder.html")
+    abort("Method not allowed", 405)
 
 
 @app.route("/table")
@@ -27,7 +36,7 @@ def get_table_response():
         cities, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
         pivot = request.args.get("Pivot")
-        if pivot != "Region" and pivot != "Year":
+        if pivot not in ["Region", "Year"]:
             pivot = "Year"
         queryset = Population.query.filter(
             Population.year.in_(years), Population.country.in_(countries)
@@ -35,15 +44,15 @@ def get_table_response():
         if pivot == "Region":
             table = convert_to_table(queryset, years, cities + countries, 1)
             return render_template("table_view.html", table=table)
-        elif pivot == "Year":
-            table = convert_to_table(queryset, years, cities + countries)
-            return render_template("table_view.html", table=table)
+        table = convert_to_table(queryset, years, cities + countries)
+        return render_template("table_view.html", table=table)
+    abort("Method not allowed", 405)
 
 
 @app.route("/json")
 def get_json_response():
     if request.method == "GET":
-        cities, countries = region_input_manager(json.loads(request.args.get("Region")))
+        _, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
         pivot = request.args.get("Pivot")
         if pivot == "Region":
@@ -55,7 +64,7 @@ def get_json_response():
                 pivoted_queryset.append((country, queryset))
             json_response = serialize_pivoted_queryset(pivoted_queryset, "Year")
             return jsonify(json_response)
-        elif pivot == "Year":
+        if pivot == "Year":
             pivoted_queryset = []
             for year in years:
                 queryset = Population.query.filter(
@@ -64,18 +73,18 @@ def get_json_response():
                 pivoted_queryset.append((year, queryset))
             json_response = serialize_pivoted_queryset(pivoted_queryset, "Region")
             return jsonify(json_response)
-        else:
-            queryset = Population.query.filter(
-                Population.year.in_(years), Population.country.in_(countries)
-            )
-            json_response = serialize_queryset(queryset)
-            return jsonify(json_response)
+        queryset = Population.query.filter(
+            Population.year.in_(years), Population.country.in_(countries)
+        )
+        json_response = serialize_queryset(queryset)
+        return jsonify(json_response)
+    abort("Method not allowed", 405)
 
 
 @app.route("/graph")
 def get_graph_response():
     if request.method == "GET":
-        cities, countries = region_input_manager(json.loads(request.args.get("Region")))
+        _, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
         plot = request.args.get("plot")
         queryset = Population.query.filter(
@@ -86,19 +95,17 @@ def get_graph_response():
             return create_bar(plot_dict)
         country_year, country_population = convert_to_dicts(queryset)
         return create_scatter(country_year, country_population)
+    abort("Method not allowed", 405)
 
 
 @app.route("/stats")
 def get_stats_response():
     if request.method == "GET":
-        from api.utils.infer_region import countries
-
         num = json.loads(request.args.get("Number"))
-        num = min(num, 10)
         years = year_input_manager(json.loads(request.args.get("Year")))[:1]
         queryset = (
             Population.query.filter(
-                Population.year.in_(years), Population.country.in_(countries)
+                Population.year.in_(years), Population.country.in_(country_list)
             )
             .order_by(Population.population)
             .limit(num)
@@ -106,7 +113,7 @@ def get_stats_response():
         )
         queryset += (
             Population.query.filter(
-                Population.year.in_(years), Population.country.in_(countries)
+                Population.year.in_(years), Population.country.in_(country_list)
             )
             .order_by(Population.population.desc())
             .limit(num)
@@ -114,7 +121,8 @@ def get_stats_response():
         )
         array1, label1, array2, label2 = convert_to_double_lists(queryset, num)
         return create_pie(array1, label1, array2, label2, num)
+    abort("Method not allowed", 405)
 
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
     app.run()
