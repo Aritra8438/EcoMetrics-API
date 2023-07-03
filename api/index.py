@@ -86,15 +86,18 @@ def get_graph_response():
     if request.method == "GET":
         _, countries = region_input_manager(json.loads(request.args.get("Region")))
         years = year_input_manager(json.loads(request.args.get("Year")))
-        plot = request.args.get("plot")
+        user_theme = None
+        if request.args.get("user_theme") :
+            user_theme = json.loads(request.args.get("user_theme"))
+        plot = json.loads(request.args.get("plot"))
         queryset = Population.query.filter(
             Population.year.in_(years), Population.country.in_(countries)
         )
         if plot == "bar":
             plot_dict = convert_to_single_dict(queryset)
-            return create_bar(plot_dict)
+            return create_bar(plot_dict, user_theme)
         country_year, country_population = convert_to_dicts(queryset)
-        return create_scatter(country_year, country_population)
+        return create_scatter(country_year, country_population,user_theme)
     abort("Method not allowed", 405)
 
 @app.route("/stats")
@@ -102,6 +105,11 @@ def get_stats_response():
     if request.method == "GET":
         num = json.loads(request.args.get("Number"))
         years = year_input_manager(json.loads(request.args.get("Year")))[:1]
+        user_theme = None
+        if request.args.get("user_theme") :
+            print(json.loads(request.args.get("user_theme")))
+        user_theme = json.loads(request.args.get("user_theme"))
+        print(user_theme)
         queryset = (
             Population.query.filter(
                 Population.year.in_(years), Population.country.in_(country_list)
@@ -119,7 +127,7 @@ def get_stats_response():
             .all()
         )
         array1, label1, array2, label2 = convert_to_double_lists(queryset, num)
-        return create_pie(array1, label1, array2, label2, num)
+        return create_pie(array1, label1, array2, label2, num, user_theme)
     abort("Method not allowed", 405)
 
 
