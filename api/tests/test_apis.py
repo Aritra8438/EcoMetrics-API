@@ -1,13 +1,27 @@
 def test_home(client):
+    # test get method
     response = client.get("/")
     assert response.status_code == 200
     assert b"<title>Document</title>" in response.data
+    # test other methods which are not allowed
+    response = client.post("/")
+    assert response.status_code == 405
+    assert b'<title>405 Method Not Allowed</title>' in response.data
+    response = client.put("/")
+    assert response.status_code == 405
+    assert b'<title>405 Method Not Allowed</title>' in response.data
 
 
 def test_querybuilder(client):
     response = client.get("/querybuilder")
     assert response.status_code == 200
     assert b"<title>Query Builder</title>" in response.data
+    response = client.post("/querybuilder")
+    assert response.status_code == 405
+    assert b'<title>405 Method Not Allowed</title>' in response.data
+    response = client.put("/querybuilder")
+    assert response.status_code == 405
+    assert b'<title>405 Method Not Allowed</title>' in response.data
 
 
 def test_json(client):
