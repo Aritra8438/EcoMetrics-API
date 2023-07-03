@@ -127,13 +127,13 @@ def get_graph_response():
             ) from json_decode_error
         try:
             years = year_input_manager(json.loads(request.args.get("Year")))
-        user_theme = None
-        if request.args.get("user_theme") :
-            user_theme = json.loads(request.args.get("user_theme"))
         except json.decoder.JSONDecodeError as json_decode_error:
             raise InvalidParameterException(
                 "The Year should either be a Number, array of number or a string of tuple"
             ) from json_decode_error
+        user_theme = None
+        if request.args.get("user_theme") :
+            user_theme = json.loads(request.args.get("user_theme"))
         plot = json.loads(request.args.get("plot"))
         queryset = Population.query.filter(
             Population.year.in_(years), Population.country.in_(countries)
@@ -150,13 +150,11 @@ def get_graph_response():
 def get_stats_response():
     if request.method == "GET":
         num = json.loads(request.args.get("Number"))
-        try:
-            years = year_input_manager(json.loads(request.args.get("Year")))[:1]
         user_theme = None
         if request.args.get("user_theme") :
-            print(json.loads(request.args.get("user_theme")))
-        user_theme = json.loads(request.args.get("user_theme"))
-        print(user_theme)
+            user_theme = json.loads(request.args.get("user_theme"))
+        try:
+            years = year_input_manager(json.loads(request.args.get("Year")))[:1]
         except json.decoder.JSONDecodeError as json_decode_error:
             raise InvalidParameterException(
                 "The Year should either be a Number, array of number or a string of tuple"
