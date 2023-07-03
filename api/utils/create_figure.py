@@ -6,9 +6,9 @@ from plotly.subplots import make_subplots
 def create_scatter(country_year_dict, country_pop_dict):
     fig = go.Figure()
     layout = go.Layout(
-        title="Population vs Year Index",
-        xaxis="Year",
-        yaxis="Population",
+        title="Population vs Year graph",
+        xaxis={"title": "Year"},
+        yaxis={"title": "Population"},
     )
     for country in country_year_dict:
         fig.add_trace(
@@ -44,7 +44,7 @@ def create_pie(array1, label1, array2, label2, num):
         specs=[[pie, pie]],
         subplot_titles=[
             f"Top {num} countries",
-            "Bottom {num} countries",
+            f"Bottom {num} countries",
         ],
     )
     fig.add_trace(
