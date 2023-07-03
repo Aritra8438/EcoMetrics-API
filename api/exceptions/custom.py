@@ -1,7 +1,7 @@
 from werkzeug.exceptions import BadRequest
 
 
-class InvalidParameterException(Exception):
+class InvalidParameterException(BadRequest):
     def __init__(self, message="There were some errors while parsing request params"):
         super().__init__(description=message)
 
