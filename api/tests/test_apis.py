@@ -36,7 +36,3 @@ def test_table(client):
     response = client.get("/table?Region=[%22China%22]&Year=%222020,2020,1%22")
     assert response.status_code == 200
     assert b"<title>Table</title>" in response.data
-
-
-def add_more_tests(client):
-    assert 1 == 1
