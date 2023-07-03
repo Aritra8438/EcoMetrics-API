@@ -176,7 +176,13 @@ def get_stats_response():
             .all()
         )
         array1, label1, array2, label2 = convert_to_double_lists(queryset, num)
-        return create_pie(array1, label1, array2, label2, num, user_theme)
+        array_labels1 = []
+        array_labels1.append(array1)
+        array_labels1.append(label1)
+        array_labels2 = []
+        array_labels2.append(array2)
+        array_labels2.append(label2)
+        return create_pie(array_labels1, array_labels2, num=num, user_theme=user_theme)
     abort("Method not allowed", 405)
 
 

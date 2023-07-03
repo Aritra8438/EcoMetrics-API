@@ -47,7 +47,11 @@ def create_bar(plot_dict, user_theme):
     return fig.to_html(full_html=False)
 
 
-def create_pie(array1, label1, array2, label2, num, user_theme):
+def create_pie(array_labels1, array_labels2, num, user_theme):
+    array1 = array_labels1[0]
+    label1 = array_labels1[1]
+    array2 = array_labels2[0]
+    label2 = array_labels2[1]
     theme = set_theme(user_theme)
     pie = {"type": "pie"}
     fig = make_subplots(
