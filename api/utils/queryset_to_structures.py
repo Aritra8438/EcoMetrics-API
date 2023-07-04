@@ -55,6 +55,7 @@ def convert_to_dicts(queryset):
         country_population[obj["country"]].append(obj["population"])
     return country_year, country_population
 
+
 def convert_to_double_lists(queryset, num):
     json_response = serialize_queryset(queryset)
     population_country_list = []

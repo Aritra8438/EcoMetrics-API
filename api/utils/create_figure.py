@@ -3,15 +3,18 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 from .theme import AquaMarine, light, dark, fluroscent, blackPink
 
-def create_scatter(country_year_dict, country_pop_dict, user_theme ):
+
+def create_scatter(country_year_dict, country_pop_dict, user_theme):
     fig = go.Figure()
     theme = set_theme(user_theme)
     layout = go.Layout(
-        title="Population vs Year Index",
+        title="Population vs Year graph",
+        xaxis={"title": "Year"},
+        yaxis={"title": "Population"},
         paper_bgcolor=theme["paper_bgcolor"],
-        plot_bgcolor = theme["plot_bgcolor"],
-        font_color = theme["font_color"],
-        title_font_color = theme["title_font_color"]
+        plot_bgcolor=theme["plot_bgcolor"],
+        font_color=theme["font_color"],
+        title_font_color=theme["title_font_color"],
     )
     for country in country_year_dict:
         fig.add_trace(
@@ -39,19 +42,15 @@ def create_bar(plot_dict, user_theme):
     theme = set_theme(user_theme)
     layout = go.Layout(
         paper_bgcolor=theme["paper_bgcolor"],
-        plot_bgcolor = theme["plot_bgcolor"],
-        font_color = theme["font_color"],
-        title_font_color = theme["title_font_color"]
+        plot_bgcolor=theme["plot_bgcolor"],
+        font_color=theme["font_color"],
+        title_font_color=theme["title_font_color"],
     )
     fig.update_layout(layout)
     return fig.to_html(full_html=False)
 
 
 def create_pie(array_labels1, array_labels2, num, user_theme):
-    array1 = array_labels1[0]
-    label1 = array_labels1[1]
-    array2 = array_labels2[0]
-    label2 = array_labels2[1]
     theme = set_theme(user_theme)
     pie = {"type": "pie"}
     fig = make_subplots(
@@ -65,8 +64,8 @@ def create_pie(array_labels1, array_labels2, num, user_theme):
     )
     fig.add_trace(
         go.Pie(
-            values=array1,
-            labels=label1,
+            values=array_labels1[0],
+            labels=array_labels1[1],
             name=f"Top {num}",
         ),
         row=1,
@@ -74,8 +73,8 @@ def create_pie(array_labels1, array_labels2, num, user_theme):
     )
     fig.add_trace(
         go.Pie(
-            values=array2,
-            labels=label2,
+            values=array_labels2[0],
+            labels=array_labels2[1],
             name=f"Bottom {num}",
         ),
         row=1,
@@ -83,23 +82,23 @@ def create_pie(array_labels1, array_labels2, num, user_theme):
     )
     layout = go.Layout(
         paper_bgcolor=theme["paper_bgcolor"],
-        plot_bgcolor = theme["plot_bgcolor"],
-        font_color = theme["font_color"],
-        title_font_color = theme["title_font_color"]
+        plot_bgcolor=theme["plot_bgcolor"],
+        font_color=theme["font_color"],
+        title_font_color=theme["title_font_color"],
     )
     fig.update_layout(layout)
     return fig.to_html(full_html=False)
 
+
 def set_theme(user_theme):
-    if user_theme is None or user_theme=="light" :
+    if user_theme is None or user_theme == "light":
         theme = light
-    if user_theme=="AquaMarine":
+    if user_theme == "AquaMarine":
         theme = AquaMarine
-    if user_theme=="dark":
+    if user_theme == "dark":
         theme = dark
-    if user_theme=="fluroscent":
+    if user_theme == "fluroscent":
         theme = fluroscent
-    if user_theme=="blackPink":
+    if user_theme == "blackPink":
         theme = blackPink
     return theme
-  
