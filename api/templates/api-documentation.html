@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>API documentation</title>
+    <style>
+      .flex-parent {
+        display: flex;
+      }
+      .flex-child {
+        flex: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h3>Welcome to the API-documentation Page</h3>
+      <p>This page documents most of the APIs provided by the application</p>
+      <hr />
+      <br />
+
+      <div class="flex-parent">
+        <div class="flex-child">
+          <label>API endpoint: <strong>/</strong></label>
+          <br />
+          <br />
+          <label>Methods allowed: <strong>GET</strong></label>
+          <br />
+          <br />
+          <label>Parameters: None</label>
+          <br />
+          <br />
+          <button @click="()=>{showHomepage = true}">Test</button>
+        </div>
+        <div class="flex-child" v-if="showHomepage">
+          <p>The response might take some time to show up.</p>
+          <iframe
+            style="border: 2px solid"
+            :src="baseUrl"
+            height="300"
+            width="800"
+            frameborder="0"
+          ></iframe>
+        </div>
+      </div>
+      <br />
+      <hr />
+      <br />
+
+      <div class="flex-parent">
+        <div class="flex-child">
+          <label>API endpoint: <strong> /querybuilder</strong></label>
+          <br />
+          <br />
+          <label>Methods allowed: <strong>GET</strong></label>
+          <br />
+          <br />
+          <label>Parameters: None</label>
+          <br />
+          <br />
+          <button @click="()=>{showQuerybuilderPage = true}">Test</button>
+        </div>
+        <div class="flex-child" v-if="showQuerybuilderPage">
+          <p>The response might take some time to show up.</p>
+          <iframe
+            style="border: 2px solid"
+            :src="querybuilderUrl"
+            height="300"
+            width="800"
+            frameborder="0"
+          ></iframe>
+        </div>
+      </div>
+      <br />
+      <hr />
+      <br />
+
+      <div class="flex-parent">
+        <div class="flex-child">
+          <label>API endpoint: <strong> /table</strong></label>
+          <br />
+          <br />
+          <label>Methods allowed: <strong>GET</strong></label>
+          <br />
+          <br />
+          <label>Parameters: </label>
+          <br />
+          <ul>
+            <li>
+              <label>Countries (must be a string or array of them) :</label>
+              &nbsp;&nbsp;
+              <input type="text" v-model="tableCountries" />
+            </li>
+            <br />
+            <li>
+              <label>Years (must be a number or array of them </label>
+              <br />
+              <br />
+              <label>or a string in format "start,stop,step") :</label>
+              &nbsp;&nbsp;
+              <input type="text" v-model="tableYears" />
+            </li>
+            <br />
+            <li>
+              <label>Pivot (either Year or Region) :</label>
+              &nbsp;&nbsp;
+              <input type="text" v-model="tablePivot" />
+            </li>
+          </ul>
+          <br />
+          <br />
+          <button
+            @click='()=>{showTablePage = true; tableUrl = baseUrl+"table?Year="+tableYears+"&Region="+tableCountries+"&Pivot="+tablePivot;}'
+          >
+            Test
+          </button>
+        </div>
+        <div class="flex-child" v-if="showTablePage">
+          <p>The response might take some time to show up.</p>
+          <iframe
+            style="border: 2px solid"
+            :src="tableUrl"
+            height="600"
+            width="800"
+            frameborder="0"
+          ></iframe>
+        </div>
+      </div>
+      <br />
+      <hr />
+      <br />
+
+      <div class="flex-parent">
+        <div class="flex-child">
+          <label>API endpoint: <strong> /json</strong></label>
+          <br />
+          <br />
+          <label>Methods allowed: <strong>GET</strong></label>
+          <br />
+          <br />
+          <label>Parameters: </label>
+          <br />
+          <ul>
+            <li>
+              <label>Countries (must be a string or array of them) :</label>
+              &nbsp;&nbsp;
+              <input type="text" v-model="jsonCountries" />
+            </li>
+            <br />
+            <li>
+              <label>Years (must be a number or array of them </label>
+              <br />
+              <br />
+              <label>or a string in format "start,stop,step") :</label>
+              &nbsp;&nbsp;
+              <input type="text" v-model="jsonYears" />
+            </li>
+            <br />
+            <li>
+              <label>Pivot (None, Year or Region) :</label>
+              &nbsp;&nbsp;
+              <input type="text" v-model="jsonPivot" />
+            </li>
+          </ul>
+          <br />
+          <br />
+          <button
+            @click='()=>{showJsonPage = true; jsonUrl = baseUrl+"json?Year="+jsonYears+"&Region="+jsonCountries+"&Pivot="+jsonPivot;}'
+          >
+            Test
+          </button>
+        </div>
+        <div class="flex-child" v-if="showJsonPage">
+          <p>The response might take some time to show up.</p>
+          <iframe
+            style="border: 2px solid"
+            :src="jsonUrl"
+            height="600"
+            width="800"
+            frameborder="0"
+          ></iframe>
+        </div>
+      </div>
+      <br />
+      <hr />
+      <br />
+
+      <div class="flex-parent">
+        <div class="flex-child">
+          <label>API endpoint: <strong> /graph</strong></label>
+          <br />
+          <br />
+          <label>Methods allowed: <strong>GET</strong></label>
+          <br />
+          <br />
+          <label>Parameters: </label>
+          <br />
+          <ul>
+            <li>
+              <label>Countries (must be a string or array of them) :</label>
+              &nbsp;&nbsp;
+              <input type="text" v-model="graphCountries" />
+            </li>
+            <br />
+            <li>
+              <label>Years (must be a number or array of them </label>
+              <br />
+              <br />
+              <label>or a string in format "start,stop,step") :</label>
+              &nbsp;&nbsp;
+              <input type="text" v-model="graphYears" />
+            </li>
+            <br />
+            <li>
+              <label>Plot (Scatter, Bar) :</label>
+              &nbsp;&nbsp;
+              <input type="text" v-model="graphPlot" />
+            </li>
+          </ul>
+          <br />
+          <br />
+          <button
+            @click='()=>{showGraphPage = true; graphUrl = baseUrl+"graph?Year="+graphYears+"&Region="+graphCountries+"&plot="+graphPlot;}'
+          >
+            Test
+          </button>
+        </div>
+        <div class="flex-child" v-if="showGraphPage">
+          <p>The response might take some time to show up.</p>
+          <iframe
+            style="border: 2px solid"
+            :src="graphUrl"
+            height="600"
+            width="800"
+            frameborder="0"
+          ></iframe>
+        </div>
+      </div>
+      <br />
+      <hr />
+      <br />
+
+      <div class="flex-parent">
+        <div class="flex-child">
+          <label>API endpoint: <strong> /stats</strong></label>
+          <br />
+          <br />
+          <label>Methods allowed: <strong>GET</strong></label>
+          <br />
+          <br />
+          <label>Parameters: </label>
+          <br />
+          <ul>
+            <li>
+              <label>Year ()</label>
+              &nbsp;&nbsp;
+              <input type="text" v-model="statsYears" />
+            </li>
+            <br />
+            <li>
+              <label>Number ()</label>
+              &nbsp;&nbsp;
+              <input type="text" v-model="statsNumber" />
+            </li>
+          </ul>
+          <br />
+          <br />
+          <button
+            @click='()=>{showStatsPage = true; statsUrl = baseUrl+"stats?Year="+statsYears+"&Number="+statsNumber;}'
+          >
+            Test
+          </button>
+        </div>
+        <div class="flex-child" v-if="showStatsPage">
+          <p>The response might take some time to show up.</p>
+          <iframe
+            style="border: 2px solid"
+            :src="statsUrl"
+            height="600"
+            width="800"
+            frameborder="0"
+          ></iframe>
+        </div>
+      </div>
+      <br />
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="utils/regions.js"></script>
+    <script>
+      const { createApp } = Vue;
+      createApp({
+        delimiters: ["((", "))"],
+        data() {
+          return {
+            baseUrl: "https://eco-metrics-api.vercel.app/",
+            showHomepage: false,
+
+            querybuilderUrl: "https://eco-metrics-api.vercel.app/querybuilder",
+            showQuerybuilderPage: false,
+
+            tableUrl: "",
+            showTablePage: false,
+            tableCountries: '["India"]',
+            tableYears: '"2000,2020,4"',
+            tablePivot: "Year",
+
+            jsonUrl: "",
+            showJsonPage: false,
+            jsonCountries: '"India"',
+            jsonYears: "[2001,2005,2006]",
+            jsonPivot: "None",
+
+            graphUrl: "",
+            showGraphPage: false,
+            graphCountries: '["India","China","Brazil"]',
+            graphYears: '"2000,2020,2"',
+            graphPlot: "bar",
+
+            statsUrl: "",
+            showStatsPage: false,
+            statsNumber: "5",
+            statsYears: "2021",
+          };
+        },
+        methods: {},
+      }).mount("#app");
+    </script>
+  </body>
+</html>
