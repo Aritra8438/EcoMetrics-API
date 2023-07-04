@@ -30,6 +30,25 @@
           <br />
           <br />
           <button @click="()=>{showHomepage = true}">Test</button>
+          &nbsp;&nbsp;
+          <a
+            :href="baseUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            v-if="showHomepage"
+          >
+            Open in new tab
+          </a>
+          <br />
+          <br />
+          <label><strong>response</strong>:</label>
+          <label style="color: green"> 200 OK </label>
+          <br />
+          <br />
+          <label
+            ><strong>Description</strong>: <br />The homepage of the
+            application.</label
+          >
         </div>
         <div class="flex-child" v-if="showHomepage">
           <p>The response might take some time to show up.</p>
@@ -58,6 +77,26 @@
           <br />
           <br />
           <button @click="()=>{showQuerybuilderPage = true}">Test</button>
+          &nbsp;&nbsp;
+          <a
+            :href="querybuilderUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            v-if="showQuerybuilderPage"
+          >
+            Open in new tab
+          </a>
+          <br />
+          <br />
+          <label><strong>response</strong>:</label>
+          <label style="color: green"> 200 OK </label>
+          <br />
+          <br />
+          <label>
+            <strong>Description</strong>: <br />Returns a Querybuilder page.
+            <br />
+            You can create queries and get the response in that page.
+          </label>
         </div>
         <div class="flex-child" v-if="showQuerybuilderPage">
           <p>The response might take some time to show up.</p>
@@ -113,6 +152,36 @@
           >
             Test
           </button>
+          &nbsp;&nbsp;
+          <a
+            :href="tableUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            v-if="showTablePage"
+          >
+            Open in new tab
+          </a>
+          <br />
+          <br />
+          <label><strong>response</strong>:</label>
+          <label style="color: green"> 200 OK </label>
+          <br />
+          <br />
+          <label
+            ><strong>Description</strong>: <br />This API returns a table of
+            population with countries and years as columns. <br /><br />
+            <strong>Year parameter takes 3 types of inputs.</strong>
+            <br />
+            • A single Number e.g. 2000. <br />• An array of numbers e.g.
+            [2000,2001,2010] <br />• A string of following "start, stop, step"
+            e.g. "2000,2010,2"<br /><br /><strong
+              >Region parameter takes two types of inputs.</strong
+            >
+            <br />• A single country e.g. "India"<br />• An array of countries
+            e.g. ["India","China"]<br /><br /><strong
+              >Pivot takes two values.</strong
+            ><br />• Year <br />• Region <br />It determines the axes.</label
+          >
         </div>
         <div class="flex-child" v-if="showTablePage">
           <p>The response might take some time to show up.</p>
@@ -168,6 +237,38 @@
           >
             Test
           </button>
+          &nbsp;&nbsp;
+          <a
+            :href="jsonUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            v-if="showJsonPage"
+          >
+            Open in new tab
+          </a>
+          <br />
+          <br />
+          <label><strong>response</strong>:</label>
+          <label style="color: green"> 200 OK </label>
+          <br />
+          <br />
+          <label
+            ><strong>Description</strong>: <br />This API returns json response
+            of the query (population data). <br /><br />
+            <strong>Year parameter takes 3 types of inputs.</strong>
+            <br />
+            • A single Number e.g. 2000. <br />• An array of numbers e.g.
+            [2000,2001,2010] <br />• A string of following "start, stop, step"
+            e.g. "2000,2010,2"<br /><br /><strong
+              >Region parameter takes two types of inputs.</strong
+            >
+            <br />• A single country e.g. "India"<br />• An array of countries
+            e.g. ["India","China"]<br /><br /><strong
+              >Pivot takes two values.</strong
+            ><br />• None <br />• Year <br />• Region <br />It determines the
+            type of JSON object <br />If Year or Region is selcted, they will be
+            the key.</label
+          >
         </div>
         <div class="flex-child" v-if="showJsonPage">
           <p>The response might take some time to show up.</p>
@@ -223,6 +324,37 @@
           >
             Test
           </button>
+          &nbsp;&nbsp;
+          <a
+            :href="graphUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            v-if="showGraphPage"
+          >
+            Open in new tab
+          </a>
+          <br />
+          <br />
+          <label><strong>response</strong>:</label>
+          <label style="color: green"> 200 OK </label>
+          <br />
+          <br />
+          <label
+            ><strong>Description</strong>: <br />This API returns a graph of
+            population wrt countries and years<br /><br />
+            <strong>Year parameter takes 3 types of inputs.</strong>
+            <br />
+            • A single Number e.g. 2000. <br />• An array of numbers e.g.
+            [2000,2001,2010] <br />• A string of following "start, stop, step"
+            e.g. "2000,2010,2"<br /><br /><strong
+              >Region parameter takes two types of inputs.</strong
+            >
+            <br />• A single country e.g. "India"<br />• An array of countries
+            e.g. ["India","China"]<br /><br /><strong
+              >Plot parameter takes two values</strong
+            >
+            <br />• None<br />• bar</label
+          >
         </div>
         <div class="flex-child" v-if="showGraphPage">
           <p>The response might take some time to show up.</p>
@@ -251,13 +383,13 @@
           <br />
           <ul>
             <li>
-              <label>Year ()</label>
+              <label>Year (a single year)</label>
               &nbsp;&nbsp;
               <input type="text" v-model="statsYears" />
             </li>
             <br />
             <li>
-              <label>Number ()</label>
+              <label>Number (Number of countries to compare)</label>
               &nbsp;&nbsp;
               <input type="text" v-model="statsNumber" />
             </li>
@@ -269,6 +401,31 @@
           >
             Test
           </button>
+          &nbsp;&nbsp;
+          <a
+            :href="statsUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            v-if="showStatsPage"
+          >
+            Open in new tab
+          </a>
+          <br />
+          <br />
+          <label><strong>response</strong>:</label>
+          <label style="color: green"> 200 OK </label>
+          <br />
+          <br />
+          <label
+            ><strong>Description</strong>: <br />This API returns pie charts to
+            compare population of top and bottom n countries.<br /><br />
+            <strong>
+              Year parameter takes an integer ranges from 1950 to 2021
+            </strong>
+            <br /><br /><strong>
+              Number n compares n top and bottom countries.
+            </strong>
+          </label>
         </div>
         <div class="flex-child" v-if="showStatsPage">
           <p>The response might take some time to show up.</p>
@@ -299,13 +456,13 @@
 
             tableUrl: "",
             showTablePage: false,
-            tableCountries: '["India"]',
+            tableCountries: '"India"',
             tableYears: '"2000,2020,4"',
             tablePivot: "Year",
 
             jsonUrl: "",
             showJsonPage: false,
-            jsonCountries: '"India"',
+            jsonCountries: '["India","China"]',
             jsonYears: "[2001,2005,2006]",
             jsonPivot: "None",
 
