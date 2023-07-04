@@ -24,6 +24,13 @@ def home():
     abort("Method not allowed", 405)
 
 
+@app.route("/api-documentation")
+def documentation():
+    if request.method == "GET":
+        return render_template("api-documentation.html")
+    abort("Method not allowed", 405)
+
+
 @app.route("/querybuilder")
 def build_query():
     if request.method == "GET":
