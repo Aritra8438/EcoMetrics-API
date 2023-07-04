@@ -5,9 +5,7 @@ from plotly.subplots import make_subplots
 
 def create_scatter(country_year_dict, country_pop_dict, user_theme):
     fig = go.Figure()
-    print(user_theme)
     theme = set_theme(user_theme)
-    print(theme)
     layout = go.Layout(
         title="Population vs Year graph",
         xaxis={"title": "Year"},
