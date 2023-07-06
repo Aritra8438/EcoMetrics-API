@@ -25,4 +25,4 @@ jobs:
       - name: Get coverage report
         run: |
           pip install coverage
-          coveragerun -m pytest          
+          coverage run -m pytest
