@@ -58,7 +58,7 @@ def test_json_method_not_allowed(client):
     assert b"<title>405 Method Not Allowed</title>" in response.data
 
 
-def test_json_mising_parameter(client):
+def test_json_missing_parameter(client):
     """test bad request missing parameters"""
     response = client.get("/json")
     assert response.status_code == 400
@@ -93,8 +93,101 @@ def test_json_invalid_parameter(client):
     )
 
 
-def test_table(client):
-    """test get method"""
-    response = client.get("/table?Region=[%22China%22]&Year=%222020,2020,1%22")
+def test_table_okay(client):
+    """test get method and possible param combinations"""
+    response = client.get("/table?Region=[%22Chin%22]&Year=%222020,2020,1%22")
     assert response.status_code == 200
-    assert b"<title>Table</title>" in response.data
+    assert b"China" in response.data
+    assert b"1424929800" in response.data
+
+
+def test_table_method_not_allowed(client):
+    """test other methods which are not allowed"""
+    response = client.post("/table?Region=[%22China%22]&Year=%222020,2020,1%22")
+    assert response.status_code == 405
+    assert b"<title>405 Method Not Allowed</title>" in response.data
+
+
+def test_table_missing_parameter(client):
+    """test bad request missing parameters"""
+    response = client.get("/table")
+    assert response.status_code == 400
+    assert b"<p>Region must be specified in the url</p>" in response.data
+    response = client.get("/table?Region=[%22Germany%22,%22China%22,%22India%22]")
+    assert response.status_code == 400
+    assert b"<p>Year must be specified in the url</p>" in response.data
+    response = client.get("/table?region=[%22Germany%22,%22China%22,%22India%22]")
+    assert response.status_code == 400
+    assert b"<p>Region must be specified in the url</p>" in response.data
+
+
+def test_table_invalid_parameter(client):
+    """test bad request missing parameters"""
+    response = client.get('table?Region=["India"]&Year="2000,2010,1')
+    assert response.status_code == 400
+    assert (
+        b"<p>The Year should either be a Number, array of number or a string of tuple"
+        in response.data
+    )
+    response = client.get('table?Region=[India]&Year="2000,2010,1"')
+    assert response.status_code == 400
+    assert (
+        b"<p>The Region should either be a string enclosed by quotation or an array"
+        in response.data
+    )
+    response = client.get('table?Region=India&Year="2000,2010,1')
+    assert response.status_code == 400
+    assert (
+        b"<p>The Region should either be a string enclosed by quotation or an array"
+        in response.data
+    )
+
+
+def test_graph_okay(client):
+    """test get method and possible param combinations"""
+    response = client.get("/graph?Region=[%22Chin%22]&Year=%222020,2020,1%22")
+    assert response.status_code == 200
+    assert b"China" in response.data
+    assert b"1424929800" in response.data
+
+
+def test_graph_method_not_allowed(client):
+    """test other methods which are not allowed"""
+    response = client.post("/graph?Region=[%22China%22]&Year=%222020,2020,1%22")
+    assert response.status_code == 405
+    assert b"<title>405 Method Not Allowed</title>" in response.data
+
+
+def test_graph_missing_parameter(client):
+    """test bad request missing parameters"""
+    response = client.get("/graph")
+    assert response.status_code == 400
+    assert b"<p>Region must be specified in the url</p>" in response.data
+    response = client.get("/graph?Region=[%22Germany%22,%22China%22,%22India%22]")
+    assert response.status_code == 400
+    assert b"<p>Year must be specified in the url</p>" in response.data
+    response = client.get("/graph?region=[%22Germany%22,%22China%22,%22India%22]")
+    assert response.status_code == 400
+    assert b"<p>Region must be specified in the url</p>" in response.data
+
+
+def test_graph_invalid_parameter(client):
+    """test bad request missing parameters"""
+    response = client.get('graph?Region=["India"]&Year="2000,2010,1')
+    assert response.status_code == 400
+    assert (
+        b"<p>The Year should either be a Number, array of number or a string of tuple"
+        in response.data
+    )
+    response = client.get('graph?Region=[India]&Year="2000,2010,1"')
+    assert response.status_code == 400
+    assert (
+        b"<p>The Region should either be a string enclosed by quotation or an array"
+        in response.data
+    )
+    response = client.get('graph?Region=India&Year="2000,2010,1')
+    assert response.status_code == 400
+    assert (
+        b"<p>The Region should either be a string enclosed by quotation or an array"
+        in response.data
+    )
