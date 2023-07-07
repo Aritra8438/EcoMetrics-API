@@ -85,3 +85,55 @@ Alternatively, you can search [Pylint](https://marketplace.visualstudio.com/item
 
 Currently, All the tests are linked to `client` @pytest.fixture, which is in `conftest.py`. If you have made changes to the backend, we recommend adding a pytest for it. 
 
+## Contribution Workflow:
+
+Hello contributors, here is the contribution guideline you should follow:
+
+- **First, create a fork of this repo. (Available at the top right corner of the repo)** 
+
+- Go to the forked repository and **Clone the fork of your repo to the destination folder**.
+```console
+$ git clone https://github.com/YOUR_USERNAME/YOUR_FORK.git
+
+```
+- Navigate to the Project repository
+```console
+$ cd EcoMetrics-API
+```
+- Add Upstream to your clone
+
+```console
+$ git remote -v
+> origin  https://github.com/YOUR_USERNAME/YOUR_FORK.git (fetch)
+> origin  https://github.com/YOUR_USERNAME/YOUR_FORK.git (push)
+```
+```console
+$ git remote add upstream https://github.com/Aritra8438/EcoMetrics-API.git
+```
+
+```console
+$ git remote -v
+> origin    https://github.com/YOUR_USERNAME/YOUR_FORK.git (fetch)
+> origin    https://github.com/YOUR_USERNAME/YOUR_FORK.git (push)
+> upstream  https://github.com/Aritra8438/Job-applications-manager.git (fetch)
+> upstream  https://github.com/Aritra8438/Job-applications-manager.git (push)
+```
+- Before making any changes, sync your origin with upstream 
+
+```console
+$ git pull upstream main --rebase
+``` 
+
+
+- Make some changes to the project. After that, open a new branch and commit the changes.
+
+```console
+$ git checkout -b <new_branch>
+$ git add .
+$ git commit -m "Commit message"
+$ git push origin <new branch>
+``` 
+
+- There will be a visible change in your repo, click on that and create a new pull request.
+
+Thank you for your contribution.
