@@ -204,3 +204,7 @@ def test_graph_themes(client):
     assert b'"paper_bgcolor":"black"' in response.data
     response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Theme=aquamarine')
     assert b'"paper_bgcolor":"#1E4967"' in response.data
+    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Theme=blackpink')
+    assert b'"paper_bgcolor":"black"' in response.data
+    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Theme=fluorescent')
+    assert b'"paper_bgcolor":"#B2FF00"' in response.data
