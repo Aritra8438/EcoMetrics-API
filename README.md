@@ -90,6 +90,8 @@ The essential APIs are unit-tested using ```pytest``` and linted using ```pylint
 ```console
 # run pytest
 pytest
+pytest -s (to get the output of the tests if you've used print statement inside)
+pytest -k test_abc (to run a particular test)
 
 # run pylint
 pip install pylint (Required to run once)
