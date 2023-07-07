@@ -15,6 +15,23 @@ def test_home_method_not_allowed(client):
     assert b"<title>405 Method Not Allowed</title>" in response.data
 
 
+def test_documentation_okay(client):
+    """test get method"""
+    response = client.get("/api-documentation")
+    assert response.status_code == 200
+    assert b"<title>API documentation</title>" in response.data
+
+
+def test_documentation_method_not_allowed(client):
+    """test other methods which are not allowed"""
+    response = client.post("/api-documentation")
+    assert response.status_code == 405
+    assert b"<title>405 Method Not Allowed</title>" in response.data
+    response = client.put("/")
+    assert response.status_code == 405
+    assert b"<title>405 Method Not Allowed</title>" in response.data
+
+
 def test_querybuilder_okay(client):
     """test get method"""
     response = client.get("/querybuilder")
