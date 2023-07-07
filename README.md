@@ -25,6 +25,19 @@ This API has four primary endpoints:
 It's a collaborative open-source project Raisa and I did (are doing) as a part of our code submission for the MLH fellowship. 
 We have exposed all of our APIs in our API documentation. Feel free to test APIs there (You will be able to try it on-screen).
 
+# Index 
+To quickly jump to a subsection, 
+
+* [Website](https://github.com/Aritra8438/EcoMetrics-API/tree/main#website)                          
+                
+* [Local Development Setup](https://github.com/Aritra8438/EcoMetrics-API/tree/main#local-developmemt-setup)
+
+* [Github workflows](https://github.com/Aritra8438/EcoMetrics-API/tree/main#workflows)                   
+
+* [Contribution Workflow](https://github.com/Aritra8438/EcoMetrics-API/tree/main#contribution-workflow)
+  
+* [API documentation](https://github.com/Aritra8438/EcoMetrics-API/tree/main#api-documentation)
+
 
 # Website 
 <a href="https://eco-metrics-api.vercel.app/"><strong>Our website is live!</strong></a>
@@ -115,8 +128,8 @@ $ git remote add upstream https://github.com/Aritra8438/EcoMetrics-API.git
 $ git remote -v
 > origin    https://github.com/YOUR_USERNAME/YOUR_FORK.git (fetch)
 > origin    https://github.com/YOUR_USERNAME/YOUR_FORK.git (push)
-> upstream  https://github.com/Aritra8438/Job-applications-manager.git (fetch)
-> upstream  https://github.com/Aritra8438/Job-applications-manager.git (push)
+> upstream  https://github.com/Aritra8438/EcoMetrics-API.git (fetch)
+> upstream  https://github.com/Aritra8438/EcoMetrics-API.git (push)
 ```
 - Before making any changes, sync your origin with upstream 
 
@@ -137,3 +150,12 @@ $ git push origin <new branch>
 - There will be a visible change in your repo, click on that and create a new pull request.
 
 Thank you for your contribution.
+
+## API Documentation:
+
+All of our APIs are available at [this](https://documenter.getpostman.com/view/27795030/2s93z5A5J6) documentation. The documentation has a minimum design (Apologies!) but we intend to keep it as it is because **It enables on-screen testing with HTML response**.
+
+Here is a screenshot of the same.
+
+<img width="960" alt="image" src="https://github.com/Aritra8438/EcoMetrics-API/assets/64671908/17d13fe3-ce00-45fe-a286-a675d52f2a8d">
+
