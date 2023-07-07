@@ -22,15 +22,15 @@ This API has four primary endpoints:
 - graph ( `/graph` -> Returns graph response )
 - stats ( `/stats` -> Returns stats response )
 
-It's a collaborative open-source project Raisa and I did (are doing) as a part of our code submission for the MLH fellowship. 
-We have exposed all of our APIs in our API documentation. Feel free to test APIs there (You will be able to try it on-screen).
+It's a collaborative open-source project Raisa and I did (are doing) as a part of our code submission for the Mercor Hackathon. 
+We have exposed all of our APIs in our [API documentation](https://eco-metrics-api.vercel.app/api-documentation). Feel free to test APIs there (You will be able to try them on-screen).
 
 # Index 
 To quickly jump to a subsection, 
 
 * [Website](https://github.com/Aritra8438/EcoMetrics-API/tree/main#website)                          
                 
-* [Local Development Setup](https://github.com/Aritra8438/EcoMetrics-API/tree/main#local-developmemt-setup)
+* [Local Development Setup](https://github.com/Aritra8438/EcoMetrics-API/tree/main#local-development-setup)
 
 * [Github workflows](https://github.com/Aritra8438/EcoMetrics-API/tree/main#workflows)                   
 
@@ -84,19 +84,24 @@ flask --app api/index run --debug
 
 ## Workflows:
 
-The essential APIs are currently unit-tested using ```pytest``` and linted using ```pylint```. If you are contributing to this repo, it's recommended that you run ```pytest``` and ```pylint``` before your pull request.
+The essential APIs are unit-tested using ```pytest``` and linted using ```pylint```. If you are contributing to this repo, it's recommended that you run ```pytest``` and ```pylint``` before your pull request.
 
 - Open the project folder and run:
 ```console
 # run pytest
 pytest
+pytest -s (to get the output of the tests if you've used print statement inside)
+pytest -k test_abc (to run a particular test)
 
 # run pylint
+pip install pylint (Required to run once)
 pylint $(git ls-files '*.py')
 ```
-Alternatively, you can search [Pylint](https://marketplace.visualstudio.com/items?itemName=ms-python.pylint) at the extension marketplace and install the linter. The lint errors will be highlighted if Pylint is installed.
+Alternatively, you can search [Pylint](https://marketplace.visualstudio.com/items?itemName=ms-python.pylint) at the extension marketplace (in VSCode) and install the linter. The lint errors will be highlighted if Pylint is installed.
 
-Currently, All the tests are linked to `client` @pytest.fixture, which is in `conftest.py`. If you have made changes to the backend, we recommend adding a pytest for it. 
+Currently, All the tests are linked to `client` @pytest.fixture, which is in `conftest.py`. If you have made changes to the backend, we recommend adding a pytest for it.
+
+We have enabled `codecov` and `dependabot` for this repo. To learn about the workflows, please visit the corresponding `.yml` files.
 
 ## Contribution Workflow:
 
@@ -153,7 +158,7 @@ Thank you for your contribution.
 
 ## API Documentation:
 
-All of our APIs are available at [this](https://documenter.getpostman.com/view/27795030/2s93z5A5J6) documentation. The documentation has a minimum design (Apologies!) but we intend to keep it as it is because **It enables on-screen testing with HTML response**.
+All of our APIs are available at [this](https://eco-metrics-api.vercel.app/api-documentation) documentation. The documentation has a minimum design (Apologies!) but we intend to keep it as it is because **It enables on-screen testing with HTML response**.
 
 Here is a screenshot of the same.
 

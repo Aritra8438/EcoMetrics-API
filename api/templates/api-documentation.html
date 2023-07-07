@@ -312,6 +312,12 @@
             </li>
             <br />
             <li>
+              <label>Theme:</label>
+              &nbsp;&nbsp;
+              <input type="text" v-model="graphTheme" />
+            </li>
+            <br />
+            <li>
               <label>Plot (scatter, bar) :</label>
               &nbsp;&nbsp;
               <input type="text" v-model="graphPlot" />
@@ -320,7 +326,7 @@
           <br />
           <br />
           <button
-            @click='()=>{showGraphPage = true; graphUrl = baseUrl+"graph?Year="+graphYears+"&Region="+graphCountries+"&Plot="+graphPlot;}'
+            @click='()=>{showGraphPage = true; graphUrl = baseUrl+"graph?Year="+graphYears+"&Region="+graphCountries+"&Plot="+graphPlot+"&Theme="+graphTheme;}'
           >
             Test
           </button>
@@ -353,7 +359,10 @@
             e.g. ["India","China"]<br /><br /><strong
               >Plot parameter takes two values</strong
             >
-            <br />• None<br />• bar</label
+            <br />• None<br />• bar<br /><br />
+            <strong>Theme parameters take six values</strong>
+            <br />• none<br />• fluorescent <br />• light<br />• blackpink
+            <br />• dark<br />• aquamarine</label
           >
         </div>
         <div class="flex-child" v-if="showGraphPage">
@@ -393,11 +402,17 @@
               &nbsp;&nbsp;
               <input type="text" v-model="statsNumber" />
             </li>
+            <br />
+            <li>
+              <label>Theme:</label>
+              &nbsp;&nbsp;
+              <input type="text" v-model="statsTheme" />
+            </li>
           </ul>
           <br />
           <br />
           <button
-            @click='()=>{showStatsPage = true; statsUrl = baseUrl+"stats?Year="+statsYears+"&Number="+statsNumber;}'
+            @click='()=>{showStatsPage = true; statsUrl = baseUrl+"stats?Year="+statsYears+"&Number="+statsNumber+"&Theme="+statsTheme;}'
           >
             Test
           </button>
@@ -425,6 +440,10 @@
             <br /><br /><strong>
               Number n compares n top and bottom countries.
             </strong>
+            <br /><br />
+            <strong>Theme parameters take six values</strong>
+            <br />• none<br />• fluorescent <br />• light<br />• blackpink
+            <br />• dark<br />• aquamarine
           </label>
         </div>
         <div class="flex-child" v-if="showStatsPage">
@@ -471,11 +490,13 @@
             graphCountries: '["India","China","Brazil"]',
             graphYears: '"2000,2020,2"',
             graphPlot: "bar",
+            graphTheme: "blackpink",
 
             statsUrl: "",
             showStatsPage: false,
             statsNumber: "5",
             statsYears: "2021",
+            statsTheme: "light",
           };
         },
         methods: {},
