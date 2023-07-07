@@ -122,6 +122,12 @@ def test_table_okay(client):
     assert response.status_code == 200
     assert b"China" in response.data
     assert b"1424929800" in response.data
+    response = client.get(
+        "/table?Region=[%22Chin%22]&Year=%222020,2020,1%22&Pivot=Region"
+    )
+    assert response.status_code == 200
+    assert b"China" in response.data
+    assert b"1424929800" in response.data
 
 
 def test_table_method_not_allowed(client):
