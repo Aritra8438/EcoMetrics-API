@@ -191,3 +191,16 @@ def test_graph_invalid_parameter(client):
         b"<p>The Region should either be a string enclosed by quotation or an array"
         in response.data
     )
+
+
+def test_graph_themes(client):
+    """test the themes"""
+    response = client.get('graph?Region=["India"]&Year="2000,2010,1"')
+    assert b"Population vs Year graph" in response.data
+    assert b'"paper_bgcolor":"white"' in response.data
+    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Theme=light')
+    assert b'"paper_bgcolor":"#A6BEBE"' in response.data
+    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Theme=dark')
+    assert b'"paper_bgcolor":"black"' in response.data
+    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Theme=aquamarine')
+    assert b'"paper_bgcolor":"#1E4967"' in response.data
