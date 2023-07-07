@@ -208,3 +208,24 @@ def test_graph_themes(client):
     assert b'"paper_bgcolor":"black"' in response.data
     response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Theme=fluorescent')
     assert b'"paper_bgcolor":"#B2FF00"' in response.data
+
+
+def test_graph_bar(client):
+    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Plot=bar')
+    assert b"Population vs Year bar plot" in response.data
+
+
+def test_stats_okay(client):
+    """test get method and possible param combinations"""
+    response = client.get("/stats?Number=5&Year=2000")
+    assert response.status_code == 200
+    assert b"India" in response.data
+    assert b"Tuvalu" in response.data
+    assert b"Stats pie charts" in response.data
+
+
+def test_stats_method_not_allowed(client):
+    """test other methods which are not allowed"""
+    response = client.post("/stats")
+    assert response.status_code == 405
+    assert b"<title>405 Method Not Allowed</title>" in response.data
