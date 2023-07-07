@@ -15,6 +15,23 @@ def test_home_method_not_allowed(client):
     assert b"<title>405 Method Not Allowed</title>" in response.data
 
 
+def test_documentation_okay(client):
+    """test get method"""
+    response = client.get("/api-documentation")
+    assert response.status_code == 200
+    assert b"<title>API documentation</title>" in response.data
+
+
+def test_documentation_method_not_allowed(client):
+    """test other methods which are not allowed"""
+    response = client.post("/api-documentation")
+    assert response.status_code == 405
+    assert b"<title>405 Method Not Allowed</title>" in response.data
+    response = client.put("/")
+    assert response.status_code == 405
+    assert b"<title>405 Method Not Allowed</title>" in response.data
+
+
 def test_querybuilder_okay(client):
     """test get method"""
     response = client.get("/querybuilder")
@@ -49,6 +66,12 @@ def test_json_okay(client):
     response = client.get('json?Year=[2000]&Region="India"')
     assert response.status_code == 200
     assert b'[{"country":"India","population":1059633660,"year":2000}' in response.data
+    response = client.get('json?Year=[2000]&Region="India"&Pivot=Year')
+    assert response.status_code == 200
+    assert b'[{"2000":[{"India":1059633660}]}]\n' in response.data
+    response = client.get('json?Year=[2000]&Region="India"&Pivot=Region')
+    assert response.status_code == 200
+    assert b'[{"India":[{"2000":1059633660}]}]\n' in response.data
 
 
 def test_json_method_not_allowed(client):
@@ -96,6 +119,12 @@ def test_json_invalid_parameter(client):
 def test_table_okay(client):
     """test get method and possible param combinations"""
     response = client.get("/table?Region=[%22Chin%22]&Year=%222020,2020,1%22")
+    assert response.status_code == 200
+    assert b"China" in response.data
+    assert b"1424929800" in response.data
+    response = client.get(
+        "/table?Region=[%22Chin%22]&Year=%222020,2020,1%22&Pivot=Region"
+    )
     assert response.status_code == 200
     assert b"China" in response.data
     assert b"1424929800" in response.data
@@ -191,3 +220,41 @@ def test_graph_invalid_parameter(client):
         b"<p>The Region should either be a string enclosed by quotation or an array"
         in response.data
     )
+
+
+def test_graph_themes(client):
+    """test the themes"""
+    response = client.get('graph?Region=["India"]&Year="2000,2010,1"')
+    assert b"Population vs Year graph" in response.data
+    assert b'"paper_bgcolor":"white"' in response.data
+    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Theme=light')
+    assert b'"paper_bgcolor":"#A6BEBE"' in response.data
+    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Theme=dark')
+    assert b'"paper_bgcolor":"black"' in response.data
+    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Theme=aquamarine')
+    assert b'"paper_bgcolor":"#1E4967"' in response.data
+    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Theme=blackpink')
+    assert b'"paper_bgcolor":"black"' in response.data
+    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Theme=fluorescent')
+    assert b'"paper_bgcolor":"#B2FF00"' in response.data
+
+
+def test_graph_bar(client):
+    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Plot=bar')
+    assert b"Population vs Year bar plot" in response.data
+
+
+def test_stats_okay(client):
+    """test get method and possible param combinations"""
+    response = client.get("/stats?Number=5&Year=2000")
+    assert response.status_code == 200
+    assert b"India" in response.data
+    assert b"Tuvalu" in response.data
+    assert b"Stats pie charts" in response.data
+
+
+def test_stats_method_not_allowed(client):
+    """test other methods which are not allowed"""
+    response = client.post("/stats")
+    assert response.status_code == 405
+    assert b"<title>405 Method Not Allowed</title>" in response.data

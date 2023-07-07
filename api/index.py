@@ -21,21 +21,21 @@ from .exceptions.custom import MissingParameterException, InvalidParameterExcept
 def home():
     if request.method == "GET":
         return render_template("index.html")
-    return abort("Method not allowed", 405)
+    abort("Method not allowed", 405)
 
 
 @app.route("/api-documentation")
 def documentation():
     if request.method == "GET":
         return render_template("api-documentation.html")
-    return abort("Method not allowed", 405)
+    abort("Method not allowed", 405)
 
 
 @app.route("/querybuilder")
 def build_query():
     if request.method == "GET":
         return render_template("query_builder.html")
-    return abort("Method not allowed", 405)
+    abort("Method not allowed", 405)
 
 
 @app.route("/table")
@@ -70,7 +70,7 @@ def get_table_response():
             return render_template("table_view.html", table=table)
         table = convert_to_table(queryset, years, cities + countries)
         return render_template("table_view.html", table=table)
-    return abort("Method not allowed", 405)
+    abort("Method not allowed", 405)
 
 
 @app.route("/json")
@@ -116,7 +116,7 @@ def get_json_response():
         )
         json_response = serialize_queryset(queryset)
         return jsonify(json_response)
-    return abort("Method not allowed", 405)
+    abort("Method not allowed", 405)
 
 
 @app.route("/graph")
@@ -148,7 +148,7 @@ def get_graph_response():
             return create_bar(plot_dict, user_theme)
         country_year, country_population = convert_to_dicts(queryset)
         return create_scatter(country_year, country_population, user_theme)
-    return abort("Method not allowed", 405)
+    abort("Method not allowed", 405)
 
 
 @app.route("/stats")
@@ -182,7 +182,7 @@ def get_stats_response():
         return create_pie(
             [array1, label1], [array2, label2], num=num, user_theme=user_theme
         )
-    return abort("Method not allowed", 405)
+    abort("Method not allowed", 405)
 
 
 if __name__ == "__main__":
