@@ -41,6 +41,7 @@ def create_bar(plot_dict, user_theme):
         animation_frame="year",
         animation_group="country",
         barmode="group",
+        title="Population vs Year bar plot",
     )
     theme = set_theme(user_theme)
     if theme is not None:
@@ -84,6 +85,8 @@ def create_pie(array_labels1, array_labels2, num, user_theme):
         row=1,
         col=2,
     )
+    layout = go.Layout(title="Stats pie charts")
+    fig.update_layout(layout)
     if theme is not None:
         layout = go.Layout(
             paper_bgcolor=theme["paper_bgcolor"],
