@@ -16,14 +16,14 @@ Hi, everyone. Welcome to this API.
 
 **An API to query population, GDP per capita by years, countries, etc. that returns pretty tables and graphs.**
 
-This API has four main endpoints:
+This API has four primary endpoints:
 - json ( `/json` -> Returns JSON response )
 - table ( `/table` -> Returns table response )
 - graph ( `/graph` -> Returns graph response )
 - stats ( `/stats` -> Returns stats response )
 
 It's a collaborative open-source project Raisa and I did (are doing) as a part of our code submission for the MLH fellowship. 
-We have exposed all of our APIs in our own API documentation. Feel free to test APIs there (You will be able to test it on-screen).
+We have exposed all of our APIs in our API documentation. Feel free to test APIs there (You will be able to try it on-screen).
 
 
 # Website 
@@ -37,7 +37,7 @@ We have exposed all of our APIs in our own API documentation. Feel free to test 
 # Local Development Setup:
 
 **Note**: You don't currently have database access. We will be working on giving read-only access to all the contributors.
-Nevertheless, you can always create your own database and populate it with dummy data. Schema is available in the `models.py`.
+Nevertheless, you can always create your database and populate it with dummy data. Schema is available in the `models.py`.
 
 Open the terminal at the destination folder:
 
@@ -69,4 +69,19 @@ To bring up the server:
 flask --app api/index run --debug
 ```
 
+## Workflows:
+
+The essential APIs are currently unit-tested using ```pytest``` and linted using ```pylint```. If you are contributing to this repo, it's recommended that you run ```pytest``` and ```pylint``` before your pull request.
+
+- Open the project folder and run:
+```console
+# run pytest
+pytest
+
+# run pylint
+pylint $(git ls-files '*.py')
+```
+Alternatively, you can search [Pylint](https://marketplace.visualstudio.com/items?itemName=ms-python.pylint) at the extension marketplace and install the linter. The lint errors will be highlighted if Pylint is installed.
+
+Currently, All the tests are linked to `client` @pytest.fixture, which is in `conftest.py`. If you have made changes to the backend, we recommend adding a pytest for it. 
 
