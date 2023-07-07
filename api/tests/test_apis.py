@@ -49,6 +49,12 @@ def test_json_okay(client):
     response = client.get('json?Year=[2000]&Region="India"')
     assert response.status_code == 200
     assert b'[{"country":"India","population":1059633660,"year":2000}' in response.data
+    response = client.get('json?Year=[2000]&Region="India"&Pivot=Year')
+    assert response.status_code == 200
+    assert b'[{"2000":[{"India":1059633660}]}]\n' in response.data
+    response = client.get('json?Year=[2000]&Region="India"&Pivot=Region')
+    assert response.status_code == 200
+    assert b'[{"India":[{"2000":1059633660}]}]\n' in response.data
 
 
 def test_json_method_not_allowed(client):
