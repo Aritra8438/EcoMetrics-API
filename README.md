@@ -23,7 +23,7 @@ This API has four primary endpoints:
 - stats ( `/stats` -> Returns stats response )
 
 It's a collaborative open-source project Raisa and I did (are doing) as a part of our code submission for the Mercor Hackathon. 
-We have exposed all of our APIs in our API documentation. Feel free to test APIs there (You will be able to try it on-screen).
+We have exposed all of our APIs in our [API documentation](https://eco-metrics-api.vercel.app/api-documentation). Feel free to test APIs there (You will be able to try them on-screen).
 
 # Index 
 To quickly jump to a subsection, 
