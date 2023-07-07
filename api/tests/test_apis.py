@@ -2,7 +2,8 @@ def test_home_okay(client):
     """test get method"""
     response = client.get("/")
     assert response.status_code == 200
-    assert b"<title>Document</title>" in response.data
+    assert b"<title>Homepage</title>" in response.data
+    assert b"Welcome to this API." in response.data
 
 
 def test_home_method_not_allowed(client):
