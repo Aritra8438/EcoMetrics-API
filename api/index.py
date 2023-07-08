@@ -227,5 +227,6 @@ def compare():
         else :
             return create_secondary_plot(comp_dict)
         
+
 if __name__ == "__main__":
     app.run()
