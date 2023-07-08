@@ -184,5 +184,6 @@ def get_stats_response():
         )
     abort("Method not allowed", 405)
 
+
 if __name__ == "__main__":
     app.run()
