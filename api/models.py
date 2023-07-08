@@ -7,3 +7,10 @@ class Population(db.Model):
     country = db.Column(db.String(100))
     year = db.Column(db.Integer)
     population = db.Column(db.BigInteger)
+
+class GDP_per_capita(db.Model):
+    __tablename__ = "gdp_per_capita"
+    id = db.Column(db.Integer, primary_key=True)
+    country = db.Column(db.String(100))
+    year = db.Column(db.Integer)
+    gdp_per_capita = db.Column(db.Numeric)
