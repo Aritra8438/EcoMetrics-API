@@ -3,19 +3,26 @@ import json
 from flask import jsonify, request, render_template, abort
 
 from .database import app
-from .models import Population, GDP_per_capita
+from .models import Population, GDPperCapita
 from .utils.infer_region import countries as country_list
 from .utils.input_serializer import region_input_manager, year_input_manager
-from .utils.output_serializer import serialize_queryset, serialize_pivoted_queryset, serialize_queryset_gdp
+from .utils.output_serializer import serialize_queryset, serialize_pivoted_queryset
 from .utils.queryset_to_structures import (
     convert_to_table,
     convert_to_dicts,
     convert_to_single_dict,
     convert_to_double_lists,
-    dict_compare
+    merge_comparable_querysets,
 )
-from .utils.create_figure import create_bar, create_pie, create_scatter, create_compare_plot, create_secondary_plot
+from .utils.create_figure import (
+    create_bar,
+    create_pie,
+    create_scatter,
+    create_3d_plot,
+    create_plot_with_secondary_axis,
+)
 from .exceptions.custom import MissingParameterException, InvalidParameterException
+
 
 @app.route("/")
 def home():
@@ -41,18 +48,10 @@ def build_query():
 @app.route("/table")
 def get_table_response():
     if request.method == "GET":
-        if "Query_type" not in request.args:
-            raise MissingParameterException("Query_type(population, gdp_per_capita) must be specified :")
         if "Region" not in request.args:
             raise MissingParameterException("Region must be specified in the url")
         if "Year" not in request.args:
             raise MissingParameterException("Year must be specified in the url")
-        try:
-            query_type = json.loads(request.args.get("Query_type"))
-        except json.decoder.JSONDecodeError as json_decode_error:
-            raise InvalidParameterException(
-                "The query_type should either be population or gdp_per_capita"
-            ) from json_decode_error
         try:
             cities, countries = region_input_manager(
                 json.loads(request.args.get("Region"))
@@ -71,7 +70,7 @@ def get_table_response():
         if pivot not in ["Region", "Year"]:
             pivot = "Year"
         queryset = Population.query.filter(
-            Population[query_type].year.in_(years), Population[query_type].country.in_(countries)
+            Population.year.in_(years), Population.country.in_(countries)
         )
         if pivot == "Region":
             table = convert_to_table(queryset, years, cities + countries, 1)
@@ -192,41 +191,41 @@ def get_stats_response():
         )
     abort("Method not allowed", 405)
 
+
 @app.route("/compare")
 def compare():
     if request.method == "GET":
-        try :
-            comp_type = json.loads(request.args.get("Type"))
-        except json.decoder.JSONDecodeError as json_decode_error:
-            raise InvalidParameterException(
-                "Possible values - 3d, 2d"
-            ) from json_decode_error
+        plot_type = json.loads(request.args.get("Type"))
         try:
             years = year_input_manager(json.loads(request.args.get("Year")))
         except json.decoder.JSONDecodeError as json_decode_error:
             raise InvalidParameterException(
                 "The Year should either be a Number, array of number or a string of tuple"
             ) from json_decode_error
-        try: 
+        try:
             _, countries = region_input_manager(json.loads(request.args.get("Region")))
         except json.decoder.JSONDecodeError as json_decode_error:
             raise InvalidParameterException(
                 "The Region should either be a string enclosed by quotation"
             ) from json_decode_error
-        queryset_pop = Population.query.filter(
+        queryset_population = Population.query.filter(
             Population.year.in_(years), Population.country.in_(countries)
         )
-        queryset_gdp = GDP_per_capita.query.filter(
-            GDP_per_capita.year.in_(years), GDP_per_capita.country.in_(countries)
+        queryset_gdp_per_capita = GDPperCapita.query.filter(
+            GDPperCapita.year.in_(years), GDPperCapita.country.in_(countries)
         )
-        json_response_pop = serialize_queryset(queryset_pop)
-        json_response_gdp = serialize_queryset_gdp(queryset_gdp)
-        comp_dict = dict_compare(json_response_pop, json_response_gdp)
-        if comp_type == "3d":
-            return create_compare_plot(comp_dict)
-        else :
-            return create_secondary_plot(comp_dict)
-        
+        json_response_population = serialize_queryset(queryset_population)
+        json_response_gdp_per_capita = serialize_queryset(
+            queryset_gdp_per_capita, database="gdp_per_capita"
+        )
+        merged_dict = merge_comparable_querysets(
+            json_response_population, json_response_gdp_per_capita
+        )
+        if plot_type == "3d":
+            return create_3d_plot(merged_dict)
+        return create_plot_with_secondary_axis(merged_dict)
+    abort("Method not allowed", 405)
+
 
 if __name__ == "__main__":
     app.run()
