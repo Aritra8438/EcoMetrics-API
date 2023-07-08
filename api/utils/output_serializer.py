@@ -1,14 +1,16 @@
 # serialize the queryset to create an array
-def serialize_queryset(queryset):
+def serialize_queryset(queryset, database="population"):
     json_response = []
     for element in queryset:
-        json_response.append(
-            {
-                "country": element.country,
-                "year": element.year,
-                "population": element.population,
-            }
-        )
+        json_to_append = {
+            "country": element.country,
+            "year": element.year,
+        }
+        if database == "population":
+            json_to_append["population"] = element.population
+        else:
+            json_to_append["gdp_per_capita"] = element.gdp_per_capita
+        json_response.append(json_to_append)
     return json_response
 
 

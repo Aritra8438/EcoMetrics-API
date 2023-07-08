@@ -98,6 +98,45 @@ def create_pie(array_labels1, array_labels2, num, user_theme):
     return fig.to_html(full_html=False)
 
 
+def create_3d_plot(merged_dict):
+    fig = px.scatter_3d(
+        merged_dict,
+        x="year",
+        y="GDP per capita",
+        z="population",
+        color="country",
+        hover_data=["country"],
+    )
+    return fig.to_html(full_html=False)
+
+
+def create_plot_with_secondary_axis(merged_dict):
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+    fig.add_trace(
+        go.Scatter(
+            x=merged_dict["year"],
+            y=merged_dict["gdp_per_capita"],
+            name="GDP per capita",
+        ),
+        secondary_y=False,
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=merged_dict["year"], y=merged_dict["population"], name="population"
+        ),
+        secondary_y=True,
+    )
+    fig.update_layout(title_text="Population vs Gdp per capita visualization")
+
+    # Set x-axis title
+    fig.update_xaxes(title_text="year")
+
+    # Set y-axes titles
+    fig.update_yaxes(title_text="Population", secondary_y=False)
+    fig.update_yaxes(title_text="GDP per capita", secondary_y=True)
+    return fig.to_html(full_html=False)
+
+
 def set_theme(user_theme):
     themes = {
         "black_pink": {

@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 from .output_serializer import serialize_queryset
 
 
@@ -90,3 +92,29 @@ def convert_to_single_dict(queryset):
     plot_dict["country"] = countries
     plot_dict["population"] = populations
     return plot_dict
+
+
+def merge_comparable_querysets(queryset_population, queryset_gdp_per_capita):
+    sorted_population_list = sorted(
+        queryset_population, key=itemgetter("year", "country")
+    )
+    sorted_gdp_per_capita_list = sorted(
+        queryset_gdp_per_capita, key=itemgetter("year", "country")
+    )
+    years = []
+    countries = []
+    populations = []
+    gdp_per_capitas = []
+    for idx, element in enumerate(sorted_population_list):
+        print(element)
+        years.append(element["year"])
+        countries.append(element["country"])
+        populations.append(element["population"])
+        gdp_per_capitas.append(sorted_gdp_per_capita_list[idx]["gdp_per_capita"])
+    merged_dict = {
+        "year": years,
+        "country": countries,
+        "population": populations,
+        "gdp_per_capita": gdp_per_capitas,
+    }
+    return merged_dict
