@@ -97,7 +97,34 @@ def create_pie(array_labels1, array_labels2, num, user_theme):
         fig.update_layout(layout)
     return fig.to_html(full_html=False)
 
+def create_compare_plot(comp_dict):
+    fig = px.scatter_3d(comp_dict, x='year', y='gdp_per_capita', z='population', color='country',
+                    hover_data=['country'])
+    return fig.to_html(full_html=False)
 
+def create_secondary_plot(comp_dict):
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+    
+    fig.add_trace(
+    go.Scatter(x=comp_dict['year'], y=(comp_dict['gdp_per_capita']), name="gdp per capita"),
+    secondary_y=False,
+    )
+    fig.add_trace(
+    go.Scatter(x=comp_dict['year'], y=(comp_dict['population']), name="population"),
+    secondary_y=True,
+    )
+    fig.update_layout(
+    title_text="Normalized Population vs Gdp Per capita visualization"
+    )
+
+    # Set x-axis title
+    fig.update_xaxes(title_text="year")
+
+    # Set y-axes titles
+    fig.update_yaxes(title_text="<b>Population</b> ", secondary_y=False)
+    fig.update_yaxes(title_text="<b>GDP per capita</b> ", secondary_y=True)
+    return fig.to_html(full_html=False)
+    
 def set_theme(user_theme):
     themes = {
         "black_pink": {

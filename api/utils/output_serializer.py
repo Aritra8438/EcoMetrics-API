@@ -10,6 +10,19 @@ def serialize_queryset(queryset):
             }
         )
     return json_response
+    
+def serialize_queryset_gdp(queryset):
+    json_response = []
+    for element in queryset:
+        json_response.append(
+            {
+              "country": element.country,
+              "year": element.year,
+              "gdp_per_capita": element.gdp_per_capita,  
+            }
+        )
+    return json_response
+ 
 
 
 def serialize_pivoted_queryset(pivoted_queryset, not_pivot):

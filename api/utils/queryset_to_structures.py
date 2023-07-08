@@ -1,5 +1,5 @@
 from .output_serializer import serialize_queryset
-
+from operator import itemgetter
 
 def transpose_table(table):
     """Function transposes the table"""
@@ -33,8 +33,8 @@ def convert_to_table(queryset, years, regions, pivot=0):
     for element in queryset:
         country = element.country
         year = element.year
-        population = element.population
-        table[year_dict[year]][country_dict[country]] = population
+        table[year_dict[year]][country_dict[country]] = element.population
+          
     if pivot == 1:
         return transpose_table(table)
     return table
@@ -89,4 +89,23 @@ def convert_to_single_dict(queryset):
     plot_dict["year"] = years
     plot_dict["country"] = countries
     plot_dict["population"] = populations
+    return plot_dict
+
+def dict_compare(queryset_pop, queryset_gdp):
+    sorted_pop_list = sorted(queryset_pop, key=itemgetter('year','country'))
+    sorted_gdp_list = sorted(queryset_gdp, key=itemgetter('year','country'))
+    years = []
+    countries = []
+    populations = []
+    gdps = []
+    plot_dict = {}
+    for idx, _ in enumerate(sorted_pop_list):
+        years.append(sorted_pop_list[idx]['year'])
+        countries.append(sorted_pop_list[idx]['country'])
+        populations.append(sorted_pop_list[idx]["population"])
+        gdps.append(sorted_gdp_list[idx]["gdp_per_capita"])
+    plot_dict["year"] = years
+    plot_dict["country"] = countries
+    plot_dict["population"] = populations
+    plot_dict["gdp_per_capita"] = gdps
     return plot_dict
