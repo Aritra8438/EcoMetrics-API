@@ -104,7 +104,6 @@ def create_compare_plot(comp_dict):
 
 def create_secondary_plot(comp_dict):
     fig = make_subplots(specs=[[{"secondary_y": True}]])
-    
     fig.add_trace(
     go.Scatter(x=comp_dict['year'], y=(comp_dict['gdp_per_capita']), name="gdp per capita"),
     secondary_y=False,

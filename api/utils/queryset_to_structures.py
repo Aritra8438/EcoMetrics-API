@@ -1,5 +1,5 @@
-from .output_serializer import serialize_queryset
 from operator import itemgetter
+from .output_serializer import serialize_queryset
 
 def transpose_table(table):
     """Function transposes the table"""
@@ -12,7 +12,7 @@ def transpose_table(table):
     return transposed_table
 
 
-def convert_to_table(queryset, years, regions, pivot=0):
+def convert_to_table(queryset, years, regions, query_type, pivot=0):
     """Converts queryset to table"""
     years.sort()
     regions.sort()
@@ -33,7 +33,10 @@ def convert_to_table(queryset, years, regions, pivot=0):
     for element in queryset:
         country = element.country
         year = element.year
-        table[year_dict[year]][country_dict[country]] = element.population
+        if query_type == "gdp_per_capita":
+            table[year_dict[year]][country_dict[country]] = element.gdp_per_capita
+        else :    
+            table[year_dict[year]][country_dict[country]] = element.population
           
     if pivot == 1:
         return transpose_table(table)
