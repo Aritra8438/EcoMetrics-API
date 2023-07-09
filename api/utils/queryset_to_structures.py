@@ -81,20 +81,18 @@ def convert_to_double_lists(queryset, num, query_type):
 
 
 def convert_to_single_dict(queryset, query_type="population"):
-    years = []
-    countries = []
-    values = []
-    plot_dict = {}
+    plot_dict = {
+        "year" : [],
+        "country" : [],
+        query_type : []
+    }
     for element in queryset:
-        years.append(element.year)
-        countries.append(element.country)
+        plot_dict["year"].append(element.year)
+        plot_dict["country"].append(element.country)
         if query_type == "population":
-            values.append(element.population)
+            plot_dict[query_type].append(element.population)
         else :
-            values.append(element.gdp_per_capita)
-    plot_dict["year"] = years
-    plot_dict["country"] = countries
-    plot_dict[query_type] = values
+            plot_dict[query_type].append(element.gdp_per_capita)
     return plot_dict
 
 
