@@ -256,7 +256,7 @@ def compare():
         )
         json_response_population = serialize_queryset(queryset_population)
         json_response_gdp_per_capita = serialize_queryset(
-            queryset_gdp_per_capita, database="gdp_per_capita"
+            queryset_gdp_per_capita, "gdp_per_capita"
         )
         merged_dict = merge_comparable_querysets(
             json_response_population, json_response_gdp_per_capita
