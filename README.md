@@ -22,10 +22,13 @@ This API has four primary endpoints:
 - graph ( `/graph` -> Returns graph response )
 - stats ( `/stats` -> Returns stats response )
 
-It's a collaborative open-source project Raisa and I did (are doing) as a part of our code submission for the Mercor Hackathon. 
+It's a collaborative open-source project Raisa and I did (are doing) as a part of our code submission to Mercor Hackathon. 
 We have exposed all of our APIs in our [API documentation](https://eco-metrics-api.vercel.app/api-documentation). Feel free to test APIs there (You will be able to try them on-screen).
 
-# Index 
+This API might be (extremely!) slow, as both the backend server (deployed on Vercel) and database (hosted on Railway) are deployed using the free plan.
+Nevertheless, we tried to optimize the database queries to compensate for that (Apologies!).
+
+## Index:
 To quickly jump to a subsection, 
 
 * [Website](https://github.com/Aritra8438/EcoMetrics-API/tree/main#website)                          
@@ -38,8 +41,12 @@ To quickly jump to a subsection,
   
 * [API documentation](https://github.com/Aritra8438/EcoMetrics-API/tree/main#api-documentation)
 
+* [Current works](https://github.com/Aritra8438/EcoMetrics-API/tree/main#current-works)
 
-# Website 
+* [Future plans](https://github.com/Aritra8438/EcoMetrics-API/tree/main#future-plans)
+
+
+## Website:
 <a href="https://eco-metrics-api.vercel.app/"><strong>Our website is live!</strong></a>
 <br>
 - The application is hosted on **Vercel**.
@@ -47,7 +54,7 @@ To quickly jump to a subsection,
 <img width="944" alt="image" src="https://github.com/Aritra8438/EcoMetrics-API/assets/64671908/6c1114cd-803b-4a63-967f-5fa0274a3ebf">
 
 
-# Local Development Setup:
+## Local Development Setup:
 
 **Note**: You don't currently have database access. We will be working on giving read-only access to all the contributors.
 Nevertheless, you can always create your database and populate it with dummy data. Schema is available in the `models.py`.
@@ -163,4 +170,18 @@ All of our APIs are available at [this](https://eco-metrics-api.vercel.app/api-d
 Here is a screenshot of the same.
 
 <img width="960" alt="image" src="https://github.com/Aritra8438/EcoMetrics-API/assets/64671908/17d13fe3-ce00-45fe-a286-a675d52f2a8d">
+Currently, Mathesar supports two aggregation functions (`Distinct list` & `Count`) as transformation steps while summarizing columns. 
+
+## Current works:
+
+- [x] Support for `population` database.
+- [x] Support for effective querying.
+- [x] Support for `GDP per capita` database.
+- [x] Support for comparing data from different databases.
+- [ ] Support for `Annual average temperature` database.
+- [ ] Support for the `Forest Land percentage` database.
+
+## Future plans:
+- [ ] Support for predicting data when input has future years  as input.
+- [ ] Support for extremely user-friendly and customizable graphs.
 
