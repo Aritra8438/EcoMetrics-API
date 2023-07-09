@@ -55,6 +55,24 @@ def test_json_okay(client):
     response = client.get("/json?Region=[%22China%22]&Year=%222020,2020,1%22")
     assert response.status_code == 200
     assert b'[{"country":"China","value":1424929800,"year":2020}]\n' in response.data
+    response = client.get(
+        "/json?Region=[%22China%22]&Year=%222020,2020,1%22&Query_type=gdp_per_capita"
+    )
+    assert response.status_code == 400
+    assert b"<p>We have GDP per capita data upto 2018</p>\n" in response.data
+    response = client.get(
+        "/json?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=gdp_per_capita"
+    )
+    assert response.status_code == 200
+    assert b'{"country":"China","value":"12244","year":2015}' in response.data
+    response = client.get(
+        "/json?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=gdp_per_capita&Pivot=Region"
+    )
+    assert response.status_code == 200
+    response = client.get(
+        "/json?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=gdp_per_capita&Pivot=Year"
+    )
+    assert response.status_code == 200
     response = client.get('/json?Region=["India"]&Year=["2000","2010","1"]')
     assert response.status_code == 200
     assert b'[{"country":"India","value":1059633660,"year":2000}' in response.data
@@ -127,6 +145,14 @@ def test_table_okay(client):
     assert response.status_code == 200
     assert b"China" in response.data
     assert b"1424929800" in response.data
+    response = client.get(
+        "/table?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=gdp_per_capita&Pivot=Region"
+    )
+    assert response.status_code == 200
+    response = client.get(
+        "/table?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=gdp_per_capita&Pivot=Year"
+    )
+    assert response.status_code == 200
 
 
 def test_table_method_not_allowed(client):
@@ -177,6 +203,16 @@ def test_graph_okay(client):
     assert response.status_code == 200
     assert b"China" in response.data
     assert b"1424929800" in response.data
+    response = client.get(
+        "/graph?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=gdp_per_capita"
+    )
+    assert response.status_code == 200
+    response = client.get(
+        "/graph?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=gdp_per_capita"
+    )
+    assert b"China" in response.data
+    assert b"GDP per capita vs Year graph" in response.data
+    assert response.status_code == 200
 
 
 def test_graph_method_not_allowed(client):
@@ -238,11 +274,19 @@ def test_graph_themes(client):
         '/graph?Region=["India"]&Year="2000,2010,1"&Theme=fluorescent'
     )
     assert b'"paper_bgcolor":"#B2FF00"' in response.data
+    response = client.get(
+        '/graph?Region=["China"]&Year=2014&Query_type=gdp_per_capita&Theme=blackpink'
+    )
+    assert b'"paper_bgcolor":"black"' in response.data
 
 
 def test_graph_bar(client):
     response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Plot=bar')
     assert b"Population vs Year bar plot" in response.data
+    response = client.get(
+        '/graph?Region=["India"]&Year="2000,2010,1"&Plot=bar&Query_type=gdp_per_capita'
+    )
+    assert b"GDP per capita vs Year bar plot" in response.data
 
 
 def test_stats_okay(client):
@@ -252,6 +296,10 @@ def test_stats_okay(client):
     assert b"India" in response.data
     assert b"Tuvalu" in response.data
     assert b"Stats pie charts" in response.data
+    response = client.get("/stats?Year=2001&Query_type=gdp_per_capita&Number=5")
+    assert b"Norway" in response.data
+    assert b"Afghanistan" in response.data
+    assert b"Stats pie charts for GDP per capita" in response.data
 
 
 def test_stats_method_not_allowed(client):
