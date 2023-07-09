@@ -102,10 +102,11 @@ def create_3d_plot(merged_dict):
     fig = px.scatter_3d(
         merged_dict,
         x="year",
-        y="GDP per capita",
+        y="gdp_per_capita",
         z="population",
         color="country",
         hover_data=["country"],
+        title="3d plot for country, population and GDP per capita",
     )
     return fig.to_html(full_html=False)
 
@@ -115,18 +116,20 @@ def create_plot_with_secondary_axis(merged_dict):
     fig.add_trace(
         go.Scatter(
             x=merged_dict["year"],
-            y=merged_dict["gdp_per_capita"],
-            name="GDP per capita",
+            y=merged_dict["population"],
+            name="Population",
         ),
         secondary_y=False,
     )
     fig.add_trace(
         go.Scatter(
-            x=merged_dict["year"], y=merged_dict["population"], name="population"
+            x=merged_dict["year"],
+            y=merged_dict["gdp_per_capita"],
+            name="GDP per capita",
         ),
         secondary_y=True,
     )
-    fig.update_layout(title_text="Population vs Gdp per capita visualization")
+    fig.update_layout(title_text="Population vs GDP per capita visualization")
 
     # Set x-axis title
     fig.update_xaxes(title_text="year")
