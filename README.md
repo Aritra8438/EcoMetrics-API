@@ -22,8 +22,11 @@ This API has four primary endpoints:
 - graph ( `/graph` -> Returns graph response )
 - stats ( `/stats` -> Returns stats response )
 
-It's a collaborative open-source project Raisa and I did (are doing) as a part of our code submission for the Mercor Hackathon. 
+It's a collaborative open-source project Raisa and I did (are doing) as a part of our code submission to Mercor Hackathon. 
 We have exposed all of our APIs in our [API documentation](https://eco-metrics-api.vercel.app/api-documentation). Feel free to test APIs there (You will be able to try them on-screen).
+
+This API might be (extremely!) slow, as both the backend server (deployed on Vercel) and database (hosted on Railway) are deployed using the free plan.
+Still, we tried to optimize the database queries to compensate for that (Apologies).
 
 # Index 
 To quickly jump to a subsection, 
