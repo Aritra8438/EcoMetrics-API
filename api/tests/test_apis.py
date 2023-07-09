@@ -54,19 +54,17 @@ def test_json_okay(client):
     """test get method and possible param combinations"""
     response = client.get("/json?Region=[%22China%22]&Year=%222020,2020,1%22")
     assert response.status_code == 200
-    assert (
-        b'[{"country":"China","population":1424929800,"year":2020}]\n' in response.data
-    )
+    assert b'[{"country":"China","value":1424929800,"year":2020}]\n' in response.data
     response = client.get('/json?Region=["India"]&Year=["2000","2010","1"]')
     assert response.status_code == 200
-    assert b'[{"country":"India","population":1059633660,"year":2000}' in response.data
+    assert b'[{"country":"India","value":1059633660,"year":2000}' in response.data
     assert b'year":1' not in response.data
     response = client.get('/json?Region="India"&Year=2000')
     assert response.status_code == 200
-    assert b'[{"country":"India","population":1059633660,"year":2000}' in response.data
+    assert b'[{"country":"India","value":1059633660,"year":2000}' in response.data
     response = client.get('/json?Year=[2000]&Region="India"')
     assert response.status_code == 200
-    assert b'[{"country":"India","population":1059633660,"year":2000}' in response.data
+    assert b'[{"country":"India","value":1059633660,"year":2000}' in response.data
     response = client.get('/json?Year=[2000]&Region="India"&Pivot=Year')
     assert response.status_code == 200
     assert b'[{"2000":[{"India":1059633660}]}]\n' in response.data

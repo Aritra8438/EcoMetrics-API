@@ -1,6 +1,7 @@
 from operator import itemgetter
 from .output_serializer import serialize_queryset
 
+
 def transpose_table(table):
     """Function transposes the table"""
     num_rows = len(table)
@@ -12,7 +13,7 @@ def transpose_table(table):
     return transposed_table
 
 
-def convert_to_table(queryset, years, regions, query_type, pivot=0):
+def convert_to_table(queryset, years, regions, query_type="population", pivot=0):
     """Converts queryset to table"""
     years.sort()
     regions.sort()
@@ -35,9 +36,8 @@ def convert_to_table(queryset, years, regions, query_type, pivot=0):
         year = element.year
         if query_type == "gdp_per_capita":
             table[year_dict[year]][country_dict[country]] = element.gdp_per_capita
-        else :
-            population = element.population
-            table[year_dict[year]][country_dict[country]] = population
+        else:
+            table[year_dict[year]][country_dict[country]] = element.population
     if pivot == 1:
         return transpose_table(table)
     return table
@@ -81,17 +81,13 @@ def convert_to_double_lists(queryset, num, query_type):
 
 
 def convert_to_single_dict(queryset, query_type="population"):
-    plot_dict = {
-        "year" : [],
-        "country" : [],
-        query_type : []
-    }
+    plot_dict = {"year": [], "country": [], query_type: []}
     for element in queryset:
         plot_dict["year"].append(element.year)
         plot_dict["country"].append(element.country)
         if query_type == "population":
             plot_dict[query_type].append(element.population)
-        else :
+        else:
             plot_dict[query_type].append(element.gdp_per_capita)
     return plot_dict
 

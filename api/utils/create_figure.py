@@ -2,18 +2,22 @@ import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
 
-label = {
-    "population":"Population",
-    "gdp_per_capita":"GDP per capita"
+
+QUERY_LABEL_MAPPING = {
+    "population": "Population",
+    "gdp_per_capita": "GDP per capita",
 }
 
-def create_scatter(country_year_dict, country_val_dict, user_theme, query_type="population"):
+
+def create_scatter(
+    country_year_dict, country_val_dict, user_theme, query_type="population"
+):
     fig = go.Figure()
     theme = set_theme(user_theme)
     layout = go.Layout(
-        title=f"{label[query_type]} vs Year graph",
+        title=f"{QUERY_LABEL_MAPPING[query_type]} vs Year graph",
         xaxis={"title": "Year"},
-        yaxis={"title": label[query_type]},
+        yaxis={"title": QUERY_LABEL_MAPPING[query_type]},
     )
     for country in country_year_dict:
         fig.add_trace(
@@ -36,17 +40,17 @@ def create_scatter(country_year_dict, country_val_dict, user_theme, query_type="
     return fig.to_html(full_html=False)
 
 
-def create_bar(plot_dict, user_theme,query_type):
+def create_bar(plot_dict, user_theme, query_type="population"):
     fig = px.bar(
         plot_dict,
         x="country",
-        y=query_type,
+        y=QUERY_LABEL_MAPPING[query_type],
         color="country",
         animation_frame="year",
         animation_group="country",
         barmode="group",
-        title=f"{label[query_type]} vs Year bar plot",
-        labels = {'country': 'Country', query_type: label[query_type]}
+        title=f"{QUERY_LABEL_MAPPING[query_type]} vs Year bar plot",
+        labels={"country": "Country", query_type: QUERY_LABEL_MAPPING[query_type]},
     )
     theme = set_theme(user_theme)
     if theme is not None:
@@ -60,7 +64,7 @@ def create_bar(plot_dict, user_theme,query_type):
     return fig.to_html(full_html=False)
 
 
-def create_pie(array_labels1, array_labels2, num, user_theme, query_type):
+def create_pie(array_labels1, array_labels2, num, user_theme, query_type="population"):
     theme = set_theme(user_theme)
     pie = {"type": "pie"}
     fig = make_subplots(
@@ -90,7 +94,7 @@ def create_pie(array_labels1, array_labels2, num, user_theme, query_type):
         row=1,
         col=2,
     )
-    layout = go.Layout(title=f"Stats pie charts for {label[query_type]}")
+    layout = go.Layout(title=f"Stats pie charts for {QUERY_LABEL_MAPPING[query_type]}")
     fig.update_layout(layout)
     if theme is not None:
         layout = go.Layout(

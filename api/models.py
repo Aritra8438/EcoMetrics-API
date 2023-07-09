@@ -8,6 +8,7 @@ class Population(db.Model):
     year = db.Column(db.Integer)
     population = db.Column(db.BigInteger)
 
+
 class GDPperCapita(db.Model):
     __tablename__ = "gdp_per_capita"
     id = db.Column(db.Integer, primary_key=True)
