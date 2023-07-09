@@ -28,7 +28,7 @@ We have exposed all of our APIs in our [API documentation](https://eco-metrics-a
 This API might be (extremely!) slow, as both the backend server (deployed on Vercel) and database (hosted on Railway) are deployed using the free plan.
 Nevertheless, we tried to optimize the database queries to compensate for that (Apologies!).
 
-# Index 
+## Index:
 To quickly jump to a subsection, 
 
 * [Website](https://github.com/Aritra8438/EcoMetrics-API/tree/main#website)                          
@@ -46,7 +46,7 @@ To quickly jump to a subsection,
 * [Future plans](https://github.com/Aritra8438/EcoMetrics-API/tree/main#future-plans)
 
 
-# Website 
+## Website:
 <a href="https://eco-metrics-api.vercel.app/"><strong>Our website is live!</strong></a>
 <br>
 - The application is hosted on **Vercel**.
@@ -54,7 +54,7 @@ To quickly jump to a subsection,
 <img width="944" alt="image" src="https://github.com/Aritra8438/EcoMetrics-API/assets/64671908/6c1114cd-803b-4a63-967f-5fa0274a3ebf">
 
 
-# Local Development Setup:
+## Local Development Setup:
 
 **Note**: You don't currently have database access. We will be working on giving read-only access to all the contributors.
 Nevertheless, you can always create your database and populate it with dummy data. Schema is available in the `models.py`.
