@@ -44,7 +44,7 @@ def create_bar(plot_dict, user_theme, query_type="population"):
     fig = px.bar(
         plot_dict,
         x="country",
-        y="population",
+        y=query_type,
         color="country",
         animation_frame="year",
         animation_group="country",
