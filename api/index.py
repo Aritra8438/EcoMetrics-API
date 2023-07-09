@@ -123,7 +123,9 @@ def get_json_response():
                     QUERY_MODEL_MAPPING[query_type].country == country,
                 )
                 pivoted_queryset.append((country, queryset))
-            json_response = serialize_pivoted_queryset(pivoted_queryset, "Year")
+            json_response = serialize_pivoted_queryset(
+                pivoted_queryset, "Year", query_type
+            )
             return jsonify(json_response)
         if pivot == "Year":
             pivoted_queryset = []
@@ -133,7 +135,9 @@ def get_json_response():
                     QUERY_MODEL_MAPPING[query_type].year == year,
                 )
                 pivoted_queryset.append((year, queryset))
-            json_response = serialize_pivoted_queryset(pivoted_queryset, "Region")
+            json_response = serialize_pivoted_queryset(
+                pivoted_queryset, "Region", query_type
+            )
             return jsonify(json_response)
         queryset = QUERY_MODEL_MAPPING[query_type].query.filter(
             QUERY_MODEL_MAPPING[query_type].year.in_(years),
