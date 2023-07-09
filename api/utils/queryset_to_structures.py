@@ -106,7 +106,6 @@ def merge_comparable_querysets(queryset_population, queryset_gdp_per_capita):
     populations = []
     gdp_per_capitas = []
     for idx, element in enumerate(sorted_population_list):
-        print(element)
         years.append(element["year"])
         countries.append(element["country"])
         populations.append(element["population"])

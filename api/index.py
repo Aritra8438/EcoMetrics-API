@@ -195,7 +195,10 @@ def get_stats_response():
 @app.route("/compare")
 def compare():
     if request.method == "GET":
-        plot_type = json.loads(request.args.get("Type"))
+        if "Region" not in request.args:
+            raise MissingParameterException("Region must be specified in the url")
+        if "Year" not in request.args:
+            raise MissingParameterException("Year must be specified in the url")
         try:
             years = year_input_manager(json.loads(request.args.get("Year")))
         except json.decoder.JSONDecodeError as json_decode_error:
@@ -206,8 +209,9 @@ def compare():
             _, countries = region_input_manager(json.loads(request.args.get("Region")))
         except json.decoder.JSONDecodeError as json_decode_error:
             raise InvalidParameterException(
-                "The Region should either be a string enclosed by quotation"
+                "The Region should either be a string enclosed by quotation or an array of them"
             ) from json_decode_error
+        plot_type = request.args.get("Type")
         queryset_population = Population.query.filter(
             Population.year.in_(years), Population.country.in_(countries)
         )
@@ -221,9 +225,9 @@ def compare():
         merged_dict = merge_comparable_querysets(
             json_response_population, json_response_gdp_per_capita
         )
-        if plot_type == "3d":
-            return create_3d_plot(merged_dict)
-        return create_plot_with_secondary_axis(merged_dict)
+        if plot_type == "2d":
+            return create_plot_with_secondary_axis(merged_dict)
+        return create_3d_plot(merged_dict)
     abort("Method not allowed", 405)
 
 
