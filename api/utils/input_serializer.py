@@ -38,4 +38,6 @@ def year_input_manager(year_or_tuple_or_array, query_type="population"):
         years = [year_or_tuple_or_array]
     if query_type == "gdp_per_capita" and str(max(years)) > str(2018):
         raise InvalidParameterException("We have GDP per capita data upto 2018")
+    if query_type == "population" and str(max(years)) > str(2021):
+        raise InvalidParameterException("We have population data upto 2021")
     return years
