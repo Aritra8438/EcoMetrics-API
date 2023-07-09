@@ -3,7 +3,7 @@ import json
 from flask import jsonify, request, render_template, abort
 
 from .database import app
-from .models import Population, GDP_per_capita
+from .models import Population, GDPperCapita
 from .utils.infer_region import countries as country_list
 from .utils.input_serializer import region_input_manager, year_input_manager
 from .utils.output_serializer import serialize_queryset, serialize_pivoted_queryset
@@ -12,15 +12,22 @@ from .utils.queryset_to_structures import (
     convert_to_dicts,
     convert_to_single_dict,
     convert_to_double_lists,
-    dict_compare
+    merge_comparable_querysets,
 )
-from .utils.create_figure import create_bar, create_pie, create_scatter, create_compare_plot, create_secondary_plot
+from .utils.create_figure import (
+    create_bar,
+    create_pie,
+    create_scatter,
+    create_3d_plot,
+    create_plot_with_secondary_axis,
+)
 from .exceptions.custom import MissingParameterException, InvalidParameterException
 
 model = {
   "population": Population,
-  "gdp_per_capita" : GDP_per_capita,  
+  "gdp_per_capita" : GDPperCapita,  
 }
+
 
 @app.route("/")
 def home():
@@ -50,7 +57,6 @@ def get_table_response():
             raise MissingParameterException("Region must be specified in the url")
         if "Year" not in request.args:
             raise MissingParameterException("Year must be specified in the url")
-        query_type = request.args.get("Query_type", default="population")
         try:
             cities, countries = region_input_manager(
                 json.loads(request.args.get("Region"))
@@ -59,6 +65,7 @@ def get_table_response():
             raise InvalidParameterException(
                 "The Region should either be a string enclosed by quotation or an array of them"
             ) from json_decode_error
+        query_type = request.args.get("Query_type", default="population")
         try:
             years = year_input_manager(json.loads(request.args.get("Year")), query_type)
         except json.decoder.JSONDecodeError as json_decode_error:
@@ -191,6 +198,7 @@ def get_stats_response():
         )
     abort("Method not allowed", 405)
 
+
 @app.route("/compare")
 def compare():
     if request.method == "GET":
@@ -201,25 +209,30 @@ def compare():
             raise InvalidParameterException(
                 "The Year should either be a Number, array of number or a string of tuple"
             ) from json_decode_error
-        try: 
+        try:
             _, countries = region_input_manager(json.loads(request.args.get("Region")))
         except json.decoder.JSONDecodeError as json_decode_error:
             raise InvalidParameterException(
                 "The Region should either be a string enclosed by quotation"
             ) from json_decode_error
-        queryset_pop = Population.query.filter(
+        queryset_population = Population.query.filter(
             Population.year.in_(years), Population.country.in_(countries)
         )
-        queryset_gdp = GDP_per_capita.query.filter(
-            GDP_per_capita.year.in_(years), GDP_per_capita.country.in_(countries)
+        queryset_gdp_per_capita = GDPperCapita.query.filter(
+            GDPperCapita.year.in_(years), GDPperCapita.country.in_(countries)
         )
-        json_response_pop = serialize_queryset(queryset_pop)
-        json_response_gdp = serialize_queryset(queryset_gdp, "gdp_per_capita")
-        comp_dict = dict_compare(json_response_pop, json_response_gdp)
+        json_response_population = serialize_queryset(queryset_population)
+        json_response_gdp_per_capita = serialize_queryset(
+            queryset_gdp_per_capita, database="gdp_per_capita"
+        )
+        merged_dict = merge_comparable_querysets(
+            json_response_population, json_response_gdp_per_capita
+        )
+
         if comp_type == "3d":
-            return create_compare_plot(comp_dict)
-        elif comp_type == "2d" :
-            return create_secondary_plot(comp_dict)
-        
+            return create_3d_plot(merged_dict)
+        else :
+            return create_plot_with_secondary_axis(merged_dict)
+
 if __name__ == "__main__":
     app.run()

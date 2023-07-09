@@ -1,17 +1,17 @@
 # serialize the queryset to create an array
-def serialize_queryset(queryset, query_type="population"):
+def serialize_queryset(queryset, database="population"):
     json_response = []
     for element in queryset:
         json_response.append(
             {
                 "country": element.country,
                 "year": element.year,
-                "value": element.gdp_per_capita if query_type == "gdp_per_capita"
-                else element.population, 
+                "value": element.gdp_per_capita if database == "gdp_per_capita"
+                else element.population,
             }
         )
     return json_response
-    
+
 def serialize_queryset_gdp(queryset, query_type):
     json_response = []
     for element in queryset:
@@ -20,7 +20,7 @@ def serialize_queryset_gdp(queryset, query_type):
               "country": element.country,
               "year": element.year,
               "gdp_per_capita": element.gdp_per_capita if query_type == "gdp_per_capita"
-                else element.population,  
+                else element.population,
             }
         )
     return json_response

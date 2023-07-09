@@ -35,9 +35,9 @@ def convert_to_table(queryset, years, regions, query_type, pivot=0):
         year = element.year
         if query_type == "gdp_per_capita":
             table[year_dict[year]][country_dict[country]] = element.gdp_per_capita
-        else :    
-            table[year_dict[year]][country_dict[country]] = element.population
-          
+        else :
+            population = element.population
+            table[year_dict[year]][country_dict[country]] = population
     if pivot == 1:
         return transpose_table(table)
     return table
@@ -94,21 +94,28 @@ def convert_to_single_dict(queryset):
     plot_dict["population"] = populations
     return plot_dict
 
-def dict_compare(queryset_pop, queryset_gdp):
-    sorted_pop_list = sorted(queryset_pop, key=itemgetter('year','country'))
-    sorted_gdp_list = sorted(queryset_gdp, key=itemgetter('year','country'))
+
+def merge_comparable_querysets(queryset_population, queryset_gdp_per_capita):
+    sorted_population_list = sorted(
+        queryset_population, key=itemgetter("year", "country")
+    )
+    sorted_gdp_per_capita_list = sorted(
+        queryset_gdp_per_capita, key=itemgetter("year", "country")
+    )
     years = []
     countries = []
     populations = []
-    gdps = []
-    plot_dict = {}
-    for idx, _ in enumerate(sorted_pop_list):
-        years.append(sorted_pop_list[idx]['year'])
-        countries.append(sorted_pop_list[idx]['country'])
-        populations.append(sorted_pop_list[idx]["population"])
-        gdps.append(sorted_gdp_list[idx]["gdp_per_capita"])
-    plot_dict["year"] = years
-    plot_dict["country"] = countries
-    plot_dict["population"] = populations
-    plot_dict["gdp_per_capita"] = gdps
-    return plot_dict
+    gdp_per_capitas = []
+    for idx, element in enumerate(sorted_population_list):
+        print(element)
+        years.append(element["year"])
+        countries.append(element["country"])
+        populations.append(element["value"])
+        gdp_per_capitas.append(sorted_gdp_per_capita_list[idx]["value"])
+    merged_dict = {
+        "year": years,
+        "country": countries,
+        "population": populations,
+        "gdp_per_capita": gdp_per_capitas,
+    }
+    return merged_dict
