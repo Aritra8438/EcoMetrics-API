@@ -38,5 +38,5 @@ def year_input_manager(year_or_tuple_or_array, query_type = "population" ):
     if max(years) > 2018 and query_type == "gdp_per_capita":
         raise InvalidParameterException(
                 "The right hand limit of Year should be less than 2019 "
-            )         
+            )
     return years

@@ -43,30 +43,30 @@ def convert_to_table(queryset, years, regions, query_type, pivot=0):
     return table
 
 
-def convert_to_dicts(queryset):
+def convert_to_dicts(queryset, query_type="population"):
     """Create two dictionaries to store the array corresponding to coutries. Will look like:"""
     # country_year["India"] = [2010, 2011, ...]
-    json_response = serialize_queryset(queryset)
+    json_response = serialize_queryset(queryset, query_type)
     country_year = {}
-    country_population = {}
+    country_value = {}
     for obj in json_response:
         if obj["country"] not in country_year:
             country_year[obj["country"]] = []
-        if obj["country"] not in country_population:
-            country_population[obj["country"]] = []
+        if obj["country"] not in country_value:
+            country_value[obj["country"]] = []
         country_year[obj["country"]].append(int(obj["year"]))
-        country_population[obj["country"]].append(obj["population"])
-    return country_year, country_population
+        country_value[obj["country"]].append(obj["value"])
+    return country_year, country_value
 
 
-def convert_to_double_lists(queryset, num):
-    json_response = serialize_queryset(queryset)
-    population_country_list = []
+def convert_to_double_lists(queryset, num, query_type):
+    json_response = serialize_queryset(queryset, query_type)
+    value_country_list = []
     for obj in json_response:
-        population_country_list.append((obj["population"], obj["country"]))
-    population_country_list.sort(reverse=True)
-    top_num_countries = population_country_list[:num]
-    bottom_num_countries = population_country_list[-num:]
+        value_country_list.append((obj["value"], obj["country"]))
+    value_country_list.sort(reverse=True)
+    top_num_countries = value_country_list[:num]
+    bottom_num_countries = value_country_list[-num:]
     array1 = []
     array2 = []
     label1 = []
@@ -80,18 +80,21 @@ def convert_to_double_lists(queryset, num):
     return array1, label1, array2, label2
 
 
-def convert_to_single_dict(queryset):
+def convert_to_single_dict(queryset, query_type="population"):
     years = []
     countries = []
-    populations = []
+    values = []
     plot_dict = {}
     for element in queryset:
         years.append(element.year)
         countries.append(element.country)
-        populations.append(element.population)
+        if query_type == "population":
+            values.append(element.population)
+        else :
+            values.append(element.gdp_per_capita)
     plot_dict["year"] = years
     plot_dict["country"] = countries
-    plot_dict["population"] = populations
+    plot_dict[query_type] = values
     return plot_dict
 
 
@@ -107,7 +110,6 @@ def merge_comparable_querysets(queryset_population, queryset_gdp_per_capita):
     populations = []
     gdp_per_capitas = []
     for idx, element in enumerate(sorted_population_list):
-        print(element)
         years.append(element["year"])
         countries.append(element["country"])
         populations.append(element["value"])

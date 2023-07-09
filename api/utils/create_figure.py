@@ -2,20 +2,24 @@ import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
 
+label = {
+    "population":"Population",
+    "gdp_per_capita":"GDP per capita"
+}
 
-def create_scatter(country_year_dict, country_pop_dict, user_theme):
+def create_scatter(country_year_dict, country_val_dict, user_theme, query_type="population"):
     fig = go.Figure()
     theme = set_theme(user_theme)
     layout = go.Layout(
-        title="Population vs Year graph",
+        title=f"{label[query_type]} vs Year graph",
         xaxis={"title": "Year"},
-        yaxis={"title": "Population"},
+        yaxis={"title": label[query_type]},
     )
     for country in country_year_dict:
         fig.add_trace(
             go.Scatter(
                 x=country_year_dict[country],
-                y=country_pop_dict[country],
+                y=country_val_dict[country],
                 mode="markers+lines",
                 name=country,
             )
@@ -32,16 +36,17 @@ def create_scatter(country_year_dict, country_pop_dict, user_theme):
     return fig.to_html(full_html=False)
 
 
-def create_bar(plot_dict, user_theme):
+def create_bar(plot_dict, user_theme,query_type):
     fig = px.bar(
         plot_dict,
         x="country",
-        y="population",
+        y=query_type,
         color="country",
         animation_frame="year",
         animation_group="country",
         barmode="group",
-        title="Population vs Year bar plot",
+        title=f"{label[query_type]} vs Year bar plot",
+        labels = {'country': 'Country', query_type: label[query_type]}
     )
     theme = set_theme(user_theme)
     if theme is not None:
@@ -55,7 +60,7 @@ def create_bar(plot_dict, user_theme):
     return fig.to_html(full_html=False)
 
 
-def create_pie(array_labels1, array_labels2, num, user_theme):
+def create_pie(array_labels1, array_labels2, num, user_theme, query_type):
     theme = set_theme(user_theme)
     pie = {"type": "pie"}
     fig = make_subplots(
@@ -85,7 +90,7 @@ def create_pie(array_labels1, array_labels2, num, user_theme):
         row=1,
         col=2,
     )
-    layout = go.Layout(title="Stats pie charts")
+    layout = go.Layout(title=f"Stats pie charts for {label[query_type]}")
     fig.update_layout(layout)
     if theme is not None:
         layout = go.Layout(
@@ -106,6 +111,7 @@ def create_3d_plot(merged_dict):
         z="population",
         color="country",
         hover_data=["country"],
+        title="3d plot for country, population and GDP per capita",
     )
     return fig.to_html(full_html=False)
 
@@ -115,18 +121,20 @@ def create_plot_with_secondary_axis(merged_dict):
     fig.add_trace(
         go.Scatter(
             x=merged_dict["year"],
-            y=merged_dict["gdp_per_capita"],
-            name="GDP per capita",
+            y=merged_dict["population"],
+            name="Population",
         ),
         secondary_y=False,
     )
     fig.add_trace(
         go.Scatter(
-            x=merged_dict["year"], y=merged_dict["population"], name="population"
+            x=merged_dict["year"],
+            y=merged_dict["gdp_per_capita"],
+            name="GDP per capita",
         ),
         secondary_y=True,
     )
-    fig.update_layout(title_text="Population vs Gdp per capita visualization")
+    fig.update_layout(title_text="Population vs GDP per capita visualization")
 
     # Set x-axis title
     fig.update_xaxes(title_text="year")

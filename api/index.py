@@ -65,7 +65,7 @@ def get_table_response():
             raise InvalidParameterException(
                 "The Region should either be a string enclosed by quotation or an array of them"
             ) from json_decode_error
-        query_type = request.args.get("Query_type", default="population")
+        query_type = json.loads(request.args.get("Query_type", default="population"))
         try:
             years = year_input_manager(json.loads(request.args.get("Year")), query_type)
         except json.decoder.JSONDecodeError as json_decode_error:
@@ -93,7 +93,7 @@ def get_json_response():
             raise MissingParameterException("Region must be specified in the url")
         if "Year" not in request.args:
             raise MissingParameterException("Year must be specified in the url")
-        query_type = request.args.get("Query_type", default="population")
+        query_type = json.loads(request.args.get("Query_type", default="population"))
         try:
             _, countries = region_input_manager(json.loads(request.args.get("Region")))
         except json.decoder.JSONDecodeError as json_decode_error:
@@ -140,6 +140,7 @@ def get_graph_response():
             raise MissingParameterException("Region must be specified in the url")
         if "Year" not in request.args:
             raise MissingParameterException("Year must be specified in the url")
+        query_type = json.loads(request.args.get("Query_type", default="population"))
         try:
             _, countries = region_input_manager(json.loads(request.args.get("Region")))
         except json.decoder.JSONDecodeError as json_decode_error:
@@ -154,20 +155,21 @@ def get_graph_response():
             ) from json_decode_error
         plot = request.args.get("Plot")
         user_theme = request.args.get("Theme")
-        queryset = Population.query.filter(
-            Population.year.in_(years), Population.country.in_(countries)
+        queryset = model[query_type].query.filter(
+            model[query_type].year.in_(years), model[query_type].country.in_(countries)
         )
         if plot == "bar":
-            plot_dict = convert_to_single_dict(queryset)
-            return create_bar(plot_dict, user_theme)
-        country_year, country_population = convert_to_dicts(queryset)
-        return create_scatter(country_year, country_population, user_theme)
+            plot_dict = convert_to_single_dict(queryset, query_type)
+            return create_bar(plot_dict, user_theme, query_type)
+        country_year, country_value = convert_to_dicts(queryset, query_type)
+        return create_scatter(country_year, country_value, user_theme, query_type)
     abort("Method not allowed", 405)
 
 
 @app.route("/stats")
 def get_stats_response():
     if request.method == "GET":
+        query_type = json.loads(request.args.get("Query_type", default="population"))
         num = json.loads(request.args.get("Number"))
         user_theme = request.args.get("Theme")
         try:
@@ -176,33 +178,39 @@ def get_stats_response():
             raise InvalidParameterException(
                 "The Year should either be a Number, array of number or a string of tuple"
             ) from json_decode_error
+        order_entity = Population.population
+        if query_type == "gdp_per_capita":
+            order_entity = GDPperCapita.gdp_per_capita
         queryset = (
-            Population.query.filter(
-                Population.year.in_(years), Population.country.in_(country_list)
+            model[query_type].query.filter(
+                model[query_type].year.in_(years), model[query_type].country.in_(country_list)
             )
-            .order_by(Population.population)
+            .order_by(order_entity)
             .limit(num)
             .all()
         )
         queryset += (
-            Population.query.filter(
-                Population.year.in_(years), Population.country.in_(country_list)
+            model[query_type].query.filter(
+                model[query_type].year.in_(years), model[query_type].country.in_(country_list)
             )
-            .order_by(Population.population.desc())
+            .order_by(order_entity.desc())
             .limit(num)
             .all()
         )
-        array1, label1, array2, label2 = convert_to_double_lists(queryset, num)
+        array1, label1, array2, label2 = convert_to_double_lists(queryset, num, query_type)
         return create_pie(
-            [array1, label1], [array2, label2], num=num, user_theme=user_theme
-        )
+            [array1, label1], [array2, label2], num=num, user_theme=user_theme,
+            query_type = query_type)
     abort("Method not allowed", 405)
 
 
 @app.route("/compare")
 def compare():
     if request.method == "GET":
-        comp_type = request.args.get("Comp_type", default = "3d")
+        if "Region" not in request.args:
+            raise MissingParameterException("Region must be specified in the url")
+        if "Year" not in request.args:
+            raise MissingParameterException("Year must be specified in the url")
         try:
             years = year_input_manager(json.loads(request.args.get("Year")), "gdp_per_capita")
         except json.decoder.JSONDecodeError as json_decode_error:
@@ -213,8 +221,9 @@ def compare():
             _, countries = region_input_manager(json.loads(request.args.get("Region")))
         except json.decoder.JSONDecodeError as json_decode_error:
             raise InvalidParameterException(
-                "The Region should either be a string enclosed by quotation"
+                "The Region should either be a string enclosed by quotation or an array of them"
             ) from json_decode_error
+        plot_type = request.args.get("Type")
         queryset_population = Population.query.filter(
             Population.year.in_(years), Population.country.in_(countries)
         )
@@ -228,11 +237,11 @@ def compare():
         merged_dict = merge_comparable_querysets(
             json_response_population, json_response_gdp_per_capita
         )
-
-        if comp_type == "3d":
-            return create_3d_plot(merged_dict)
-        else :
+        if plot_type == "2d":
             return create_plot_with_secondary_axis(merged_dict)
+        return create_3d_plot(merged_dict)
+    abort("Method not allowed", 405)
+
 
 if __name__ == "__main__":
     app.run()
