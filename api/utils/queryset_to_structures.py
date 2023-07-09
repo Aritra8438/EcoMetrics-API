@@ -1,5 +1,4 @@
 from operator import itemgetter
-
 from .output_serializer import serialize_queryset
 
 
@@ -14,7 +13,7 @@ def transpose_table(table):
     return transposed_table
 
 
-def convert_to_table(queryset, years, regions, pivot=0):
+def convert_to_table(queryset, years, regions, query_type="population", pivot=0):
     """Converts queryset to table"""
     years.sort()
     regions.sort()
@@ -35,37 +34,39 @@ def convert_to_table(queryset, years, regions, pivot=0):
     for element in queryset:
         country = element.country
         year = element.year
-        population = element.population
-        table[year_dict[year]][country_dict[country]] = population
+        if query_type == "gdp_per_capita":
+            table[year_dict[year]][country_dict[country]] = element.gdp_per_capita
+        else:
+            table[year_dict[year]][country_dict[country]] = element.population
     if pivot == 1:
         return transpose_table(table)
     return table
 
 
-def convert_to_dicts(queryset):
+def convert_to_dicts(queryset, query_type="population"):
     """Create two dictionaries to store the array corresponding to coutries. Will look like:"""
     # country_year["India"] = [2010, 2011, ...]
-    json_response = serialize_queryset(queryset)
+    json_response = serialize_queryset(queryset, query_type)
     country_year = {}
-    country_population = {}
+    country_value = {}
     for obj in json_response:
         if obj["country"] not in country_year:
             country_year[obj["country"]] = []
-        if obj["country"] not in country_population:
-            country_population[obj["country"]] = []
+        if obj["country"] not in country_value:
+            country_value[obj["country"]] = []
         country_year[obj["country"]].append(int(obj["year"]))
-        country_population[obj["country"]].append(obj["population"])
-    return country_year, country_population
+        country_value[obj["country"]].append(obj["value"])
+    return country_year, country_value
 
 
-def convert_to_double_lists(queryset, num):
-    json_response = serialize_queryset(queryset)
-    population_country_list = []
+def convert_to_double_lists(queryset, num, query_type):
+    json_response = serialize_queryset(queryset, query_type)
+    value_country_list = []
     for obj in json_response:
-        population_country_list.append((obj["population"], obj["country"]))
-    population_country_list.sort(reverse=True)
-    top_num_countries = population_country_list[:num]
-    bottom_num_countries = population_country_list[-num:]
+        value_country_list.append((obj["value"], obj["country"]))
+    value_country_list.sort(reverse=True)
+    top_num_countries = value_country_list[:num]
+    bottom_num_countries = value_country_list[-num:]
     array1 = []
     array2 = []
     label1 = []
@@ -79,18 +80,15 @@ def convert_to_double_lists(queryset, num):
     return array1, label1, array2, label2
 
 
-def convert_to_single_dict(queryset):
-    years = []
-    countries = []
-    populations = []
-    plot_dict = {}
+def convert_to_single_dict(queryset, query_type="population"):
+    plot_dict = {"year": [], "country": [], query_type: []}
     for element in queryset:
-        years.append(element.year)
-        countries.append(element.country)
-        populations.append(element.population)
-    plot_dict["year"] = years
-    plot_dict["country"] = countries
-    plot_dict["population"] = populations
+        plot_dict["year"].append(element.year)
+        plot_dict["country"].append(element.country)
+        if query_type == "population":
+            plot_dict[query_type].append(element.population)
+        else:
+            plot_dict[query_type].append(element.gdp_per_capita)
     return plot_dict
 
 
@@ -108,8 +106,8 @@ def merge_comparable_querysets(queryset_population, queryset_gdp_per_capita):
     for idx, element in enumerate(sorted_population_list):
         years.append(element["year"])
         countries.append(element["country"])
-        populations.append(element["population"])
-        gdp_per_capitas.append(sorted_gdp_per_capita_list[idx]["gdp_per_capita"])
+        populations.append(element["value"])
+        gdp_per_capitas.append(sorted_gdp_per_capita_list[idx]["value"])
     merged_dict = {
         "year": years,
         "country": countries,

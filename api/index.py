@@ -20,8 +20,14 @@ from .utils.create_figure import (
     create_scatter,
     create_3d_plot,
     create_plot_with_secondary_axis,
+    QUERY_LABEL_MAPPING,
 )
 from .exceptions.custom import MissingParameterException, InvalidParameterException
+
+QUERY_MODEL_MAPPING = {
+    "population": Population,
+    "gdp_per_capita": GDPperCapita,
+}
 
 
 @app.route("/")
@@ -60,8 +66,9 @@ def get_table_response():
             raise InvalidParameterException(
                 "The Region should either be a string enclosed by quotation or an array of them"
             ) from json_decode_error
+        query_type = request.args.get("Query_type", default="population")
         try:
-            years = year_input_manager(json.loads(request.args.get("Year")))
+            years = year_input_manager(json.loads(request.args.get("Year")), query_type)
         except json.decoder.JSONDecodeError as json_decode_error:
             raise InvalidParameterException(
                 "The Year should either be a Number, array of number or a string of tuple"
@@ -69,14 +76,21 @@ def get_table_response():
         pivot = request.args.get("Pivot")
         if pivot not in ["Region", "Year"]:
             pivot = "Year"
-        queryset = Population.query.filter(
-            Population.year.in_(years), Population.country.in_(countries)
+        queryset = QUERY_MODEL_MAPPING[query_type].query.filter(
+            QUERY_MODEL_MAPPING[query_type].year.in_(years),
+            QUERY_MODEL_MAPPING[query_type].country.in_(countries),
         )
         if pivot == "Region":
-            table = convert_to_table(queryset, years, cities + countries, 1)
-            return render_template("table_view.html", table=table)
-        table = convert_to_table(queryset, years, cities + countries)
-        return render_template("table_view.html", table=table)
+            table = convert_to_table(queryset, years, cities + countries, query_type, 1)
+            return render_template(
+                "table_view.html",
+                table=table,
+                table_name=QUERY_LABEL_MAPPING[query_type],
+            )
+        table = convert_to_table(queryset, years, cities + countries, query_type)
+        return render_template(
+            "table_view.html", table=table, table_name=QUERY_LABEL_MAPPING[query_type]
+        )
     abort("Method not allowed", 405)
 
 
@@ -87,6 +101,7 @@ def get_json_response():
             raise MissingParameterException("Region must be specified in the url")
         if "Year" not in request.args:
             raise MissingParameterException("Year must be specified in the url")
+        query_type = request.args.get("Query_type", default="population")
         try:
             _, countries = region_input_manager(json.loads(request.args.get("Region")))
         except json.decoder.JSONDecodeError as json_decode_error:
@@ -94,7 +109,7 @@ def get_json_response():
                 "The Region should either be a string enclosed by quotation or an array of them"
             ) from json_decode_error
         try:
-            years = year_input_manager(json.loads(request.args.get("Year")))
+            years = year_input_manager(json.loads(request.args.get("Year")), query_type)
         except json.decoder.JSONDecodeError as json_decode_error:
             raise InvalidParameterException(
                 "The Year should either be a Number, array of number or a string of tuple"
@@ -103,25 +118,32 @@ def get_json_response():
         if pivot == "Region":
             pivoted_queryset = []
             for country in countries:
-                queryset = Population.query.filter(
-                    Population.year.in_(years), Population.country == country
+                queryset = QUERY_MODEL_MAPPING[query_type].query.filter(
+                    QUERY_MODEL_MAPPING[query_type].year.in_(years),
+                    QUERY_MODEL_MAPPING[query_type].country == country,
                 )
                 pivoted_queryset.append((country, queryset))
-            json_response = serialize_pivoted_queryset(pivoted_queryset, "Year")
+            json_response = serialize_pivoted_queryset(
+                pivoted_queryset, "Year", query_type
+            )
             return jsonify(json_response)
         if pivot == "Year":
             pivoted_queryset = []
             for year in years:
-                queryset = Population.query.filter(
-                    Population.country.in_(countries), Population.year == year
+                queryset = QUERY_MODEL_MAPPING[query_type].query.filter(
+                    QUERY_MODEL_MAPPING[query_type].country.in_(countries),
+                    QUERY_MODEL_MAPPING[query_type].year == year,
                 )
                 pivoted_queryset.append((year, queryset))
-            json_response = serialize_pivoted_queryset(pivoted_queryset, "Region")
+            json_response = serialize_pivoted_queryset(
+                pivoted_queryset, "Region", query_type
+            )
             return jsonify(json_response)
-        queryset = Population.query.filter(
-            Population.year.in_(years), Population.country.in_(countries)
+        queryset = QUERY_MODEL_MAPPING[query_type].query.filter(
+            QUERY_MODEL_MAPPING[query_type].year.in_(years),
+            QUERY_MODEL_MAPPING[query_type].country.in_(countries),
         )
-        json_response = serialize_queryset(queryset)
+        json_response = serialize_queryset(queryset, query_type)
         return jsonify(json_response)
     abort("Method not allowed", 405)
 
@@ -133,6 +155,7 @@ def get_graph_response():
             raise MissingParameterException("Region must be specified in the url")
         if "Year" not in request.args:
             raise MissingParameterException("Year must be specified in the url")
+        query_type = request.args.get("Query_type", default="population")
         try:
             _, countries = region_input_manager(json.loads(request.args.get("Region")))
         except json.decoder.JSONDecodeError as json_decode_error:
@@ -147,20 +170,22 @@ def get_graph_response():
             ) from json_decode_error
         plot = request.args.get("Plot")
         user_theme = request.args.get("Theme")
-        queryset = Population.query.filter(
-            Population.year.in_(years), Population.country.in_(countries)
+        queryset = QUERY_MODEL_MAPPING[query_type].query.filter(
+            QUERY_MODEL_MAPPING[query_type].year.in_(years),
+            QUERY_MODEL_MAPPING[query_type].country.in_(countries),
         )
         if plot == "bar":
-            plot_dict = convert_to_single_dict(queryset)
-            return create_bar(plot_dict, user_theme)
-        country_year, country_population = convert_to_dicts(queryset)
-        return create_scatter(country_year, country_population, user_theme)
+            plot_dict = convert_to_single_dict(queryset, query_type)
+            return create_bar(plot_dict, user_theme, query_type)
+        country_year, country_value = convert_to_dicts(queryset, query_type)
+        return create_scatter(country_year, country_value, user_theme, query_type)
     abort("Method not allowed", 405)
 
 
 @app.route("/stats")
 def get_stats_response():
     if request.method == "GET":
+        query_type = request.args.get("Query_type", default="population")
         num = json.loads(request.args.get("Number"))
         user_theme = request.args.get("Theme")
         try:
@@ -169,25 +194,38 @@ def get_stats_response():
             raise InvalidParameterException(
                 "The Year should either be a Number, array of number or a string of tuple"
             ) from json_decode_error
+        order_entity = Population.population
+        if query_type == "gdp_per_capita":
+            order_entity = GDPperCapita.gdp_per_capita
         queryset = (
-            Population.query.filter(
-                Population.year.in_(years), Population.country.in_(country_list)
+            QUERY_MODEL_MAPPING[query_type]
+            .query.filter(
+                QUERY_MODEL_MAPPING[query_type].year.in_(years),
+                QUERY_MODEL_MAPPING[query_type].country.in_(country_list),
             )
-            .order_by(Population.population)
+            .order_by(order_entity)
             .limit(num)
             .all()
         )
         queryset += (
-            Population.query.filter(
-                Population.year.in_(years), Population.country.in_(country_list)
+            QUERY_MODEL_MAPPING[query_type]
+            .query.filter(
+                QUERY_MODEL_MAPPING[query_type].year.in_(years),
+                QUERY_MODEL_MAPPING[query_type].country.in_(country_list),
             )
-            .order_by(Population.population.desc())
+            .order_by(order_entity.desc())
             .limit(num)
             .all()
         )
-        array1, label1, array2, label2 = convert_to_double_lists(queryset, num)
+        array1, label1, array2, label2 = convert_to_double_lists(
+            queryset, num, query_type
+        )
         return create_pie(
-            [array1, label1], [array2, label2], num=num, user_theme=user_theme
+            [array1, label1],
+            [array2, label2],
+            num=num,
+            user_theme=user_theme,
+            query_type=query_type,
         )
     abort("Method not allowed", 405)
 
@@ -200,7 +238,9 @@ def compare():
         if "Year" not in request.args:
             raise MissingParameterException("Year must be specified in the url")
         try:
-            years = year_input_manager(json.loads(request.args.get("Year")))
+            years = year_input_manager(
+                json.loads(request.args.get("Year")), "gdp_per_capita"
+            )
         except json.decoder.JSONDecodeError as json_decode_error:
             raise InvalidParameterException(
                 "The Year should either be a Number, array of number or a string of tuple"
@@ -220,7 +260,7 @@ def compare():
         )
         json_response_population = serialize_queryset(queryset_population)
         json_response_gdp_per_capita = serialize_queryset(
-            queryset_gdp_per_capita, database="gdp_per_capita"
+            queryset_gdp_per_capita, "gdp_per_capita"
         )
         merged_dict = merge_comparable_querysets(
             json_response_population, json_response_gdp_per_capita
