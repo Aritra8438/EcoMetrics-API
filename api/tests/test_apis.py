@@ -28,7 +28,7 @@ def test_documentation_method_not_allowed(client):
     response = client.post("/api-documentation")
     assert response.status_code == 405
     assert b"<title>405 Method Not Allowed</title>" in response.data
-    response = client.put("/")
+    response = client.put("/api-documentation")
     assert response.status_code == 405
     assert b"<title>405 Method Not Allowed</title>" in response.data
 
@@ -57,20 +57,20 @@ def test_json_okay(client):
     assert (
         b'[{"country":"China","population":1424929800,"year":2020}]\n' in response.data
     )
-    response = client.get('json?Region=["India"]&Year=["2000","2010","1"]')
+    response = client.get('/json?Region=["India"]&Year=["2000","2010","1"]')
     assert response.status_code == 200
     assert b'[{"country":"India","population":1059633660,"year":2000}' in response.data
     assert b'year":1' not in response.data
-    response = client.get('json?Region="India"&Year=2000')
+    response = client.get('/json?Region="India"&Year=2000')
     assert response.status_code == 200
     assert b'[{"country":"India","population":1059633660,"year":2000}' in response.data
-    response = client.get('json?Year=[2000]&Region="India"')
+    response = client.get('/json?Year=[2000]&Region="India"')
     assert response.status_code == 200
     assert b'[{"country":"India","population":1059633660,"year":2000}' in response.data
-    response = client.get('json?Year=[2000]&Region="India"&Pivot=Year')
+    response = client.get('/json?Year=[2000]&Region="India"&Pivot=Year')
     assert response.status_code == 200
     assert b'[{"2000":[{"India":1059633660}]}]\n' in response.data
-    response = client.get('json?Year=[2000]&Region="India"&Pivot=Region')
+    response = client.get('/json?Year=[2000]&Region="India"&Pivot=Region')
     assert response.status_code == 200
     assert b'[{"India":[{"2000":1059633660}]}]\n' in response.data
 
@@ -97,19 +97,19 @@ def test_json_missing_parameter(client):
 
 def test_json_invalid_parameter(client):
     """test bad request missing parameters"""
-    response = client.get('json?Region=["India"]&Year="2000,2010,1')
+    response = client.get('/json?Region=["India"]&Year="2000,2010,1')
     assert response.status_code == 400
     assert (
         b"<p>The Year should either be a Number, array of number or a string of tuple"
         in response.data
     )
-    response = client.get('json?Region=[India]&Year="2000,2010,1"')
+    response = client.get('/json?Region=[India]&Year="2000,2010,1"')
     assert response.status_code == 400
     assert (
         b"<p>The Region should either be a string enclosed by quotation or an array"
         in response.data
     )
-    response = client.get('json?Region=India&Year="2000,2010,1')
+    response = client.get('/json?Region=India&Year="2000,2010,1')
     assert response.status_code == 400
     assert (
         b"<p>The Region should either be a string enclosed by quotation or an array"
@@ -153,19 +153,19 @@ def test_table_missing_parameter(client):
 
 def test_table_invalid_parameter(client):
     """test bad request missing parameters"""
-    response = client.get('table?Region=["India"]&Year="2000,2010,1')
+    response = client.get('/table?Region=["India"]&Year="2000,2010,1')
     assert response.status_code == 400
     assert (
         b"<p>The Year should either be a Number, array of number or a string of tuple"
         in response.data
     )
-    response = client.get('table?Region=[India]&Year="2000,2010,1"')
+    response = client.get('/table?Region=[India]&Year="2000,2010,1"')
     assert response.status_code == 400
     assert (
         b"<p>The Region should either be a string enclosed by quotation or an array"
         in response.data
     )
-    response = client.get('table?Region=India&Year="2000,2010,1')
+    response = client.get('/table?Region=India&Year="2000,2010,1')
     assert response.status_code == 400
     assert (
         b"<p>The Region should either be a string enclosed by quotation or an array"
@@ -203,19 +203,19 @@ def test_graph_missing_parameter(client):
 
 def test_graph_invalid_parameter(client):
     """test bad request missing parameters"""
-    response = client.get('graph?Region=["India"]&Year="2000,2010,1')
+    response = client.get('/graph?Region=["India"]&Year="2000,2010,1')
     assert response.status_code == 400
     assert (
         b"<p>The Year should either be a Number, array of number or a string of tuple"
         in response.data
     )
-    response = client.get('graph?Region=[India]&Year="2000,2010,1"')
+    response = client.get('/graph?Region=[India]&Year="2000,2010,1"')
     assert response.status_code == 400
     assert (
         b"<p>The Region should either be a string enclosed by quotation or an array"
         in response.data
     )
-    response = client.get('graph?Region=India&Year="2000,2010,1')
+    response = client.get('/graph?Region=India&Year="2000,2010,1')
     assert response.status_code == 400
     assert (
         b"<p>The Region should either be a string enclosed by quotation or an array"
@@ -225,23 +225,25 @@ def test_graph_invalid_parameter(client):
 
 def test_graph_themes(client):
     """test the themes"""
-    response = client.get('graph?Region=["India"]&Year="2000,2010,1"')
+    response = client.get('/graph?Region=["India"]&Year="2000,2010,1"')
     assert b"Population vs Year graph" in response.data
     assert b'"paper_bgcolor":"white"' in response.data
-    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Theme=light')
+    response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=light')
     assert b'"paper_bgcolor":"#A6BEBE"' in response.data
-    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Theme=dark')
+    response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=dark')
     assert b'"paper_bgcolor":"black"' in response.data
-    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Theme=aquamarine')
+    response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=aquamarine')
     assert b'"paper_bgcolor":"#1E4967"' in response.data
-    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Theme=blackpink')
+    response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=blackpink')
     assert b'"paper_bgcolor":"black"' in response.data
-    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Theme=fluorescent')
+    response = client.get(
+        '/graph?Region=["India"]&Year="2000,2010,1"&Theme=fluorescent'
+    )
     assert b'"paper_bgcolor":"#B2FF00"' in response.data
 
 
 def test_graph_bar(client):
-    response = client.get('graph?Region=["India"]&Year="2000,2010,1"&Plot=bar')
+    response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Plot=bar')
     assert b"Population vs Year bar plot" in response.data
 
 
@@ -259,3 +261,56 @@ def test_stats_method_not_allowed(client):
     response = client.post("/stats")
     assert response.status_code == 405
     assert b"<title>405 Method Not Allowed</title>" in response.data
+
+
+def test_compare_okay(client):
+    """test get method and possible param combinations"""
+    response = client.get('/compare?Year=[2000,2001]&Region=["India","China"]')
+    assert response.status_code == 200
+    assert b"China" in response.data
+    assert b"India" in response.data
+    assert b"3d plot for country, population and GDP per capita" in response.data
+    response = client.get('/compare?Year=[2000,2001]&Region=["India"]&Type=2d')
+    assert response.status_code == 200
+    assert b"Population" in response.data
+    assert b"GDP per capita" in response.data
+    assert b"Population vs GDP per capita visualization" in response.data
+
+
+def test_compare_method_not_allowed(client):
+    """test other methods which are not allowed"""
+    response = client.post("/compare")
+    assert response.status_code == 405
+    assert b"<title>405 Method Not Allowed</title>" in response.data
+
+
+def test_compare_missing_parameter(client):
+    """test bad request missing parameters"""
+    response = client.get("/compare")
+    assert response.status_code == 400
+    assert b"<p>Region must be specified in the url</p>" in response.data
+    response = client.get("/compare?Region=[%22Germany%22,%22China%22,%22India%22]")
+    assert response.status_code == 400
+    assert b"<p>Year must be specified in the url</p>" in response.data
+    response = client.get("/compare?region=[%22Germany%22,%22China%22,%22India%22]")
+    assert response.status_code == 400
+    assert b"<p>Region must be specified in the url</p>" in response.data
+
+
+def test_compare_invalid_parameter(client):
+    """test bad request missing parameters"""
+    response = client.get('/compare?Region=["India"]&Year="2000,2010,1')
+    assert response.status_code == 400
+    assert (
+        b"<p>The Year should either be a Number, array of number or a string of tuple"
+        in response.data
+    )
+    response = client.get('/compare?Region=[India]&Year="2000,2010,1"')
+    assert response.status_code == 400
+    assert (
+        b"The Region should either be a string enclosed by quotation or an array"
+        in response.data
+    )
+    response = client.get('/compare?Region=India&Year="2000,2010,1')
+    assert response.status_code == 400
+    assert b"The Year should either be a Number" in response.data in response.data
