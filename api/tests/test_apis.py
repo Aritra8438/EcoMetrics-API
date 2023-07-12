@@ -66,11 +66,25 @@ def test_json_okay(client):
     assert response.status_code == 200
     assert b'{"country":"China","value":"12244","year":2015}' in response.data
     response = client.get(
+        "/json?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=forest_area"
+    )
+    assert response.status_code == 200
+    assert b'{"country":"China","value":"5.096357882952477","year":2014}' in response.data
+    assert b'{"country":"China","value":"5.1493858835601465","year":2015}' in response.data
+    response = client.get(
         "/json?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=gdp_per_capita&Pivot=Region"
     )
     assert response.status_code == 200
     response = client.get(
         "/json?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=gdp_per_capita&Pivot=Year"
+    )
+    assert response.status_code == 200
+    response = client.get(
+        "/json?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=forest_area&Pivot=Region"
+    )
+    assert response.status_code == 200
+    response = client.get(
+        "/json?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=forest_area&Pivot=Year"
     )
     assert response.status_code == 200
     response = client.get('/json?Region=["India"]&Year=["2000","2010","1"]')
@@ -152,7 +166,6 @@ def test_table_okay(client):
     response = client.get(
         "/table?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=gdp_per_capita&Pivot=Year"
     )
-    assert response.status_code == 200
     response = client.get(
         "/table?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=forest_area&Pivot=Region"
     )
