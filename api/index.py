@@ -3,7 +3,7 @@ import json
 from flask import jsonify, request, render_template, abort
 
 from .database import app
-from .models import Population, GDPperCapita
+from .models import Population, GDPperCapita, ForestArea
 from .utils.infer_region import countries as country_list
 from .utils.input_serializer import region_input_manager, year_input_manager
 from .utils.output_serializer import serialize_queryset, serialize_pivoted_queryset
@@ -27,6 +27,7 @@ from .exceptions.custom import MissingParameterException, InvalidParameterExcept
 QUERY_MODEL_MAPPING = {
     "population": Population,
     "gdp_per_capita": GDPperCapita,
+    "forest_area": ForestArea,
 }
 
 

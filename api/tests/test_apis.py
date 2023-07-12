@@ -153,6 +153,14 @@ def test_table_okay(client):
         "/table?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=gdp_per_capita&Pivot=Year"
     )
     assert response.status_code == 200
+    response = client.get(
+        "/table?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=forest_area&Pivot=Region"
+    )
+    assert response.status_code == 200
+    response = client.get(
+        "/table?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=forest_area&Pivot=Year"
+    )
+    assert response.status_code == 200
 
 
 def test_table_method_not_allowed(client):
