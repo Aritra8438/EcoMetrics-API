@@ -1,6 +1,7 @@
 from api.exceptions.custom import InvalidParameterException
 from . import infer_region
 
+
 # Takes an array or a region, output will be two different arrays of city and country
 # Input "India" => output cities = [], countries = ["India"]
 # Input "Kolkata" => output cities = ["Kolkata"], countries = []
@@ -23,7 +24,7 @@ def region_input_manager(region_or_array):
 # Input 2021 => output [2021]
 # Input [2021,2022] => output [2021,2022]
 # Input "(2001,2011,5)" => output [2001, 2006, 2011]
-def year_input_manager(year_or_tuple_or_array, query_type = "population" ):
+def year_input_manager(year_or_tuple_or_array, query_type="population"):
     years = []
     if isinstance(year_or_tuple_or_array, list):
         years = year_or_tuple_or_array
@@ -35,8 +36,8 @@ def year_input_manager(year_or_tuple_or_array, query_type = "population" ):
         years = list(range(start, stop + 1, step))
     else:
         years = [year_or_tuple_or_array]
-    if max(years) > 2018 and query_type == "gdp_per_capita":
-        raise InvalidParameterException(
-                "The right hand limit of Year should be less than 2019 "
-            )
+    if query_type == "gdp_per_capita" and str(max(years)) > str(2018):
+        raise InvalidParameterException("We have GDP per capita data upto 2018")
+    if query_type == "population" and str(max(years)) > str(2021):
+        raise InvalidParameterException("We have population data upto 2021")
     return years

@@ -2,18 +2,22 @@ import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
 
-label = {
-    "population":"Population",
-    "gdp_per_capita":"GDP per capita"
+
+QUERY_LABEL_MAPPING = {
+    "population": "Population",
+    "gdp_per_capita": "GDP per capita",
 }
 
-def create_scatter(country_year_dict, country_val_dict, user_theme, query_type="population"):
+
+def create_scatter(
+    country_year_dict, country_val_dict, user_theme, query_type="population"
+):
     fig = go.Figure()
     theme = set_theme(user_theme)
     layout = go.Layout(
-        title=f"{label[query_type]} vs Year graph",
+        title=f"{QUERY_LABEL_MAPPING[query_type]} vs Year graph",
         xaxis={"title": "Year"},
-        yaxis={"title": label[query_type]},
+        yaxis={"title": QUERY_LABEL_MAPPING[query_type]},
     )
     for country in country_year_dict:
         fig.add_trace(
@@ -36,7 +40,7 @@ def create_scatter(country_year_dict, country_val_dict, user_theme, query_type="
     return fig.to_html(full_html=False)
 
 
-def create_bar(plot_dict, user_theme,query_type):
+def create_bar(plot_dict, user_theme, query_type="population"):
     fig = px.bar(
         plot_dict,
         x="country",
@@ -45,8 +49,8 @@ def create_bar(plot_dict, user_theme,query_type):
         animation_frame="year",
         animation_group="country",
         barmode="group",
-        title=f"{label[query_type]} vs Year bar plot",
-        labels = {'country': 'Country', query_type: label[query_type]}
+        title=f"{QUERY_LABEL_MAPPING[query_type]} vs Year bar plot",
+        labels={"country": "Country", query_type: QUERY_LABEL_MAPPING[query_type]},
     )
     theme = set_theme(user_theme)
     if theme is not None:
@@ -60,7 +64,7 @@ def create_bar(plot_dict, user_theme,query_type):
     return fig.to_html(full_html=False)
 
 
-def create_pie(array_labels1, array_labels2, num, user_theme, query_type):
+def create_pie(array_labels1, array_labels2, num, user_theme, query_type="population"):
     theme = set_theme(user_theme)
     pie = {"type": "pie"}
     fig = make_subplots(
@@ -90,7 +94,7 @@ def create_pie(array_labels1, array_labels2, num, user_theme, query_type):
         row=1,
         col=2,
     )
-    layout = go.Layout(title=f"Stats pie charts for {label[query_type]}")
+    layout = go.Layout(title=f"Stats pie charts for {QUERY_LABEL_MAPPING[query_type]}")
     fig.update_layout(layout)
     if theme is not None:
         layout = go.Layout(
@@ -103,7 +107,8 @@ def create_pie(array_labels1, array_labels2, num, user_theme, query_type):
     return fig.to_html(full_html=False)
 
 
-def create_3d_plot(merged_dict):
+def create_3d_plot(merged_dict, user_theme):
+    theme = set_theme(user_theme)
     fig = px.scatter_3d(
         merged_dict,
         x="year",
@@ -113,11 +118,20 @@ def create_3d_plot(merged_dict):
         hover_data=["country"],
         title="3d plot for country, population and GDP per capita",
     )
+    if theme is not None:
+        layout = go.Layout(
+            paper_bgcolor=theme["paper_bgcolor"],
+            plot_bgcolor=theme["plot_bgcolor"],
+            font_color=theme["font_color"],
+            title_font_color=theme["title_font_color"],
+        )
+        fig.update_layout(layout)
     return fig.to_html(full_html=False)
 
 
-def create_plot_with_secondary_axis(merged_dict):
+def create_plot_with_secondary_axis(merged_dict, user_theme):
     fig = make_subplots(specs=[[{"secondary_y": True}]])
+    theme = set_theme(user_theme)
     fig.add_trace(
         go.Scatter(
             x=merged_dict["year"],
@@ -134,6 +148,14 @@ def create_plot_with_secondary_axis(merged_dict):
         ),
         secondary_y=True,
     )
+    if theme is not None:
+        layout = go.Layout(
+            paper_bgcolor=theme["paper_bgcolor"],
+            plot_bgcolor=theme["plot_bgcolor"],
+            font_color=theme["font_color"],
+            title_font_color=theme["title_font_color"],
+        )
+        fig.update_layout(layout)
     fig.update_layout(title_text="Population vs GDP per capita visualization")
 
     # Set x-axis title
