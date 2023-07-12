@@ -107,7 +107,8 @@ def create_pie(array_labels1, array_labels2, num, user_theme, query_type="popula
     return fig.to_html(full_html=False)
 
 
-def create_3d_plot(merged_dict):
+def create_3d_plot(merged_dict, user_theme):
+    theme = set_theme(user_theme)
     fig = px.scatter_3d(
         merged_dict,
         x="year",
@@ -117,11 +118,20 @@ def create_3d_plot(merged_dict):
         hover_data=["country"],
         title="3d plot for country, population and GDP per capita",
     )
+    if theme is not None:
+        layout = go.Layout(
+            paper_bgcolor=theme["paper_bgcolor"],
+            plot_bgcolor=theme["plot_bgcolor"],
+            font_color=theme["font_color"],
+            title_font_color=theme["title_font_color"],
+        )
+        fig.update_layout(layout)
     return fig.to_html(full_html=False)
 
 
-def create_plot_with_secondary_axis(merged_dict):
+def create_plot_with_secondary_axis(merged_dict, user_theme):
     fig = make_subplots(specs=[[{"secondary_y": True}]])
+    theme = set_theme(user_theme)
     fig.add_trace(
         go.Scatter(
             x=merged_dict["year"],
@@ -138,6 +148,14 @@ def create_plot_with_secondary_axis(merged_dict):
         ),
         secondary_y=True,
     )
+    if theme is not None:
+        layout = go.Layout(
+            paper_bgcolor=theme["paper_bgcolor"],
+            plot_bgcolor=theme["plot_bgcolor"],
+            font_color=theme["font_color"],
+            title_font_color=theme["title_font_color"],
+        )
+        fig.update_layout(layout)
     fig.update_layout(title_text="Population vs GDP per capita visualization")
 
     # Set x-axis title

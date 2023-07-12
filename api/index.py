@@ -252,6 +252,7 @@ def compare():
                 "The Region should either be a string enclosed by quotation or an array of them"
             ) from json_decode_error
         plot_type = request.args.get("Type")
+        user_theme = request.args.get("Theme")
         queryset_population = Population.query.filter(
             Population.year.in_(years), Population.country.in_(countries)
         )
@@ -266,8 +267,8 @@ def compare():
             json_response_population, json_response_gdp_per_capita
         )
         if plot_type == "2d":
-            return create_plot_with_secondary_axis(merged_dict)
-        return create_3d_plot(merged_dict)
+            return create_plot_with_secondary_axis(merged_dict, user_theme)
+        return create_3d_plot(merged_dict, user_theme)
     abort("Method not allowed", 405)
 
 
