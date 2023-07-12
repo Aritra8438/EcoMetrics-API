@@ -368,16 +368,21 @@ def test_compare_3d_themes(client):
     assert b'"paper_bgcolor":"white"' in response.data
     response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=light')
     assert b'"paper_bgcolor":"#A6BEBE"' in response.data
+    assert b'"plot_bgcolor":"#BDD0D0"' in response.data
     response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=dark')
     assert b'"paper_bgcolor":"black"' in response.data
+    assert b'"plot_bgcolor":"#383C3C"' in response.data
     response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=aquamarine')
     assert b'"paper_bgcolor":"#1E4967"' in response.data
+    assert b'"plot_bgcolor":"#ADD3EC"' in response.data
     response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=blackpink')
     assert b'"paper_bgcolor":"black"' in response.data
+    assert b'"plot_bgcolor":"pink"' in response.data
     response = client.get(
         '/graph?Region=["India"]&Year="2000,2010,1"&Theme=fluorescent'
     )
     assert b'"paper_bgcolor":"#B2FF00"' in response.data
+    assert b'"plot_bgcolor":"#D0FC77"' in response.data
     response = client.get(
         '/graph?Region=["China"]&Year=2014&Query_type=gdp_per_capita&Theme=blackpink'
     )
@@ -390,16 +395,21 @@ def test_compare_2d_themes(client):
     assert b'"paper_bgcolor":"white"' in response.data
     response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=light')
     assert b'"paper_bgcolor":"#A6BEBE"' in response.data
+    assert b'"plot_bgcolor":"#BDD0D0"' in response.data
     response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=dark')
     assert b'"paper_bgcolor":"black"' in response.data
+    assert b'"plot_bgcolor":"#383C3C"' in response.data
     response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=aquamarine')
     assert b'"paper_bgcolor":"#1E4967"' in response.data
+    assert b'"plot_bgcolor":"#ADD3EC"' in response.data
     response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=blackpink')
     assert b'"paper_bgcolor":"black"' in response.data
+    assert b'"plot_bgcolor":"pink"' in response.data
     response = client.get(
         '/graph?Region=["India"]&Year="2000,2010,1"&Theme=fluorescent'
     )
     assert b'"paper_bgcolor":"#B2FF00"' in response.data
+    assert b'"plot_bgcolor":"#D0FC77"' in response.data
     response = client.get(
         '/graph?Region=["China"]&Year=2014&Query_type=gdp_per_capita&Theme=blackpink'
     )
