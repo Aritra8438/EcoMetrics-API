@@ -366,25 +366,25 @@ def test_compare_3d_themes(client):
     response = client.get('/compare?Region=["India"]&Year="2000,2010,1"')
     assert b"3d plot for country, population and GDP per capita" in response.data
     assert b'"paper_bgcolor":"white"' in response.data
-    response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=light')
+    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Theme=light')
     assert b'"paper_bgcolor":"#A6BEBE"' in response.data
     assert b'"plot_bgcolor":"#BDD0D0"' in response.data
-    response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=dark')
+    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Theme=dark')
     assert b'"paper_bgcolor":"black"' in response.data
     assert b'"plot_bgcolor":"#383C3C"' in response.data
-    response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=aquamarine')
+    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Theme=aquamarine')
     assert b'"paper_bgcolor":"#1E4967"' in response.data
     assert b'"plot_bgcolor":"#ADD3EC"' in response.data
-    response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=blackpink')
+    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Theme=blackpink')
     assert b'"paper_bgcolor":"black"' in response.data
     assert b'"plot_bgcolor":"pink"' in response.data
     response = client.get(
-        '/graph?Region=["India"]&Year="2000,2010,1"&Theme=fluorescent'
+        '/compare?Region=["India"]&Year="2000,2010,1"&Theme=fluorescent'
     )
     assert b'"paper_bgcolor":"#B2FF00"' in response.data
     assert b'"plot_bgcolor":"#D0FC77"' in response.data
     response = client.get(
-        '/graph?Region=["China"]&Year=2014&Query_type=gdp_per_capita&Theme=blackpink'
+        '/compare?Region=["China"]&Year=2014&Query_type=gdp_per_capita&Theme=blackpink'
     )
     assert b'"paper_bgcolor":"black"' in response.data
 
@@ -393,24 +393,24 @@ def test_compare_2d_themes(client):
     response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Type=2d')
     assert b"Population vs GDP per capita visualization" in response.data
     assert b'"paper_bgcolor":"white"' in response.data
-    response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=light')
+    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Type=2d&Theme=light')
     assert b'"paper_bgcolor":"#A6BEBE"' in response.data
     assert b'"plot_bgcolor":"#BDD0D0"' in response.data
-    response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=dark')
+    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Type=2d&Theme=dark')
     assert b'"paper_bgcolor":"black"' in response.data
     assert b'"plot_bgcolor":"#383C3C"' in response.data
-    response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=aquamarine')
+    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Type=2d&Theme=aquamarine')
     assert b'"paper_bgcolor":"#1E4967"' in response.data
     assert b'"plot_bgcolor":"#ADD3EC"' in response.data
-    response = client.get('/graph?Region=["India"]&Year="2000,2010,1"&Theme=blackpink')
+    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Type=2d&Theme=blackpink')
     assert b'"paper_bgcolor":"black"' in response.data
     assert b'"plot_bgcolor":"pink"' in response.data
     response = client.get(
-        '/graph?Region=["India"]&Year="2000,2010,1"&Theme=fluorescent'
+        '/compare?Region=["India"]&Year="2000,2010,1"&Type=2d&Theme=fluorescent'
     )
     assert b'"paper_bgcolor":"#B2FF00"' in response.data
     assert b'"plot_bgcolor":"#D0FC77"' in response.data
     response = client.get(
-        '/graph?Region=["China"]&Year=2014&Query_type=gdp_per_capita&Theme=blackpink'
+        '/compare?Region=["China"]&Year="2000,2010,1"&Type=2d&Theme=blackpink'
     )
     assert b'"paper_bgcolor":"black"' in response.data
