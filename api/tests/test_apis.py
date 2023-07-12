@@ -404,4 +404,3 @@ def test_compare_2d_themes(client):
         '/graph?Region=["China"]&Year=2014&Query_type=gdp_per_capita&Theme=blackpink'
     )
     assert b'"paper_bgcolor":"black"' in response.data
-

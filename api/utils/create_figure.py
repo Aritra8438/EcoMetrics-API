@@ -121,7 +121,6 @@ def create_3d_plot(merged_dict, user_theme):
     if theme is not None:
         layout = go.Layout(
             paper_bgcolor=theme["paper_bgcolor"],
-            
             gridcolor=theme["plot_bgcolor"],
             font_color=theme["font_color"],
             title_font_color=theme["title_font_color"],
@@ -212,11 +211,3 @@ def set_theme(user_theme):
     if user_theme == "blackpink":
         return themes["black_pink"]
     return None
-
-def set_bgcolor(bg_color = "rgb(20, 20, 20)",
-                grid_color="rgb(150, 150, 150)", 
-                zeroline=False):
-    return dict(showbackground=True,
-                backgroundcolor=bg_color,
-                gridcolor=grid_color,
-                zeroline=zeroline)
