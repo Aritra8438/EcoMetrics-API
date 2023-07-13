@@ -206,7 +206,7 @@ def get_stats_response():
         order_entity = Population.population
         if query_type == "gdp_per_capita":
             order_entity = GDPperCapita.gdp_per_capita
-        if query_type == "forest_area":
+        elif query_type == "forest_area":
             order_entity = ForestArea.forest_area
         queryset = (
             QUERY_MODEL_MAPPING[query_type]

@@ -321,6 +321,12 @@ def test_stats_okay(client):
     assert b"Norway" in response.data
     assert b"Afghanistan" in response.data
     assert b"Stats pie charts for GDP per capita" in response.data
+    response = client.get("/stats?Year=2001&Query_type=forest_area&Number=5")
+    assert b"Russia" in response.data
+    assert b"Brazil" in response.data
+    assert b"Bahrain" in response.data
+    assert b"Malta" in response.data
+    assert b"Stats pie charts for Forest Area Percentage" in response.data
 
 
 def test_stats_method_not_allowed(client):
