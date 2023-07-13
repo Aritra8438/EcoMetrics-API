@@ -6,6 +6,7 @@ from plotly.subplots import make_subplots
 QUERY_LABEL_MAPPING = {
     "population": "Population",
     "gdp_per_capita": "GDP per capita",
+    "forest_area": "Forest Area Percentage"
 }
 
 

@@ -66,11 +66,25 @@ def test_json_okay(client):
     assert response.status_code == 200
     assert b'{"country":"China","value":"12244","year":2015}' in response.data
     response = client.get(
+        "/json?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=forest_area"
+    )
+    assert response.status_code == 200
+    assert b'{"country":"China","value":"5.096357882952477","year":2014}' in response.data
+    assert b'{"country":"China","value":"5.1493858835601465","year":2015}' in response.data
+    response = client.get(
         "/json?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=gdp_per_capita&Pivot=Region"
     )
     assert response.status_code == 200
     response = client.get(
         "/json?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=gdp_per_capita&Pivot=Year"
+    )
+    assert response.status_code == 200
+    response = client.get(
+        "/json?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=forest_area&Pivot=Region"
+    )
+    assert response.status_code == 200
+    response = client.get(
+        "/json?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=forest_area&Pivot=Year"
     )
     assert response.status_code == 200
     response = client.get('/json?Region=["India"]&Year=["2000","2010","1"]')
@@ -151,6 +165,13 @@ def test_table_okay(client):
     assert response.status_code == 200
     response = client.get(
         "/table?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=gdp_per_capita&Pivot=Year"
+    )
+    response = client.get(
+        "/table?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=forest_area&Pivot=Region"
+    )
+    assert response.status_code == 200
+    response = client.get(
+        "/table?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=forest_area&Pivot=Year"
     )
     assert response.status_code == 200
 
@@ -300,6 +321,12 @@ def test_stats_okay(client):
     assert b"Norway" in response.data
     assert b"Afghanistan" in response.data
     assert b"Stats pie charts for GDP per capita" in response.data
+    response = client.get("/stats?Year=2001&Query_type=forest_area&Number=5")
+    assert b"Russia" in response.data
+    assert b"Brazil" in response.data
+    assert b"Bahrain" in response.data
+    assert b"Malta" in response.data
+    assert b"Stats pie charts for Forest Area Percentage" in response.data
 
 
 def test_stats_method_not_allowed(client):
@@ -308,6 +335,26 @@ def test_stats_method_not_allowed(client):
     assert response.status_code == 405
     assert b"<title>405 Method Not Allowed</title>" in response.data
 
+def test_stats_method_invalid_parameters(client):
+    """test bad request missing parameters"""
+    response = client.get("/stats?Year=2000")
+    assert response.status_code == 400
+    assert b"<p>Number of comparables must be specified in the url</p>" in response.data
+    response = client.get("/stats?Number=5")
+    assert response.status_code == 400
+    assert b"<p>Year must be specified in the url</p>" in response.data
+
+
+def test_stats_invalid_parameter(client):
+    response = client.get("/stats?Number=5&Year=2021&Query_type=forest_area")
+    assert response.status_code == 400
+    assert b"<p>We have Forest area percentage data upto 2020</p>" in response.data
+    response = client.get("/stats?Number=5&Year=2021&Query_type=gdp_per_capita")
+    assert response.status_code == 400
+    assert b"<p>We have GDP per capita data upto 2018</p>" in response.data
+    response = client.get("/stats?Number=5&Year=2022")
+    assert response.status_code == 400
+    assert b"<p>We have population data upto 2021</p>" in response.data
 
 def test_compare_okay(client):
     """test get method and possible param combinations"""

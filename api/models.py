@@ -15,3 +15,10 @@ class GDPperCapita(db.Model):
     country = db.Column(db.String(100))
     year = db.Column(db.Integer)
     gdp_per_capita = db.Column(db.Numeric)
+
+class ForestArea(db.Model):
+    __tablename__ = "forest_area_percentage"
+    id = db.Column(db.Integer, primary_key=True)
+    country = db.Column(db.String(100))
+    year = db.Column(db.Integer)
+    forest_area = db.Column(db.Numeric)

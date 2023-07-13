@@ -36,6 +36,8 @@ def convert_to_table(queryset, years, regions, query_type="population", pivot=0)
         year = element.year
         if query_type == "gdp_per_capita":
             table[year_dict[year]][country_dict[country]] = element.gdp_per_capita
+        elif query_type == "forest_area":
+            table[year_dict[year]][country_dict[country]] = element.forest_area
         else:
             table[year_dict[year]][country_dict[country]] = element.population
     if pivot == 1:
