@@ -108,16 +108,18 @@ def create_pie(array_labels1, array_labels2, num, user_theme, query_type="popula
     return fig.to_html(full_html=False)
 
 
-def create_3d_plot(merged_dict, user_theme):
+def create_3d_plot(merged_dict, user_theme,
+                   parameter1_type, parameter2_type):
     theme = set_theme(user_theme)
     fig = px.scatter_3d(
         merged_dict,
         x="year",
-        y="gdp_per_capita",
-        z="population",
+        y=QUERY_LABEL_MAPPING[parameter1_type],
+        z=QUERY_LABEL_MAPPING[parameter2_type],
         color="country",
         hover_data=["country"],
-        title="3d plot for country, population and GDP per capita",
+        title=f"3d plot for country, {QUERY_LABEL_MAPPING[parameter1_type]} and "
+        +f"{QUERY_LABEL_MAPPING[parameter2_type]}",
     )
     if theme is not None:
         layout = go.Layout(
@@ -130,22 +132,23 @@ def create_3d_plot(merged_dict, user_theme):
     return fig.to_html(full_html=False)
 
 
-def create_plot_with_secondary_axis(merged_dict, user_theme):
+def create_plot_with_secondary_axis(merged_dict, user_theme,
+                                    parameter1_type, parameter2_type):
     fig = make_subplots(specs=[[{"secondary_y": True}]])
     theme = set_theme(user_theme)
     fig.add_trace(
         go.Scatter(
             x=merged_dict["year"],
-            y=merged_dict["population"],
-            name="Population",
+            y=merged_dict[QUERY_LABEL_MAPPING[parameter1_type]],
+            name=QUERY_LABEL_MAPPING[parameter1_type],
         ),
         secondary_y=False,
     )
     fig.add_trace(
         go.Scatter(
             x=merged_dict["year"],
-            y=merged_dict["gdp_per_capita"],
-            name="GDP per capita",
+            y=merged_dict[QUERY_LABEL_MAPPING[parameter2_type]],
+            name=QUERY_LABEL_MAPPING[parameter2_type],
         ),
         secondary_y=True,
     )
@@ -157,7 +160,8 @@ def create_plot_with_secondary_axis(merged_dict, user_theme):
             title_font_color=theme["title_font_color"],
         )
         fig.update_layout(layout)
-    fig.update_layout(title_text="Population vs GDP per capita visualization")
+    fig.update_layout(title_text=f"{QUERY_LABEL_MAPPING[parameter1_type]} vs "
+                    +  f"{QUERY_LABEL_MAPPING[parameter2_type]} visualization")
 
     # Set x-axis title
     fig.update_xaxes(title_text="year")

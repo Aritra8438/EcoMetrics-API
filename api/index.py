@@ -5,7 +5,11 @@ from flask import jsonify, request, render_template, abort
 from .database import app
 from .models import Population, GDPperCapita, ForestArea
 from .utils.infer_region import countries as country_list
-from .utils.input_serializer import region_input_manager, year_input_manager
+from .utils.input_serializer import (
+    region_input_manager,
+    year_input_manager,
+    compare_input_manager
+)
 from .utils.output_serializer import serialize_queryset, serialize_pivoted_queryset
 from .utils.queryset_to_structures import (
     convert_to_table,
@@ -249,6 +253,13 @@ def compare():
         if "Year" not in request.args:
             raise MissingParameterException("Year must be specified in the url")
         try:
+            [first_parameter, second_parameter] = compare_input_manager(
+                json.loads(request.args.get("Compare")))
+        except json.decoder.JSONDecodeError as json_decode_error:
+            raise InvalidParameterException(
+                "The Comparison parameters should either be an array or a string of tuple"
+            ) from json_decode_error
+        try:
             years = year_input_manager(
                 json.loads(request.args.get("Year")), "gdp_per_capita"
             )
@@ -264,22 +275,26 @@ def compare():
             ) from json_decode_error
         plot_type = request.args.get("Type")
         user_theme = request.args.get("Theme")
-        queryset_population = Population.query.filter(
-            Population.year.in_(years), Population.country.in_(countries)
+        queryset_param1 = QUERY_MODEL_MAPPING[first_parameter].query.filter(
+            QUERY_MODEL_MAPPING[first_parameter].year.in_(years),
+            QUERY_MODEL_MAPPING[first_parameter].country.in_(countries)
         )
-        queryset_gdp_per_capita = GDPperCapita.query.filter(
-            GDPperCapita.year.in_(years), GDPperCapita.country.in_(countries)
+        queryset_param2 = QUERY_MODEL_MAPPING[second_parameter].query.filter(
+            QUERY_MODEL_MAPPING[second_parameter].year.in_(years),
+            QUERY_MODEL_MAPPING[second_parameter].country.in_(countries)
         )
-        json_response_population = serialize_queryset(queryset_population)
-        json_response_gdp_per_capita = serialize_queryset(
-            queryset_gdp_per_capita, "gdp_per_capita"
+        json_response_parameter1 = serialize_queryset(queryset_param1, first_parameter)
+        json_response_parameter2 = serialize_queryset(
+            queryset_param2, second_parameter
         )
         merged_dict = merge_comparable_querysets(
-            json_response_population, json_response_gdp_per_capita
+            json_response_parameter1, json_response_parameter2,
+            first_parameter, second_parameter
         )
         if plot_type == "2d":
-            return create_plot_with_secondary_axis(merged_dict, user_theme)
-        return create_3d_plot(merged_dict, user_theme)
+            return create_plot_with_secondary_axis(merged_dict, user_theme,
+                                                   first_parameter, second_parameter)
+        return create_3d_plot(merged_dict, user_theme, first_parameter, second_parameter)
     abort("Method not allowed", 405)
 
 

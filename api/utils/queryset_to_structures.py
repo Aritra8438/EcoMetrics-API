@@ -1,6 +1,6 @@
 from operator import itemgetter
 from .output_serializer import serialize_queryset
-
+from .create_figure import QUERY_LABEL_MAPPING
 
 def transpose_table(table):
     """Function transposes the table"""
@@ -94,7 +94,8 @@ def convert_to_single_dict(queryset, query_type="population"):
     return plot_dict
 
 
-def merge_comparable_querysets(queryset_population, queryset_gdp_per_capita):
+def merge_comparable_querysets(queryset_population, queryset_gdp_per_capita,
+                               parameter1_type, parameter2_type):
     sorted_population_list = sorted(
         queryset_population, key=itemgetter("year", "country")
     )
@@ -103,17 +104,17 @@ def merge_comparable_querysets(queryset_population, queryset_gdp_per_capita):
     )
     years = []
     countries = []
-    populations = []
-    gdp_per_capitas = []
+    parameter1 = []
+    parameter2 = []
     for idx, element in enumerate(sorted_population_list):
         years.append(element["year"])
         countries.append(element["country"])
-        populations.append(element["value"])
-        gdp_per_capitas.append(sorted_gdp_per_capita_list[idx]["value"])
+        parameter1.append(element["value"])
+        parameter2.append(sorted_gdp_per_capita_list[idx]["value"])
     merged_dict = {
         "year": years,
         "country": countries,
-        "population": populations,
-        "gdp_per_capita": gdp_per_capitas,
+        QUERY_LABEL_MAPPING[parameter1_type]: parameter1,
+        QUERY_LABEL_MAPPING[parameter2_type]: parameter2,
     }
     return merged_dict
