@@ -335,6 +335,26 @@ def test_stats_method_not_allowed(client):
     assert response.status_code == 405
     assert b"<title>405 Method Not Allowed</title>" in response.data
 
+def test_stats_method_invalid_parameters(client):
+    """test bad request missing parameters"""
+    response = client.get("/stats?Year=2000")
+    assert response.status_code == 400
+    assert b"<p>Number of comparables must be specified in the url</p>" in response.data
+    response = client.get("/stats?Number=5")
+    assert response.status_code == 400
+    assert b"<p>Year must be specified in the url</p>" in response.data
+
+
+def test_stats_invalid_parameter(client):
+    response = client.get("/stats?Number=5&Year=2021&Query_type=forest_area")
+    assert response.status_code == 400
+    assert b"<p>We have Forest area percentage data upto 2020</p>" in response.data
+    response = client.get("/stats?Number=5&Year=2021&Query_type=gdp_per_capita")
+    assert response.status_code == 400
+    assert b"<p>We have GDP per capita data upto 2018</p>" in response.data
+    response = client.get("/stats?Number=5&Year=2022")
+    assert response.status_code == 400
+    assert b"<p>We have population data upto 2021</p>" in response.data
 
 def test_compare_okay(client):
     """test get method and possible param combinations"""
