@@ -164,7 +164,7 @@ def get_graph_response():
                 "The Region should either be a string enclosed by quotation or an array of them"
             ) from json_decode_error
         try:
-            years = year_input_manager(json.loads(request.args.get("Year")))
+            years = year_input_manager(json.loads(request.args.get("Year")), query_type)
         except json.decoder.JSONDecodeError as json_decode_error:
             raise InvalidParameterException(
                 "The Year should either be a Number, array of number or a string of tuple"
@@ -186,11 +186,19 @@ def get_graph_response():
 @app.route("/stats")
 def get_stats_response():
     if request.method == "GET":
+        if "Number" not in request.args:
+            raise MissingParameterException(
+                "Number of comparables must be specified in the url"
+            )
+        if "Year" not in request.args:
+            raise MissingParameterException("Year must be specified in the url")
         query_type = request.args.get("Query_type", default="population")
         num = json.loads(request.args.get("Number"))
         user_theme = request.args.get("Theme")
         try:
-            years = year_input_manager(json.loads(request.args.get("Year")))[:1]
+            years = year_input_manager(
+                json.loads(request.args.get("Year")), query_type
+            )[:1]
         except json.decoder.JSONDecodeError as json_decode_error:
             raise InvalidParameterException(
                 "The Year should either be a Number, array of number or a string of tuple"
@@ -198,6 +206,8 @@ def get_stats_response():
         order_entity = Population.population
         if query_type == "gdp_per_capita":
             order_entity = GDPperCapita.gdp_per_capita
+        if query_type == "forest_area":
+            order_entity = ForestArea.forest_area
         queryset = (
             QUERY_MODEL_MAPPING[query_type]
             .query.filter(

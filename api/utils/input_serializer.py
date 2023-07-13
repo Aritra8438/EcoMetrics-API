@@ -36,6 +36,8 @@ def year_input_manager(year_or_tuple_or_array, query_type="population"):
         years = list(range(start, stop + 1, step))
     else:
         years = [year_or_tuple_or_array]
+    if query_type == "forest_area" and str(max(years)) > str(2020):
+        raise InvalidParameterException("We have Forest area percentage data upto 2018")
     if query_type == "gdp_per_capita" and str(max(years)) > str(2018):
         raise InvalidParameterException("We have GDP per capita data upto 2018")
     if query_type == "population" and str(max(years)) > str(2021):
