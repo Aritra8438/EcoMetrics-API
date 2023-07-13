@@ -22,8 +22,8 @@ def region_input_manager(region_or_array):
 
 def compare_input_manager(comparison_params):
     if isinstance(comparison_params, list):
-        return [comparison_params[0], comparison_params[1]]
-    elif isinstance(comparison_params, str):
+        return comparison_params[0], comparison_params[1]
+    else :
         return comparison_params.split(",")
 
 

@@ -386,6 +386,13 @@ def test_compare_okay(client):
     assert b"GDP per capita" in response.data
     assert b"Forest Area Percentage" in response.data
     assert b"GDP per capita vs Forest Area Percentage visualization" in response.data
+    response = client.get('/compare?Year=[2000,2001]&Region=["India"]&Type=2d'
+                          + '&Compare=["gdp_per_capita","forest_area"]'
+                          )
+    assert response.status_code == 200
+    assert b"GDP per capita" in response.data
+    assert b"Forest Area Percentage" in response.data
+    assert b"GDP per capita vs Forest Area Percentage visualization" in response.data
 
 
 def test_compare_method_not_allowed(client):
@@ -420,7 +427,7 @@ def test_compare_invalid_parameter(client):
         in response.data
     )
     response = client.get('/compare?Region=[India]&Year="2000,2010,1"'
-                          + '&Compare="population,forest_area"')
+                          + '&Compare=["population","forest_area"]')
     assert response.status_code == 400
     assert (
         b"The Region should either be a string enclosed by quotation or an array"
