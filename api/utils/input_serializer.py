@@ -19,7 +19,9 @@ def region_input_manager(region_or_array):
         return cities, countries
     return region_input_manager([region_or_array])
 
-
+# Takes an array or a string, output will be a tuple
+# Input "population,forest_area" => Output [population,forest_area]
+# Input ["population", "forest_area"] => Output [population,forest_area]
 def compare_input_manager(comparison_params):
     if isinstance(comparison_params, list):
         return comparison_params[0], comparison_params[1]
