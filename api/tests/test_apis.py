@@ -427,21 +427,6 @@ def test_compare_missing_parameter(client):
     response = client.get('/compare?Year=[2000,2001]&Region=["India"]&Type=2d')
     assert response.status_code == 400
     assert b"Comparables must be specified in the url" in response.data
-    response = client.get(
-        '/compare?Year=[2000,2001]&Region=["India"]&Type=2d'
-        + '&Compare=["gdp_per_capita"]'
-    )
-    assert response.status_code == 400
-    assert b"Two comparables must be defined in the url" in response.data
-    response = client.get(
-        '/compare?Year=[2000,2001]&Region=["India"]&Type=2d'
-        + '&Compare="gdp_per_capita","forest_are"'
-    )
-    assert response.status_code == 400
-    assert (
-        b'Comparable should be one of "gdp_per_capita", "population", "forest_area"'
-        in response.data
-    )
 
 
 def test_compare_invalid_parameter(client):
@@ -477,8 +462,25 @@ def test_compare_invalid_parameter(client):
     assert (
         b"The Comparison parameters should either be an array or a string of tuple"
         in response.data
-        in response.data
     )
+    response = client.get(
+        '/compare?Year=[2000,2001]&Region=["India"]&Type=2d'
+        + '&Compare=["gdp_per_capita"]'
+    )
+    assert response.status_code == 400
+    assert b"Two comparables must be defined in the url" in response.data
+    response = client.get(
+        '/compare?Year=[2000,2001]&Region=["India"]&Type=2d'
+        + '&Compare="gdp_per_capita"'
+    )
+    assert response.status_code == 400
+    assert b"Two comparables must be defined in the url" in response.data
+    response = client.get(
+        '/compare?Year=[2000,2001]&Region=["India"]&Type=2d'
+        + '&Compare="gdp_per_capita,forest_are"'
+    )
+    assert response.status_code == 400
+    assert b"Comparable should be one of" in response.data
 
 
 def test_compare_3d_themes(client):

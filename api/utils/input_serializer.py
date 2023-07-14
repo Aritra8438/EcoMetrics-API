@@ -27,6 +27,10 @@ def compare_input_manager(comparison_params):
     comparisons_available = ["gdp_per_capita", "population", "forest_area"]
     comparisons_requested = []
     if isinstance(comparison_params, list):
+        if len(comparison_params) <= 1:
+            raise InvalidParameterException(
+                "Two comparables must be defined in the url"
+            )
         comparisons_requested = [comparison_params[0], comparison_params[1]]
     else:
         comparisons_requested = comparison_params.split(",")
