@@ -19,13 +19,25 @@ def region_input_manager(region_or_array):
         return cities, countries
     return region_input_manager([region_or_array])
 
+
 # Takes an array or a string, output will be a tuple
 # Input "population,forest_area" => Output [population,forest_area]
 # Input ["population", "forest_area"] => Output [population,forest_area]
 def compare_input_manager(comparison_params):
+    comparisons_available = ["gdp_per_capita", "population", "forest_area"]
+    comparisons_requested = []
     if isinstance(comparison_params, list):
-        return comparison_params[0], comparison_params[1]
-    return comparison_params.split(",")
+        comparisons_requested = [comparison_params[0], comparison_params[1]]
+    else:
+        comparisons_requested = comparison_params.split(",")
+    for comparison in comparisons_requested:
+        if comparison not in comparisons_available:
+            raise InvalidParameterException(
+                'Comparable should be one of "gdp_per_capita", "population", "forest_area"'
+            )
+    if len(comparisons_requested) == 1:
+        raise InvalidParameterException("Two comparables must be defined in the url")
+    return comparisons_requested
 
 
 # Takes year or tuple or array, outputs an array

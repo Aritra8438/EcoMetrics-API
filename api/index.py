@@ -8,7 +8,7 @@ from .utils.infer_region import countries as country_list
 from .utils.input_serializer import (
     region_input_manager,
     year_input_manager,
-    compare_input_manager
+    compare_input_manager,
 )
 from .utils.output_serializer import serialize_queryset, serialize_pivoted_queryset
 from .utils.queryset_to_structures import (
@@ -252,9 +252,12 @@ def compare():
             raise MissingParameterException("Region must be specified in the url")
         if "Year" not in request.args:
             raise MissingParameterException("Year must be specified in the url")
+        if "Compare" not in request.args:
+            raise MissingParameterException("Comparables must be specified in the url")
         try:
             [first_parameter, second_parameter] = compare_input_manager(
-                json.loads(request.args.get("Compare")))
+                json.loads(request.args.get("Compare"))
+            )
         except json.decoder.JSONDecodeError as json_decode_error:
             raise InvalidParameterException(
                 "The Comparison parameters should either be an array or a string of tuple"
@@ -277,24 +280,27 @@ def compare():
         user_theme = request.args.get("Theme")
         queryset_param1 = QUERY_MODEL_MAPPING[first_parameter].query.filter(
             QUERY_MODEL_MAPPING[first_parameter].year.in_(years),
-            QUERY_MODEL_MAPPING[first_parameter].country.in_(countries)
+            QUERY_MODEL_MAPPING[first_parameter].country.in_(countries),
         )
         queryset_param2 = QUERY_MODEL_MAPPING[second_parameter].query.filter(
             QUERY_MODEL_MAPPING[second_parameter].year.in_(years),
-            QUERY_MODEL_MAPPING[second_parameter].country.in_(countries)
+            QUERY_MODEL_MAPPING[second_parameter].country.in_(countries),
         )
         json_response_parameter1 = serialize_queryset(queryset_param1, first_parameter)
-        json_response_parameter2 = serialize_queryset(
-            queryset_param2, second_parameter
-        )
+        json_response_parameter2 = serialize_queryset(queryset_param2, second_parameter)
         merged_dict = merge_comparable_querysets(
-            json_response_parameter1, json_response_parameter2,
-            first_parameter, second_parameter
+            json_response_parameter1,
+            json_response_parameter2,
+            first_parameter,
+            second_parameter,
         )
         if plot_type == "2d":
-            return create_plot_with_secondary_axis(merged_dict, user_theme,
-                                                   first_parameter, second_parameter)
-        return create_3d_plot(merged_dict, user_theme, first_parameter, second_parameter)
+            return create_plot_with_secondary_axis(
+                merged_dict, user_theme, first_parameter, second_parameter
+            )
+        return create_3d_plot(
+            merged_dict, user_theme, first_parameter, second_parameter
+        )
     abort("Method not allowed", 405)
 
 
