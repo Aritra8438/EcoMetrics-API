@@ -69,8 +69,12 @@ def test_json_okay(client):
         "/json?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=forest_area"
     )
     assert response.status_code == 200
-    assert b'{"country":"China","value":"5.096357882952477","year":2014}' in response.data
-    assert b'{"country":"China","value":"5.1493858835601465","year":2015}' in response.data
+    assert (
+        b'{"country":"China","value":"5.096357882952477","year":2014}' in response.data
+    )
+    assert (
+        b'{"country":"China","value":"5.1493858835601465","year":2015}' in response.data
+    )
     response = client.get(
         "/json?Region=[%22China%22]&Year=%222014,2016,1%22&Query_type=gdp_per_capita&Pivot=Region"
     )
@@ -335,6 +339,7 @@ def test_stats_method_not_allowed(client):
     assert response.status_code == 405
     assert b"<title>405 Method Not Allowed</title>" in response.data
 
+
 def test_stats_method_invalid_parameters(client):
     """test bad request missing parameters"""
     response = client.get("/stats?Year=2000")
@@ -356,18 +361,49 @@ def test_stats_invalid_parameter(client):
     assert response.status_code == 400
     assert b"<p>We have population data upto 2021</p>" in response.data
 
+
 def test_compare_okay(client):
     """test get method and possible param combinations"""
-    response = client.get('/compare?Year=[2000,2001]&Region=["India","China"]')
+    response = client.get(
+        '/compare?Year=[2000,2001]&Region=["India","China"]'
+        + '&Compare="population,gdp_per_capita"'
+    )
     assert response.status_code == 200
     assert b"China" in response.data
     assert b"India" in response.data
-    assert b"3d plot for country, population and GDP per capita" in response.data
-    response = client.get('/compare?Year=[2000,2001]&Region=["India"]&Type=2d')
+    assert b"3d plot for country, Population and GDP per capita" in response.data
+    response = client.get(
+        '/compare?Year=[2000,2001]&Region=["India"]&Type=2d'
+        + '&Compare="population,gdp_per_capita"'
+    )
     assert response.status_code == 200
     assert b"Population" in response.data
     assert b"GDP per capita" in response.data
     assert b"Population vs GDP per capita visualization" in response.data
+    response = client.get(
+        '/compare?Year=[2000,2001]&Region=["India"]&Type=2d'
+        + '&Compare="population,forest_area"'
+    )
+    assert response.status_code == 200
+    assert b"Population" in response.data
+    assert b"Forest Area Percentage" in response.data
+    assert b"Population vs Forest Area Percentage visualization" in response.data
+    response = client.get(
+        '/compare?Year=[2000,2001]&Region=["India"]&Type=2d'
+        + '&Compare="gdp_per_capita,forest_area"'
+    )
+    assert response.status_code == 200
+    assert b"GDP per capita" in response.data
+    assert b"Forest Area Percentage" in response.data
+    assert b"GDP per capita vs Forest Area Percentage visualization" in response.data
+    response = client.get(
+        '/compare?Year=[2000,2001]&Region=["India"]&Type=2d'
+        + '&Compare=["gdp_per_capita","forest_area"]'
+    )
+    assert response.status_code == 200
+    assert b"GDP per capita" in response.data
+    assert b"Forest Area Percentage" in response.data
+    assert b"GDP per capita vs Forest Area Percentage visualization" in response.data
 
 
 def test_compare_method_not_allowed(client):
@@ -388,76 +424,149 @@ def test_compare_missing_parameter(client):
     response = client.get("/compare?region=[%22Germany%22,%22China%22,%22India%22]")
     assert response.status_code == 400
     assert b"<p>Region must be specified in the url</p>" in response.data
+    response = client.get('/compare?Year=[2000,2001]&Region=["India"]&Type=2d')
+    assert response.status_code == 400
+    assert b"Comparables must be specified in the url" in response.data
 
 
 def test_compare_invalid_parameter(client):
     """test bad request missing parameters"""
-    response = client.get('/compare?Region=["India"]&Year="2000,2010,1')
+    response = client.get(
+        '/compare?Region=["India"]&Year="2000,2010,1'
+        + '&Compare="population,forest_area"'
+    )
     assert response.status_code == 400
     assert (
         b"<p>The Year should either be a Number, array of number or a string of tuple"
         in response.data
     )
-    response = client.get('/compare?Region=[India]&Year="2000,2010,1"')
+    response = client.get(
+        '/compare?Region=[India]&Year="2000,2010,1"'
+        + '&Compare=["population","forest_area"]'
+    )
     assert response.status_code == 400
     assert (
         b"The Region should either be a string enclosed by quotation or an array"
         in response.data
     )
-    response = client.get('/compare?Region=India&Year="2000,2010,1')
+    response = client.get(
+        '/compare?Region=India&Year="2000,2010,1' + '&Compare="population,forest_area"'
+    )
     assert response.status_code == 400
     assert b"The Year should either be a Number" in response.data in response.data
+    response = client.get(
+        '/compare?Region=["India"]&Year="2000,2010,1"'
+        + "&Compare=population,forest_area"
+    )
+    assert response.status_code == 400
+    assert (
+        b"The Comparison parameters should either be an array or a string of tuple"
+        in response.data
+    )
+    response = client.get(
+        '/compare?Year=[2000,2001]&Region=["India"]&Type=2d'
+        + '&Compare=["gdp_per_capita"]'
+    )
+    assert response.status_code == 400
+    assert b"Two comparables must be defined in the url" in response.data
+    response = client.get(
+        '/compare?Year=[2000,2001]&Region=["India"]&Type=2d'
+        + '&Compare="gdp_per_capita"'
+    )
+    assert response.status_code == 400
+    assert b"Two comparables must be defined in the url" in response.data
+    response = client.get(
+        '/compare?Year=[2000,2001]&Region=["India"]&Type=2d'
+        + '&Compare="gdp_per_capita,forest_are"'
+    )
+    assert response.status_code == 400
+    assert b"Comparable should be one of" in response.data
+
 
 def test_compare_3d_themes(client):
     """test the themes for compare plot(3d)"""
-    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"')
-    assert b"3d plot for country, population and GDP per capita" in response.data
+    response = client.get(
+        '/compare?Region=["India"]&Year="2000,2010,1"'
+        + '&Compare="population,gdp_per_capita"'
+    )
+    assert b"3d plot for country, Population and GDP per capita" in response.data
     assert b'"paper_bgcolor":"white"' in response.data
-    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Theme=light')
+    response = client.get(
+        '/compare?Region=["India"]&Year="2000,2010,1"&Theme=light'
+        + '&Compare="population,forest_area"'
+    )
     assert b'"paper_bgcolor":"#A6BEBE"' in response.data
     assert b'"plot_bgcolor":"#BDD0D0"' in response.data
-    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Theme=dark')
+    response = client.get(
+        '/compare?Region=["India"]&Year="2000,2010,1"&Theme=dark'
+        + '&Compare="population,forest_area"'
+    )
     assert b'"paper_bgcolor":"black"' in response.data
     assert b'"plot_bgcolor":"#383C3C"' in response.data
-    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Theme=aquamarine')
+    response = client.get(
+        '/compare?Region=["India"]&Year="2000,2010,1"&Theme=aquamarine'
+        + '&Compare="population,forest_area"'
+    )
     assert b'"paper_bgcolor":"#1E4967"' in response.data
     assert b'"plot_bgcolor":"#ADD3EC"' in response.data
-    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Theme=blackpink')
+    response = client.get(
+        '/compare?Region=["India"]&Year="2000,2010,1"&Theme=blackpink'
+        + '&Compare="population,forest_area"'
+    )
     assert b'"paper_bgcolor":"black"' in response.data
     assert b'"plot_bgcolor":"pink"' in response.data
     response = client.get(
         '/compare?Region=["India"]&Year="2000,2010,1"&Theme=fluorescent'
+        + '&Compare="population,forest_area"'
     )
     assert b'"paper_bgcolor":"#B2FF00"' in response.data
     assert b'"plot_bgcolor":"#D0FC77"' in response.data
     response = client.get(
         '/compare?Region=["China"]&Year=2014&Query_type=gdp_per_capita&Theme=blackpink'
+        + '&Compare="population,forest_area"'
     )
     assert b'"paper_bgcolor":"black"' in response.data
 
+
 def test_compare_2d_themes(client):
     """test the themes for compare plot(2d)"""
-    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Type=2d')
+    response = client.get(
+        '/compare?Region=["India"]&Year="2000,2010,1"&Type=2d&Compare="population,gdp_per_capita"'
+    )
     assert b"Population vs GDP per capita visualization" in response.data
     assert b'"paper_bgcolor":"white"' in response.data
-    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Type=2d&Theme=light')
+    response = client.get(
+        '/compare?Region=["India"]&Year="2000,2010,1"&Type=2d'
+        + '&Theme=light&Compare="population,forest_area"'
+    )
     assert b'"paper_bgcolor":"#A6BEBE"' in response.data
     assert b'"plot_bgcolor":"#BDD0D0"' in response.data
-    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Type=2d&Theme=dark')
+    response = client.get(
+        '/compare?Region=["India"]&Year="2000,2010,1"&Type=2d'
+        + '&Theme=dark&Compare="population,forest_area"'
+    )
     assert b'"paper_bgcolor":"black"' in response.data
     assert b'"plot_bgcolor":"#383C3C"' in response.data
-    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Type=2d&Theme=aquamarine')
+    response = client.get(
+        '/compare?Region=["India"]&Year="2000,2010,1"&Type=2d&Theme=aquamarine'
+        + '&Compare="population,forest_area"'
+    )
     assert b'"paper_bgcolor":"#1E4967"' in response.data
     assert b'"plot_bgcolor":"#ADD3EC"' in response.data
-    response = client.get('/compare?Region=["India"]&Year="2000,2010,1"&Type=2d&Theme=blackpink')
+    response = client.get(
+        '/compare?Region=["India"]&Year="2000,2010,1"&Type=2d&Theme=blackpink'
+        + '&Compare="population,forest_area"'
+    )
     assert b'"paper_bgcolor":"black"' in response.data
     assert b'"plot_bgcolor":"pink"' in response.data
     response = client.get(
-        '/compare?Region=["India"]&Year="2000,2010,1"&Type=2d&Theme=fluorescent'
+        '/compare?Region=["India"]&Year="2000,2010,1"&Type=2d'
+        + '&Theme=fluorescent&Compare="population,forest_area"'
     )
     assert b'"paper_bgcolor":"#B2FF00"' in response.data
     assert b'"plot_bgcolor":"#D0FC77"' in response.data
     response = client.get(
-        '/compare?Region=["China"]&Year="2000,2010,1"&Type=2d&Theme=blackpink'
+        '/compare?Region=["China"]&Year="2000,2010,1"&Type=2d'
+        + '&Theme=blackpink&Compare="population,forest_area"'
     )
     assert b'"paper_bgcolor":"black"' in response.data

@@ -4,15 +4,15 @@ def serialize_queryset(queryset, query_type="population"):
     for element in queryset:
         if query_type == "gdp_per_capita":
             value = element.gdp_per_capita
-        elif query_type == "population" :
+        elif query_type == "population":
             value = element.population
-        else :
+        else:
             value = element.forest_area
         json_response.append(
             {
                 "country": element.country,
                 "year": element.year,
-                "value": value,             
+                "value": value,
             }
         )
     return json_response
