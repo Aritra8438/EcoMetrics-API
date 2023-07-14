@@ -6,7 +6,7 @@ from plotly.subplots import make_subplots
 QUERY_LABEL_MAPPING = {
     "population": "Population",
     "gdp_per_capita": "GDP per capita",
-    "forest_area": "Forest Area Percentage"
+    "forest_area": "Forest Area Percentage",
 }
 
 
@@ -108,8 +108,7 @@ def create_pie(array_labels1, array_labels2, num, user_theme, query_type="popula
     return fig.to_html(full_html=False)
 
 
-def create_3d_plot(merged_dict, user_theme,
-                   parameter1_type, parameter2_type):
+def create_3d_plot(merged_dict, user_theme, parameter1_type, parameter2_type):
     theme = set_theme(user_theme)
     fig = px.scatter_3d(
         merged_dict,
@@ -119,7 +118,7 @@ def create_3d_plot(merged_dict, user_theme,
         color="country",
         hover_data=["country"],
         title=f"3d plot for country, {QUERY_LABEL_MAPPING[parameter1_type]} and "
-        +f"{QUERY_LABEL_MAPPING[parameter2_type]}",
+        + f"{QUERY_LABEL_MAPPING[parameter2_type]}",
     )
     if theme is not None:
         layout = go.Layout(
@@ -132,8 +131,9 @@ def create_3d_plot(merged_dict, user_theme,
     return fig.to_html(full_html=False)
 
 
-def create_plot_with_secondary_axis(merged_dict, user_theme,
-                                    parameter1_type, parameter2_type):
+def create_plot_with_secondary_axis(
+    merged_dict, user_theme, parameter1_type, parameter2_type
+):
     fig = make_subplots(specs=[[{"secondary_y": True}]])
     theme = set_theme(user_theme)
     fig.add_trace(
@@ -160,8 +160,10 @@ def create_plot_with_secondary_axis(merged_dict, user_theme,
             title_font_color=theme["title_font_color"],
         )
         fig.update_layout(layout)
-    fig.update_layout(title_text=f"{QUERY_LABEL_MAPPING[parameter1_type]} vs "
-                    +  f"{QUERY_LABEL_MAPPING[parameter2_type]} visualization")
+    fig.update_layout(
+        title_text=f"{QUERY_LABEL_MAPPING[parameter1_type]} vs "
+        + f"{QUERY_LABEL_MAPPING[parameter2_type]} visualization"
+    )
 
     # Set x-axis title
     fig.update_xaxes(title_text="year")

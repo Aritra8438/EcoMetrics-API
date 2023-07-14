@@ -2,6 +2,7 @@ from operator import itemgetter
 from .output_serializer import serialize_queryset
 from .create_figure import QUERY_LABEL_MAPPING
 
+
 def transpose_table(table):
     """Function transposes the table"""
     num_rows = len(table)
@@ -94,8 +95,9 @@ def convert_to_single_dict(queryset, query_type="population"):
     return plot_dict
 
 
-def merge_comparable_querysets(queryset_population, queryset_gdp_per_capita,
-                               parameter1_type, parameter2_type):
+def merge_comparable_querysets(
+    queryset_population, queryset_gdp_per_capita, parameter1_type, parameter2_type
+):
     sorted_population_list = sorted(
         queryset_population, key=itemgetter("year", "country")
     )
