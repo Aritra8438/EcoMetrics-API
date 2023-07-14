@@ -170,7 +170,7 @@ All of our APIs are available at [this](https://eco-metrics-api.vercel.app/api-d
 Here is a screenshot of the same.
 
 <img width="960" alt="image" src="https://github.com/Aritra8438/EcoMetrics-API/assets/64671908/17d13fe3-ce00-45fe-a286-a675d52f2a8d">
-Currently, Mathesar supports two aggregation functions (`Distinct list` & `Count`) as transformation steps while summarizing columns. 
+
 
 ## Current works:
 
@@ -178,8 +178,9 @@ Currently, Mathesar supports two aggregation functions (`Distinct list` & `Count
 - [x] Support for effective querying.
 - [x] Support for `GDP per capita` database.
 - [x] Support for comparing data from different databases.
+- [x] Support for the `Forest Area percentage` database.
 - [ ] Support for `Annual average temperature` database.
-- [ ] Support for the `Forest Land percentage` database.
+
 
 ## Future plans:
 - [ ] Support for predicting data when input has future years  as input.
