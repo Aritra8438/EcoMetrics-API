@@ -282,8 +282,6 @@ def compare():
             ) from json_decode_error
         plot_type = request.args.get("Type")
         user_theme = request.args.get("Theme")
-        print(len(years))
-        print(len(countries))
         queryset_param1 = QUERY_MODEL_MAPPING[first_parameter].query.filter(
             QUERY_MODEL_MAPPING[first_parameter].year.in_(years),
             QUERY_MODEL_MAPPING[first_parameter].country.in_(countries),
@@ -294,11 +292,6 @@ def compare():
         )
         json_response_parameter1 = serialize_queryset(queryset_param1, first_parameter)
         json_response_parameter2 = serialize_queryset(queryset_param2, second_parameter)
-        for obj in json_response_parameter1:
-            print((obj["year"]))
-        print()    
-        for obj in json_response_parameter2:    
-            print((obj["year"]))
         merged_dict = merge_comparable_querysets(
             json_response_parameter1,
             json_response_parameter2,
