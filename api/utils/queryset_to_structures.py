@@ -93,7 +93,7 @@ def convert_to_single_dict(queryset, query_type="population"):
         elif query_type == "gdp_per_capita":
             plot_dict[query_type].append(element.gdp_per_capita)
         else :
-            plot_dict[query_type].append(element.forest_area)     
+            plot_dict[query_type].append(element.forest_area)
     return plot_dict
 
 
