@@ -90,8 +90,10 @@ def convert_to_single_dict(queryset, query_type="population"):
         plot_dict["country"].append(element.country)
         if query_type == "population":
             plot_dict[query_type].append(element.population)
-        else:
+        elif query_type == "gdp_per_capita":
             plot_dict[query_type].append(element.gdp_per_capita)
+        else :
+            plot_dict[query_type].append(element.forest_area)     
     return plot_dict
 
 
