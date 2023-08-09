@@ -316,6 +316,10 @@ def test_graph_bar(client):
         '/graph?Region=["India"]&Year="2000,2010,1"&Plot=bar&Query_type=forest_area'
     )
     assert b"Forest Area Percentage vs Year bar plot" in response.data
+    response = client.get(
+        '/graph?Region=["India","Brazil"]&Year="2000,2010,1"&Plot=bar&Query_type=forest_area'
+    )
+    assert b"Forest Area Percentage vs Year bar plot" in response.data
 
 
 def test_stats_okay(client):
