@@ -258,7 +258,6 @@ def compare():
             [first_parameter, second_parameter] = compare_input_manager(
                 json.loads(request.args.get("Compare"))
             )
-            print(first_parameter + " "+ second_parameter)
         except json.decoder.JSONDecodeError as json_decode_error:
             raise InvalidParameterException(
                 "The Comparison parameters should either be an array or a string of tuple"
