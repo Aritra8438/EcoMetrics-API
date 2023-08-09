@@ -106,14 +106,16 @@ def merge_comparable_querysets(
     sorted_parameter2_list = sorted(
         queryset_gdp_per_capita, key=itemgetter("year", "country")
     )
+    len_years = min(len(sorted_parameter1_list),len(sorted_parameter2_list))
     years = []
     countries = []
     parameter1 = []
     parameter2 = []
-    for idx, element in enumerate(sorted_parameter1_list):
-        years.append(element["year"])
-        countries.append(element["country"])
-        parameter1.append(element["value"])
+
+    for idx in range(0, len_years):
+        years.append(sorted_parameter1_list[idx]["year"])
+        countries.append(sorted_parameter1_list[idx]["country"])
+        parameter1.append(sorted_parameter1_list[idx]["value"])
         parameter2.append(sorted_parameter2_list[idx]["value"])
     merged_dict = {
         "year": years,
