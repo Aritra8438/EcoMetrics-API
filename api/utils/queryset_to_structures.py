@@ -100,21 +100,21 @@ def convert_to_single_dict(queryset, query_type="population"):
 def merge_comparable_querysets(
     queryset_population, queryset_gdp_per_capita, parameter1_type, parameter2_type
 ):
-    sorted_population_list = sorted(
+    sorted_parameter1_list = sorted(
         queryset_population, key=itemgetter("year", "country")
     )
-    sorted_gdp_per_capita_list = sorted(
+    sorted_parameter2_list = sorted(
         queryset_gdp_per_capita, key=itemgetter("year", "country")
     )
     years = []
     countries = []
     parameter1 = []
     parameter2 = []
-    for idx, element in enumerate(sorted_population_list):
+    for idx, element in enumerate(sorted_parameter1_list):
         years.append(element["year"])
         countries.append(element["country"])
         parameter1.append(element["value"])
-        parameter2.append(sorted_gdp_per_capita_list[idx]["value"])
+        parameter2.append(sorted_parameter2_list[idx]["value"])
     merged_dict = {
         "year": years,
         "country": countries,

@@ -258,14 +258,19 @@ def compare():
             [first_parameter, second_parameter] = compare_input_manager(
                 json.loads(request.args.get("Compare"))
             )
+            print(first_parameter + " "+ second_parameter)
         except json.decoder.JSONDecodeError as json_decode_error:
             raise InvalidParameterException(
                 "The Comparison parameters should either be an array or a string of tuple"
             ) from json_decode_error
         try:
-            years = year_input_manager(
-                json.loads(request.args.get("Year")), "gdp_per_capita"
+            year_parameter1 = year_input_manager(
+                json.loads(request.args.get("Year")), QUERY_MODEL_MAPPING[first_parameter]
             )
+            year_parameter2 = year_input_manager(
+                json.loads(request.args.get("Year")), QUERY_MODEL_MAPPING[second_parameter]
+            )
+            years = list(set(year_parameter1) & set(year_parameter2))
         except json.decoder.JSONDecodeError as json_decode_error:
             raise InvalidParameterException(
                 "The Year should either be a Number, array of number or a string of tuple"
@@ -286,6 +291,7 @@ def compare():
             QUERY_MODEL_MAPPING[second_parameter].year.in_(years),
             QUERY_MODEL_MAPPING[second_parameter].country.in_(countries),
         )
+        print(first_parameter + " "+ second_parameter)
         json_response_parameter1 = serialize_queryset(queryset_param1, first_parameter)
         json_response_parameter2 = serialize_queryset(queryset_param2, second_parameter)
         merged_dict = merge_comparable_querysets(
