@@ -188,7 +188,7 @@
             <br />• A single country e.g. "India"<br />• An array of countries
             e.g. ["India","China"]<br /><br /><strong
               >Pivot takes two values.</strong
-            ><br />• Year <br />• Region <br />It determines the axes.
+            ><br />• Year <br />• Region <br />It determines the axes.<br />
             <br /><strong>
               Query_type parameter takes three values 
             </strong>
@@ -288,7 +288,7 @@
             ><br />• None <br />• Year <br />• Region <br />It determines the
             type of JSON object <br />If Year or Region is selcted, they will be
             the key.
-            <br /><strong>
+            <br /><br /><strong>
               Query_type parameter takes three values 
             </strong>
             <br />• population <br />• gdp_per_capita <br />• forest_area <br />
@@ -520,7 +520,8 @@
         delimiters: ["((", "))"],
         data() {
           return {
-            baseUrl: "https://eco-metrics-api.vercel.app/",
+            baseUrl : "http://127.0.0.1:5000/",
+            //baseUrl: "https://eco-metrics-api.vercel.app/",
             showHomepage: false,
 
             querybuilderUrl: "https://eco-metrics-api.vercel.app/querybuilder",
