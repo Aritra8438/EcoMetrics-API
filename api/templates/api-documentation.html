@@ -144,11 +144,18 @@
               &nbsp;&nbsp;
               <input type="text" v-model="tablePivot" />
             </li>
+            <br/>
+            <li>
+              <label>Query_type (either population, gdp_per_capita or forest_area) :</label>
+              &nbsp;&nbsp;
+              <input type="text" v-model="tableQueryType" />
+            </li>
+            <br/>
           </ul>
           <br />
           <br />
           <button
-            @click='()=>{showTablePage = true; tableUrl = baseUrl+"table?Year="+tableYears+"&Region="+tableCountries+"&Pivot="+tablePivot;}'
+            @click='()=>{showTablePage = true; tableUrl = baseUrl+"table?Year="+tableYears+"&Region="+tableCountries+"&Pivot="+tablePivot+"&Query_type="+tableQueryType;}'
           >
             Test
           </button>
@@ -169,7 +176,8 @@
           <br />
           <label
             ><strong>Description</strong>: <br />This API returns a table of
-            population with countries and years as columns. <br /><br />
+            population, gdp_per_capita or forest area <br/> (in accordance with
+             the query type)  with countries and years as columns. <br /><br />
             <strong>Year parameter takes 3 types of inputs.</strong>
             <br />
             • A single Number e.g. 2000. <br />• An array of numbers e.g.
@@ -180,7 +188,12 @@
             <br />• A single country e.g. "India"<br />• An array of countries
             e.g. ["India","China"]<br /><br /><strong
               >Pivot takes two values.</strong
-            ><br />• Year <br />• Region <br />It determines the axes.</label
+            ><br />• Year <br />• Region <br />It determines the axes.<br />
+            <br /><strong>
+              Query_type parameter takes three values 
+            </strong>
+            <br />• population <br />• gdp_per_capita <br />• forest_area <br />
+            </label
           >
         </div>
         <div class="flex-child" v-if="showTablePage">
@@ -229,11 +242,17 @@
               &nbsp;&nbsp;
               <input type="text" v-model="jsonPivot" />
             </li>
+            <br/>
+            <li>
+              <label>Query_type (either population, gdp_per_capita or forest_area) :</label>
+              &nbsp;&nbsp;
+              <input type="text" v-model="jsonQueryType" />
+            </li>
           </ul>
           <br />
           <br />
           <button
-            @click='()=>{showJsonPage = true; jsonUrl = baseUrl+"json?Year="+jsonYears+"&Region="+jsonCountries+"&Pivot="+jsonPivot;}'
+            @click='()=>{showJsonPage = true; jsonUrl = baseUrl+"json?Year="+jsonYears+"&Region="+jsonCountries+"&Pivot="+jsonPivot+"&Query_type="+jsonQueryType;}'
           >
             Test
           </button>
@@ -254,7 +273,8 @@
           <br />
           <label
             ><strong>Description</strong>: <br />This API returns json response
-            of the query (population data). <br /><br />
+            of the query (population, gdp_per_capita <br/> or forest_area data 
+            depending on the query). <br /><br />
             <strong>Year parameter takes 3 types of inputs.</strong>
             <br />
             • A single Number e.g. 2000. <br />• An array of numbers e.g.
@@ -267,7 +287,12 @@
               >Pivot takes two values.</strong
             ><br />• None <br />• Year <br />• Region <br />It determines the
             type of JSON object <br />If Year or Region is selcted, they will be
-            the key.</label
+            the key.
+            <br /><br /><strong>
+              Query_type parameter takes three values 
+            </strong>
+            <br />• population <br />• gdp_per_capita <br />• forest_area <br />
+            </label
           >
         </div>
         <div class="flex-child" v-if="showJsonPage">
@@ -311,6 +336,13 @@
               <input type="text" v-model="graphYears" />
             </li>
             <br />
+            
+            <li>
+              <label>Query_type (either population, gdp_per_capita or forest_area) :</label>
+              &nbsp;&nbsp;
+              <input type="text" v-model="graphQueryType" />
+            </li>
+            <br/>
             <li>
               <label>Theme:</label>
               &nbsp;&nbsp;
@@ -322,11 +354,12 @@
               &nbsp;&nbsp;
               <input type="text" v-model="graphPlot" />
             </li>
+            
           </ul>
           <br />
           <br />
           <button
-            @click='()=>{showGraphPage = true; graphUrl = baseUrl+"graph?Year="+graphYears+"&Region="+graphCountries+"&Plot="+graphPlot+"&Theme="+graphTheme;}'
+            @click='()=>{showGraphPage = true; graphUrl = baseUrl+"graph?Year="+graphYears+"&Region="+graphCountries+"&Plot="+graphPlot+"&Theme="+graphTheme+"&Query_type="+graphQueryType;}'
           >
             Test
           </button>
@@ -347,7 +380,8 @@
           <br />
           <label
             ><strong>Description</strong>: <br />This API returns a graph of
-            population wrt countries and years<br /><br />
+            population, gdp_per_capita or <br/> forest_area depending on the 
+            type of query wrt countries and years<br /><br />
             <strong>Year parameter takes 3 types of inputs.</strong>
             <br />
             • A single Number e.g. 2000. <br />• An array of numbers e.g.
@@ -359,7 +393,12 @@
             e.g. ["India","China"]<br /><br /><strong
               >Plot parameter takes two values</strong
             >
-            <br />• None<br />• bar<br /><br />
+            <br />• None<br />• bar<br /><br /> <br /><strong>
+              Query_type parameter takes three values 
+            </strong>
+            <br />• population <br />• gdp_per_capita <br />• forest_area <br />
+            <br />
+            <br />
             <strong>Theme parameters take six values</strong>
             <br />• none<br />• fluorescent <br />• light<br />• blackpink
             <br />• dark<br />• aquamarine</label
@@ -402,6 +441,12 @@
               &nbsp;&nbsp;
               <input type="text" v-model="statsNumber" />
             </li>
+            <br/>
+            <li>
+              <label>Query_type (either population, gdp_per_capita or forest_area) :</label>
+              &nbsp;&nbsp;
+              <input type="text" v-model="statsQueryType" />
+            </li>
             <br />
             <li>
               <label>Theme:</label>
@@ -412,7 +457,7 @@
           <br />
           <br />
           <button
-            @click='()=>{showStatsPage = true; statsUrl = baseUrl+"stats?Year="+statsYears+"&Number="+statsNumber+"&Theme="+statsTheme;}'
+            @click='()=>{showStatsPage = true; statsUrl = baseUrl+"stats?Year="+statsYears+"&Number="+statsNumber+"&Theme="+statsTheme+"&Query_type="+statsQueryType;}'
           >
             Test
           </button>
@@ -440,7 +485,14 @@
             <br /><br /><strong>
               Number n compares n top and bottom countries.
             </strong>
+            <br />
             <br /><br />
+            <strong>
+              Query_type parameter takes three values 
+            </strong>
+            <br />• population <br />• gdp_per_capita <br />• forest_area <br />
+            </label>
+            <br/><br/>
             <strong>Theme parameters take six values</strong>
             <br />• none<br />• fluorescent <br />• light<br />• blackpink
             <br />• dark<br />• aquamarine
@@ -478,12 +530,14 @@
             tableCountries: '"India"',
             tableYears: '"2000,2020,4"',
             tablePivot: "Year",
+            tableQueryType: "population",
 
             jsonUrl: "",
             showJsonPage: false,
             jsonCountries: '["India","China"]',
             jsonYears: "[2001,2005,2006]",
             jsonPivot: "None",
+            jsonQueryType: "population",
 
             graphUrl: "",
             showGraphPage: false,
@@ -491,12 +545,14 @@
             graphYears: '"2000,2020,2"',
             graphPlot: "bar",
             graphTheme: "blackpink",
+            graphQueryType: "population",
 
             statsUrl: "",
             showStatsPage: false,
             statsNumber: "5",
             statsYears: "2021",
             statsTheme: "light",
+            statsQueryType: "population",
           };
         },
         methods: {},
