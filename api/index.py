@@ -1,6 +1,6 @@
 """Module produces json objects"""
 import json
-from flask import jsonify, request, render_template, abort
+from flask import jsonify, request, render_template, abort, url_for
 
 from .database import app
 from .models import Population, GDPperCapita, ForestArea
