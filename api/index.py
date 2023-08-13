@@ -1,6 +1,6 @@
 """Module produces json objects"""
 import json
-from flask import jsonify, request, render_template, abort, url_for
+from flask import jsonify, request, render_template, abort, url_for # pylint: disable=unused-import
 
 from .database import app
 from .models import Population, GDPperCapita, ForestArea
