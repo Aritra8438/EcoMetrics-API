@@ -47,7 +47,7 @@ def compare_input_manager(comparison_params):
 # Takes year or tuple or array, outputs an array
 # Input 2021 => output [2021]
 # Input [2021,2022] => output [2021,2022]
-# Input "(2001,2011,5)" => output [2001, 2006, 2011]
+# Input "2001,2011,5" => output [2001, 2006, 2011]
 def year_input_manager(year_or_tuple_or_array, query_type="population"):
     years = []
     if isinstance(year_or_tuple_or_array, list):

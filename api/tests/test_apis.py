@@ -3,7 +3,7 @@ def test_home_okay(client):
     response = client.get("/")
     assert response.status_code == 200
     assert b"<title>Homepage</title>" in response.data
-    assert b"Welcome to this API." in response.data
+    assert b" Welcome to the ECO-METRICS API." in response.data
 
 
 def test_home_method_not_allowed(client):
@@ -312,6 +312,14 @@ def test_graph_bar(client):
         '/graph?Region=["India"]&Year="2000,2010,1"&Plot=bar&Query_type=gdp_per_capita'
     )
     assert b"GDP per capita vs Year bar plot" in response.data
+    response = client.get(
+        '/graph?Region=["India"]&Year="2000,2010,1"&Plot=bar&Query_type=forest_area'
+    )
+    assert b"Forest Area Percentage vs Year bar plot" in response.data
+    response = client.get(
+        '/graph?Region=["India","Brazil"]&Year="2000,2010,1"&Plot=bar&Query_type=forest_area'
+    )
+    assert b"Forest Area Percentage vs Year bar plot" in response.data
 
 
 def test_stats_okay(client):

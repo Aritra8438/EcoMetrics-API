@@ -1,24 +1,91 @@
+<!-- @format -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Homepage</title>
+    <style>
+      .background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("{{ url_for('static', filename='images/img.jpg') }}");
+        background-size: cover;
+        background-position: center;
+        z-index: -1;
+        opacity: 0.4;
+      }
+    </style>
   </head>
   <body>
-    <p>Welcome to this API.</p>
-    <p>
-      Please visit our
-      <a href="https://eco-metrics-api.vercel.app/api-documentation"
-        >API documentation</a
-      >
-      to get started.
-    </p>
-    <p>
-      If you want to build queries in UI, you might want to try the
-      <a href="https://eco-metrics-api.vercel.app/querybuilder"
-        >querybuilder page.</a
-      >
-    </p>
+    <div class="background"></div>
+    <div>
+      <h2><strong> Welcome to the ECO-METRICS API.</strong></h2>
+      <div style="color: black; font-size: 18px">
+        <p><strong>How this API might help you?</strong></p>
+        <p>
+          Well, you are working on a project that deals with populations of
+          different countries. Or, you may need to know the forest area
+          percentage of different countries while writing a blog on
+          <strong>Global warming</strong>. Similarly, you might be intereseted
+          in how fast your countries GDP per capita is growing.
+        </p>
+        <p>
+          If that's the case, this API might provide you with necessities. Given
+          countries and years, this will fetch you pretty and customizable graph
+          (with different themes) or a cool-looking table. They are returned as
+          an HTML, so, you can easily embed them using iframe tag. Need raw
+          data? We got you covered. Our '/json' endpoint will fetch you
+          structured data which you can further use for development or ML
+          purposes.
+        </p>
+
+        <p>
+          Please visit our
+          <a href="https://eco-metrics-api.vercel.app/api-documentation"
+            >API documentation</a
+          >
+          to get started.
+        </p>
+        <p>
+          If you want to build queries in UI, you might want to try the
+          <a href="https://eco-metrics-api.vercel.app/querybuilder"
+            >querybuilder page.</a
+          >
+        </p>
+        <br />
+        <p>Please scroll through to view some pretty demos.</p>
+        <ul>
+          <li>
+            <p>
+              Here is the graph that compares China and India's population over
+              the years:
+            </p>
+            <iframe
+              src="https://eco-metrics-api.vercel.app/graph?Year=%221955,2020,1%22&Region=[%22India%22,%22China%22]&Plot=bar&Theme=aquamarine&Query_type=population"
+              frameborder="0"
+              height="600"
+              width="1000"
+            ></iframe>
+          </li>
+          <li>
+            <p>
+              Here is the graph that compares top and bottom 5 countries wrt
+              forest area on 2020:
+            </p>
+            <iframe
+              src="https://eco-metrics-api.vercel.app/stats?Year=2020&Number=5&Theme=blackpink&Query_type=forest_area"
+              frameborder="0"
+              height="600"
+              width="1000"
+            ></iframe>
+          </li>
+        </ul>
+      </div>
+    </div>
   </body>
 </html>
