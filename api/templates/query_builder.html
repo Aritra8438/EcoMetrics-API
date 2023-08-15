@@ -1,3 +1,5 @@
+<!-- @format -->
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -424,26 +426,24 @@
               selectedYears.length - 1
             );
             selectedYears += `]`;
-            this.finalUrl =
-              this.url +
-              this.dropdownSelectedAPI +
-              "?";
-              if (this.dropdownSelectedAPI != 'stats')
+            this.finalUrl = this.url + this.dropdownSelectedAPI + "?";
+            if (this.dropdownSelectedAPI != "stats")
               this.finalUrl += selectedCountries;
-              this.finalUrl += "&" +
-              selectedYears;
-              if (this.dropdownSelectedAPI == 'json' || this.dropdownSelectedAPI == 'table')
-              this.finalUrl += "&Pivot=" +
-              this.dropdownSelectedPivot;
-              if (this.dropdownSelectedAPI != 'json' && this.dropdownSelectedAPI != 'table')
-              this.finalUrl += "&Theme="+
-              this.dropdownSelectedTheme;
-              if (this.dropdownSelectedAPI == 'graph')
-              this.finalUrl += "&Plot=" +
-              this.dropdownSelectedPlot;
-              if (this.dropdownSelectedAPI =='stats')
-              this.finalUrl += "&Number=" +
-              this.numberOfComparables;
+            this.finalUrl += "&" + selectedYears;
+            if (
+              this.dropdownSelectedAPI == "json" ||
+              this.dropdownSelectedAPI == "table"
+            )
+              this.finalUrl += "&Pivot=" + this.dropdownSelectedPivot;
+            if (
+              this.dropdownSelectedAPI != "json" &&
+              this.dropdownSelectedAPI != "table"
+            )
+              this.finalUrl += "&Theme=" + this.dropdownSelectedTheme;
+            if (this.dropdownSelectedAPI == "graph")
+              this.finalUrl += "&Plot=" + this.dropdownSelectedPlot;
+            if (this.dropdownSelectedAPI == "stats")
+              this.finalUrl += "&Number=" + this.numberOfComparables;
             this.urlGenerated = true;
           },
         },
