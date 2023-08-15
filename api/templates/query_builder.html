@@ -427,17 +427,22 @@
             this.finalUrl =
               this.url +
               this.dropdownSelectedAPI +
-              "?" +
-              selectedCountries +
-              "&" +
-              selectedYears +
-              "&Pivot=" +
-              this.dropdownSelectedPivot +
-              "&Theme=" +
-              this.dropdownSelectedTheme +
-              "&Plot=" +
-              this.dropdownSelectedPlot +
-              "&Number=" +
+              "?";
+              if (this.dropdownSelectedAPI != 'stats')
+              this.finalUrl += selectedCountries;
+              this.finalUrl += "&" +
+              selectedYears;
+              if (this.dropdownSelectedAPI == 'json' || this.dropdownSelectedAPI == 'table')
+              this.finalUrl += "&Pivot=" +
+              this.dropdownSelectedPivot;
+              if (this.dropdownSelectedAPI != 'json' && this.dropdownSelectedAPI != 'table')
+              this.finalUrl += "&Theme="+
+              this.dropdownSelectedTheme;
+              if (this.dropdownSelectedAPI == 'graph')
+              this.finalUrl += "&Plot=" +
+              this.dropdownSelectedPlot;
+              if (this.dropdownSelectedAPI =='stats')
+              this.finalUrl += "&Number=" +
               this.numberOfComparables;
             this.urlGenerated = true;
           },
