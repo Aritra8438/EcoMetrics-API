@@ -1,6 +1,12 @@
 """Module produces json objects"""
 import json
-from flask import jsonify, request, render_template, abort, url_for # pylint: disable=unused-import
+from flask import (
+    jsonify,
+    request,
+    render_template,
+    abort,
+    url_for,
+)  # pylint: disable=unused-import
 
 from .database import app
 from .models import Population, GDPperCapita, ForestArea
@@ -264,7 +270,8 @@ def compare():
             ) from json_decode_error
         try:
             years = year_input_manager(
-                json.loads(request.args.get("Year")), "gdp_per_capita"
+                json.loads(request.args.get("Year")),
+                [first_parameter, second_parameter],
             )
         except json.decoder.JSONDecodeError as json_decode_error:
             raise InvalidParameterException(
