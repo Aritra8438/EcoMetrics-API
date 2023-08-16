@@ -1,3 +1,5 @@
+<!-- @format -->
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -46,7 +48,7 @@
               </li>
             </ul>
           </div>
-          <div class="flex-child">
+          <div class="flex-child" v-if="dropdownSelectedAPI!=`stats`">
             <div>
               <p>Select at least a year</p>
               <ul style="list-style: none">
@@ -60,6 +62,17 @@
                 </li>
               </ul>
             </div>
+          </div>
+          <div class="flex-child" v-if="dropdownSelectedAPI==`stats`">
+            <p>Select a year</p>
+            <select v-model="dropdownSelectedYear">
+              <option
+                v-for="dropdownYear in years"
+                v-bind:value="dropdownYear"
+              >
+                ((dropdownYear))
+              </option>
+            </select>
           </div>
           <div
             class="flex-child"
@@ -424,21 +437,25 @@
               selectedYears.length - 1
             );
             selectedYears += `]`;
-            this.finalUrl =
-              this.url +
-              this.dropdownSelectedAPI +
-              "?" +
-              selectedCountries +
-              "&" +
-              selectedYears +
-              "&Pivot=" +
-              this.dropdownSelectedPivot +
-              "&Theme=" +
-              this.dropdownSelectedTheme +
-              "&Plot=" +
-              this.dropdownSelectedPlot +
-              "&Number=" +
-              this.numberOfComparables;
+            this.finalUrl = this.url + this.dropdownSelectedAPI + "?";
+            if (this.dropdownSelectedAPI != "stats")
+              this.finalUrl += selectedCountries + "&" + selectedYears;
+            if (this.dropdownSelectedAPI == "stats")
+              this.finalUrl += "Year=" + this.dropdownSelectedYear;
+            if (
+              this.dropdownSelectedAPI == "json" ||
+              this.dropdownSelectedAPI == "table"
+            )
+              this.finalUrl += "&Pivot=" + this.dropdownSelectedPivot;
+            if (
+              this.dropdownSelectedAPI != "json" &&
+              this.dropdownSelectedAPI != "table"
+            )
+              this.finalUrl += "&Theme=" + this.dropdownSelectedTheme;
+            if (this.dropdownSelectedAPI == "graph")
+              this.finalUrl += "&Plot=" + this.dropdownSelectedPlot;
+            if (this.dropdownSelectedAPI == "stats")
+              this.finalUrl += "&Number=" + this.numberOfComparables;
             this.urlGenerated = true;
           },
         },
