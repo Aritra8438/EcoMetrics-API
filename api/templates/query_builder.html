@@ -66,10 +66,7 @@
           <div class="flex-child" v-if="dropdownSelectedAPI==`stats`">
             <p>Select a year</p>
             <select v-model="dropdownSelectedYear">
-              <option
-                v-for="dropdownYear in years"
-                v-bind:value="dropdownYear"
-              >
+              <option v-for="dropdownYear in years" v-bind:value="dropdownYear">
                 ((dropdownYear))
               </option>
             </select>
