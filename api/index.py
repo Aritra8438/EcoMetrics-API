@@ -4,8 +4,9 @@ from flask import (
     jsonify,
     request,
     render_template,
-    abort,
-)  # pylint: disable=unused-import
+    abort
+)
+from flask import url_for # pylint: disable=W0611
 
 from .database import app
 from .models import Population, GDPperCapita, ForestArea
