@@ -5,7 +5,6 @@ from flask import (
     request,
     render_template,
     abort,
-    url_for,
 )  # pylint: disable=unused-import
 
 from .database import app
