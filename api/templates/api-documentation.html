@@ -1,3 +1,5 @@
+<!-- @format -->
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -144,13 +146,16 @@
               &nbsp;&nbsp;
               <input type="text" v-model="tablePivot" />
             </li>
-            <br/>
+            <br />
             <li>
-              <label>Query_type (either population, gdp_per_capita or forest_area) :</label>
+              <label
+                >Query_type (either population, gdp_per_capita or forest_area)
+                :</label
+              >
               &nbsp;&nbsp;
               <input type="text" v-model="tableQueryType" />
             </li>
-            <br/>
+            <br />
           </ul>
           <br />
           <br />
@@ -176,8 +181,9 @@
           <br />
           <label
             ><strong>Description</strong>: <br />This API returns a table of
-            population, gdp_per_capita or forest area <br/> (in accordance with
-             the query type)  with countries and years as columns. <br /><br />
+            population, gdp_per_capita or forest area <br />
+            (in accordance with the query type) with countries and years as
+            columns. <br /><br />
             <strong>Year parameter takes 3 types of inputs.</strong>
             <br />
             • A single Number e.g. 2000. <br />• An array of numbers e.g.
@@ -189,12 +195,9 @@
             e.g. ["India","China"]<br /><br /><strong
               >Pivot takes two values.</strong
             ><br />• Year <br />• Region <br />It determines the axes.<br />
-            <br /><strong>
-              Query_type parameter takes three values 
-            </strong>
+            <br /><strong> Query_type parameter takes three values </strong>
             <br />• population <br />• gdp_per_capita <br />• forest_area <br />
-            </label
-          >
+          </label>
         </div>
         <div class="flex-child" v-if="showTablePage">
           <p>The response might take some time to show up.</p>
@@ -242,9 +245,12 @@
               &nbsp;&nbsp;
               <input type="text" v-model="jsonPivot" />
             </li>
-            <br/>
+            <br />
             <li>
-              <label>Query_type (either population, gdp_per_capita or forest_area) :</label>
+              <label
+                >Query_type (either population, gdp_per_capita or forest_area)
+                :</label
+              >
               &nbsp;&nbsp;
               <input type="text" v-model="jsonQueryType" />
             </li>
@@ -273,8 +279,8 @@
           <br />
           <label
             ><strong>Description</strong>: <br />This API returns json response
-            of the query (population, gdp_per_capita <br/> or forest_area data 
-            depending on the query). <br /><br />
+            of the query (population, gdp_per_capita <br />
+            or forest_area data depending on the query). <br /><br />
             <strong>Year parameter takes 3 types of inputs.</strong>
             <br />
             • A single Number e.g. 2000. <br />• An array of numbers e.g.
@@ -287,13 +293,11 @@
               >Pivot takes two values.</strong
             ><br />• None <br />• Year <br />• Region <br />It determines the
             type of JSON object <br />If Year or Region is selcted, they will be
-            the key.
-            <br /><br /><strong>
-              Query_type parameter takes three values 
+            the key. <br /><br /><strong>
+              Query_type parameter takes three values
             </strong>
             <br />• population <br />• gdp_per_capita <br />• forest_area <br />
-            </label
-          >
+          </label>
         </div>
         <div class="flex-child" v-if="showJsonPage">
           <p>The response might take some time to show up.</p>
@@ -336,13 +340,16 @@
               <input type="text" v-model="graphYears" />
             </li>
             <br />
-            
+
             <li>
-              <label>Query_type (either population, gdp_per_capita or forest_area) :</label>
+              <label
+                >Query_type (either population, gdp_per_capita or forest_area)
+                :</label
+              >
               &nbsp;&nbsp;
               <input type="text" v-model="graphQueryType" />
             </li>
-            <br/>
+            <br />
             <li>
               <label>Theme:</label>
               &nbsp;&nbsp;
@@ -354,7 +361,6 @@
               &nbsp;&nbsp;
               <input type="text" v-model="graphPlot" />
             </li>
-            
           </ul>
           <br />
           <br />
@@ -380,8 +386,9 @@
           <br />
           <label
             ><strong>Description</strong>: <br />This API returns a graph of
-            population, gdp_per_capita or <br/> forest_area depending on the 
-            type of query wrt countries and years<br /><br />
+            population, gdp_per_capita or <br />
+            forest_area depending on the type of query wrt countries and
+            years<br /><br />
             <strong>Year parameter takes 3 types of inputs.</strong>
             <br />
             • A single Number e.g. 2000. <br />• An array of numbers e.g.
@@ -393,9 +400,8 @@
             e.g. ["India","China"]<br /><br /><strong
               >Plot parameter takes two values</strong
             >
-            <br />• None<br />• bar<br /><br /> <br /><strong>
-              Query_type parameter takes three values 
-            </strong>
+            <br />• None<br />• bar<br /><br />
+            <br /><strong> Query_type parameter takes three values </strong>
             <br />• population <br />• gdp_per_capita <br />• forest_area <br />
             <br />
             <br />
@@ -441,9 +447,12 @@
               &nbsp;&nbsp;
               <input type="text" v-model="statsNumber" />
             </li>
-            <br/>
+            <br />
             <li>
-              <label>Query_type (either population, gdp_per_capita or forest_area) :</label>
+              <label
+                >Query_type (either population, gdp_per_capita or forest_area)
+                :</label
+              >
               &nbsp;&nbsp;
               <input type="text" v-model="statsQueryType" />
             </li>
@@ -487,16 +496,13 @@
             </strong>
             <br />
             <br /><br />
-            <strong>
-              Query_type parameter takes three values 
-            </strong>
+            <strong> Query_type parameter takes three values </strong>
             <br />• population <br />• gdp_per_capita <br />• forest_area <br />
-            </label>
-            <br/><br/>
-            <strong>Theme parameters take six values</strong>
-            <br />• none<br />• fluorescent <br />• light<br />• blackpink
-            <br />• dark<br />• aquamarine
           </label>
+          <br /><br />
+          <strong>Theme parameters take six values</strong>
+          <br />• none<br />• fluorescent <br />• light<br />• blackpink <br />•
+          dark<br />• aquamarine
         </div>
         <div class="flex-child" v-if="showStatsPage">
           <p>The response might take some time to show up.</p>
