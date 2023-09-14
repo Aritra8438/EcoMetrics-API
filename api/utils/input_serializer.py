@@ -43,7 +43,8 @@ def compare_input_manager(comparison_params):
     - Input "population,forest_area" => Output ["population", "forest_area"]
     - Input ["population", "forest_area"] => Output ["population", "forest_area"]
 
-    :param comparison_params: A string or list of strings representing requested comparison parameters.
+    :param comparison_params: A string or list of strings representing requested comparison
+                            parameters.
     :return: A list of requested comparison parameters as strings.
     :raises InvalidParameterException: If the input is invalid or contains unsupported comparisons.
     """

@@ -48,9 +48,9 @@ def serialize_pivoted_queryset(pivoted_queryset, not_pivot, query_type="populati
     Serialize a pivoted queryset into an array of dictionaries.
 
     This function takes a pivoted queryset containing data points for specific years or regions,
-    and a specified 'query_type' (e.g., 'population', 'gdp_per_capita', 'forest_area'). It serializes
-    the pivoted queryset by converting it into an array of dictionaries, where each dictionary represents
-    a data point with fields based on the pivot and 'query_type'.
+    and a specified 'query_type' (e.g., 'population', 'gdp_per_capita', 'forest_area'). It
+    serializes the pivoted queryset by converting it into an array of dictionaries, where each
+    dictionary represents a data point with fields based on the pivot and 'query_type'.
 
     :param pivoted_queryset: A pivoted queryset containing data points based on the pivot (e.g., 'Year'
                             or 'Region').
