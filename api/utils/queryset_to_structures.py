@@ -216,11 +216,11 @@ def merge_comparable_querysets(
     countries = []
     parameter1 = []
     parameter2 = []
-    for id, element in enumerate(sorted_param1):
+    for index, element in enumerate(sorted_param1):
         years.append(element["year"])
         countries.append(element["country"])
         parameter1.append(element["value"])
-        parameter2.append(sorted_param2[id]["value"])
+        parameter2.append(sorted_param2[index]["value"])
     merged_dict = {
         "year": years,
         "country": countries,

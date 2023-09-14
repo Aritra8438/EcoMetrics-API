@@ -6,9 +6,9 @@ def region_input_manager(region_or_array):
     """
     Split input into cities and countries.
 
-    Given an input that can be either a string representing a city or country, or a list
-    containing a mix of city and country names, this function categorizes and separates
-    the input into two lists: one for cities and another for countries.
+    Given an input that can be either a string representing a city or country, or a
+    list containing a mix of city and country names, this function categorizes and
+    separates the input into two lists: one for cities and another for countries.
 
     Example usage:
     - Input "India" => cities = [], countries = ["India"]
