@@ -52,8 +52,8 @@ def serialize_pivoted_queryset(pivoted_queryset, not_pivot, query_type="populati
     serializes the pivoted queryset by converting it into an array of dictionaries, where each
     dictionary represents a data point with fields based on the pivot and 'query_type'.
 
-    :param pivoted_queryset: A pivoted queryset containing data points based on the pivot (e.g., 'Year'
-                            or 'Region').
+    :param pivoted_queryset: A pivoted queryset containing data points based on the pivot
+                            (e.g., 'Year' or 'Region').
     :param not_pivot: The field that is not part of the pivot ('Year' or 'Region').
     :param query_type: The type of query used to retrieve data (default is "population").
     :return: An array of dictionaries, where each dictionary represents a data point.
