@@ -1,5 +1,30 @@
-# serialize the queryset to create an array
 def serialize_queryset(queryset, query_type="population"):
+    """
+    Serialize a queryset into an array of dictionaries.
+
+    This function takes a queryset containing data points for specific countries, years,
+    and a specified 'query_type' (e.g., 'population', 'gdp_per_capita', 'forest_area').
+    It serializes the queryset by converting it into an array of dictionaries, where each
+    dictionary represents a data point with fields 'country', 'year', and 'value'.
+
+    Example usage:
+    - Input queryset may contain data like:
+        [{"country": "India", "year": 2010, "population": 1350000000},
+        {"country": "India", "year": 2011, "population": 1370000000},
+        ...]
+
+    - The resulting array of dictionaries would look like:
+        [
+            {"country": "India", "year": 2010, "value": 1350000000},
+            {"country": "India", "year": 2011, "value": 1370000000},
+            ...
+        ]
+
+    :param queryset: A queryset containing data points with fields 'country', 'year',
+                    and the specified 'query_type'.
+    :param query_type: The type of query used to retrieve data (default is "population").
+    :return: An array of dictionaries, where each dictionary represents a data point.
+    """
     json_response = []
     for element in queryset:
         if query_type == "gdp_per_capita":
@@ -19,6 +44,21 @@ def serialize_queryset(queryset, query_type="population"):
 
 
 def serialize_pivoted_queryset(pivoted_queryset, not_pivot, query_type="population"):
+    """
+    Serialize a pivoted queryset into an array of dictionaries.
+
+    This function takes a pivoted queryset containing data points for specific years or regions,
+    and a specified 'query_type' (e.g., 'population', 'gdp_per_capita', 'forest_area'). It serializes
+    the pivoted queryset by converting it into an array of dictionaries, where each dictionary represents
+    a data point with fields based on the pivot and 'query_type'.
+
+    :param pivoted_queryset: A pivoted queryset containing data points based on the pivot (e.g., 'Year'
+                            or 'Region').
+    :param not_pivot: The field that is not part of the pivot ('Year' or 'Region').
+    :param query_type: The type of query used to retrieve data (default is "population").
+    :return: An array of dictionaries, where each dictionary represents a data point.
+            The structure of the dictionaries depends on the pivot and query_type.
+    """
     json_response = []
     for query in pivoted_queryset:
         pivot = query[0]
