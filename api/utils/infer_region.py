@@ -478,6 +478,18 @@ cities = [
 
 
 def infer_region(region):
+    """
+    Infer the type (country or city) of a given region name.
+
+    This function takes a region name as input and uses fuzzy string matching to determine
+    whether the region is more likely to be a country or a city. It returns a tuple
+    containing the inferred type and the matched region name.
+
+    :param region: The region name to be inferred (e.g., a country or a city).
+    :return: A tuple with two elements:
+            - The inferred type ('country' or 'city').
+            - The matched region name.
+    """
     country = process.extract(region, countries, limit=1)
     city = process.extract(region, cities, limit=1)
     if country[0][1] >= city[0][1]:
