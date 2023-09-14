@@ -4,7 +4,15 @@ from .create_figure import QUERY_LABEL_MAPPING
 
 
 def transpose_table(table):
-    """Function transposes the table"""
+    """
+    Transpose a table.
+
+    This function takes a table represented as a list of lists and returns the transpose
+    of the table.
+
+    :param table: A list of lists representing the input table.
+    :return: The transposed table as a list of lists.
+    """
     num_rows = len(table)
     num_columns = len(table[0])
     transposed_table = [[0] * num_rows for _ in range(num_columns)]
@@ -15,7 +23,22 @@ def transpose_table(table):
 
 
 def convert_to_table(queryset, years, regions, query_type="population", pivot=0):
-    """Converts queryset to table"""
+    """
+    Convert a queryset into a table.
+
+    This function takes a queryset, representing data points for specific years, regions,
+    and query types, and converts it into a table format. The table can be customized
+    to pivot data if needed. Serves "/table" endpoint
+
+    :param queryset: A queryset containing data points with fields like 'country',
+                    'year', and the specified 'query_type' (e.g., 'population',
+                    'gdp_per_capita', 'forest_area').
+    :param years: A list of years to include in the table.
+    :param regions: A list of regions (e.g., countries) to include in the table.
+    :param query_type: The type of query used to retrieve data (default is "population").
+    :param pivot: If set to 1, the table will be transposed (pivoted). Default is 0.
+    :return: A table represented as a list of lists.
+    """
     years.sort()
     regions.sort()
     country_dict = {}
@@ -47,8 +70,32 @@ def convert_to_table(queryset, years, regions, query_type="population", pivot=0)
 
 
 def convert_to_dicts(queryset, query_type="population"):
-    """Create two dictionaries to store the array corresponding to coutries. Will look like:"""
-    # country_year["India"] = [2010, 2011, ...]
+    """
+    Convert a queryset into two dictionaries for country-year and country-value pairs.
+
+    This function takes a queryset containing data points for specific countries and years,
+    along with a specified 'query_type' (e.g., 'population', 'gdp_per_capita', 'forest_area').
+    It converts the queryset into two dictionaries, one for storing arrays of years per country,
+    and another for storing corresponding values per country. Serves "/graph" endpoint to create
+    scatter plots.
+
+    Example usage:
+    - Input queryset may contain data like:
+        [{"country": "India", "year": 2010, "value": 1350000000},
+        {"country": "India", "year": 2011, "value": 1370000000},
+        ...]
+
+    - The resulting dictionaries would look like:
+        country_year = {"India": [2010, 2011, ...]}
+        country_value = {"India": [1350000000, 1370000000, ...]}
+
+    :param queryset: A queryset containing data points with fields 'country', 'year',
+                    and the specified 'query_type'.
+    :param query_type: The type of query used to retrieve data (default is "population").
+    :return: Two dictionaries:
+            - 'country_year': A dictionary mapping countries to arrays of years.
+            - 'country_value': A dictionary mapping countries to arrays of corresponding values.
+    """
     json_response = serialize_queryset(queryset, query_type)
     country_year = {}
     country_value = {}
@@ -63,6 +110,25 @@ def convert_to_dicts(queryset, query_type="population"):
 
 
 def convert_to_double_lists(queryset, num, query_type):
+    """
+    Convert a queryset into two sets of lists for top and bottom countries based on values.
+
+    This function takes a queryset containing data points for specific countries and values,
+    along with a specified 'query_type' (e.g., 'population', 'gdp_per_capita', 'forest_area').
+    It converts the queryset into two sets of lists: one for the top 'num' countries with the
+    highest values, and another for the bottom 'num' countries with the lowest values. Serves
+    "/stats" endpoint
+
+    :param queryset: A queryset containing data points with fields 'country', 'value',
+                    and the specified 'query_type'.
+    :param num: The number of top and bottom countries to retrieve.
+    :param query_type: The type of query used to retrieve data.
+    :return: Four lists:
+                - 'array1': Values of the top 'num' countries.
+                - 'label1': Country labels of the top 'num' countries.
+                - 'array2': Values of the bottom 'num' countries.
+                - 'label2': Country labels of the bottom 'num' countries.
+    """
     json_response = serialize_queryset(queryset, query_type)
     value_country_list = []
     for obj in json_response:
@@ -84,6 +150,34 @@ def convert_to_double_lists(queryset, num, query_type):
 
 
 def convert_to_single_dict(queryset, query_type="population"):
+    """
+    Convert a queryset into a dictionary for plotting data.
+
+    This function takes a queryset containing data points for specific years, countries, and a
+    specified 'query_type' (e.g., 'population', 'gdp_per_capita', 'forest_area'). It converts
+    the queryset into a dictionary suitable for plotting, where each key represents a data
+    category, and the corresponding values are lists of data points. Serves "/graph" endpoints
+    to create bar plots.
+
+    Example usage:
+    - Input queryset may contain data like:
+        [{"country": "India", "year": 2010, "population": 1350000000},
+        {"country": "India", "year": 2011, "population": 1370000000},
+        ...]
+
+    - The resulting dictionary would look like:
+        {
+            "year": [2010, 2011, ...],
+            "country": ["India", "India", ...],
+            "population": [1350000000, 1370000000, ...]
+        }
+
+    :param queryset: A queryset containing data points with fields 'country', 'year', and
+                    the specified 'query_type'.
+    :param query_type: The type of query used to retrieve data (default is "population").
+    :return: A dictionary suitable for plotting data, where keys represent data categories
+            and values are lists of data points.
+    """
     plot_dict = {"year": [], "country": [], query_type: []}
     for element in queryset:
         plot_dict["year"].append(element.year)
@@ -92,29 +186,41 @@ def convert_to_single_dict(queryset, query_type="population"):
             plot_dict[query_type].append(element.population)
         elif query_type == "gdp_per_capita":
             plot_dict[query_type].append(element.gdp_per_capita)
-        else :
+        else:
             plot_dict[query_type].append(element.forest_area)
     return plot_dict
 
 
 def merge_comparable_querysets(
-    queryset_population, queryset_gdp_per_capita, parameter1_type, parameter2_type
+    queryset_param1, queryset_param2, parameter1_type, parameter2_type
 ):
-    sorted_population_list = sorted(
-        queryset_population, key=itemgetter("year", "country")
-    )
-    sorted_gdp_per_capita_list = sorted(
-        queryset_gdp_per_capita, key=itemgetter("year", "country")
-    )
+    """
+    Merge two comparable querysets into a single dictionary.
+
+    This function takes two querysets containing data points for specific years, countries,
+    and different comparable parameters (e.g., 'population' and 'gdp_per_capita'). It merges
+    these querysets into a single dictionary for comparative analysis.
+
+    :param queryset_population: A queryset containing data points for query_param1.
+    :param queryset_gdp_per_capita: A queryset containing data points for query_param2.
+    :param parameter1_type: The type of the first parameter (e.g., 'population').
+    :param parameter2_type: The type of the second parameter (e.g., 'gdp_per_capita').
+    :return: A dictionary with the following keys:
+            - "year": A list of years.
+            - "country": A list of countries.
+            - The keys for parameter1_type and parameter2_type, mapped to lists of values.
+    """
+    sorted_param1 = sorted(queryset_param1, key=itemgetter("year", "country"))
+    sorted_param2 = sorted(queryset_param2, key=itemgetter("year", "country"))
     years = []
     countries = []
     parameter1 = []
     parameter2 = []
-    for idx, element in enumerate(sorted_population_list):
+    for id, element in enumerate(sorted_param1):
         years.append(element["year"])
         countries.append(element["country"])
         parameter1.append(element["value"])
-        parameter2.append(sorted_gdp_per_capita_list[idx]["value"])
+        parameter2.append(sorted_param2[id]["value"])
     merged_dict = {
         "year": years,
         "country": countries,
