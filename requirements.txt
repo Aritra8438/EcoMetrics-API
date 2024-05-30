@@ -17,7 +17,5 @@ python-dotenv==1.0.0
 python-Levenshtein==0.21.1
 pytz==2023.3.post1
 six==1.16.0
-SQLAlchemy==2.0.19
-tenacity==8.2.3
 thefuzz==0.20.0
 Werkzeug==3.0.1
