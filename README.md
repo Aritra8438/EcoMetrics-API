@@ -23,9 +23,9 @@ This API has four primary endpoints:
 - stats ( `/stats` -> Returns stats response )
 
 It's a collaborative open-source project Raisa and I did (are doing) as a part of our code submission to Mercor Hackathon. 
-We have exposed all of our APIs in our [API documentation](https://eco-metrics-api.vercel.app/api-documentation). Feel free to test APIs there (You will be able to try them on-screen).
+We have exposed all of our APIs in our [API documentation](https://ecometrics-api.onrender.com/api-documentation). Feel free to test APIs there (You will be able to try them on-screen).
 
-This API might be (extremely!) slow, as both the backend server (deployed on Vercel) and database (hosted on Railway) are deployed using the free plan.
+This API might be (extremely!) slow, as both the backend server (deployed on render) and database (hosted on Railway) are deployed using the free plan.
 Nevertheless, we tried to optimize the database queries to compensate for that (Apologies!).
 
 ## Index:
@@ -47,9 +47,9 @@ To quickly jump to a subsection,
 
 
 ## Website:
-<a href="https://eco-metrics-api.vercel.app/"><strong>Our website is live!</strong></a>
+<a href="https://ecometrics-api.onrender.com/"><strong>Our website is live!</strong></a>
 <br>
-- The application is hosted on **Vercel**.
+- The application is hosted on **Render**.
 <br>
 <img width="944" alt="image" src="https://github.com/Aritra8438/EcoMetrics-API/assets/64671908/6c1114cd-803b-4a63-967f-5fa0274a3ebf">
 
@@ -165,7 +165,7 @@ Thank you for your contribution.
 
 ## API Documentation:
 
-All of our APIs are available at [this](https://eco-metrics-api.vercel.app/api-documentation) documentation. The documentation has a minimum design (Apologies!) but we intend to keep it as it is because **It enables on-screen testing with HTML response**.
+All of our APIs are available at [this](https:/ecometrics-api.onrender.com/api-documentation) documentation. The documentation has a minimum design (Apologies!) but we intend to keep it as it is because **It enables on-screen testing with HTML response**.
 
 Here is a screenshot of the same.
 
