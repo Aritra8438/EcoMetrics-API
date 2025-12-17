@@ -184,7 +184,11 @@
       }
 
       .feature {
-        background: linear-gradient(135deg, var(--primary-light) 0%, #e0f2fe 100%);
+        background: linear-gradient(
+          135deg,
+          var(--primary-light) 0%,
+          #e0f2fe 100%
+        );
         padding: 1.5rem;
         border-radius: 16px;
         border: 1px solid rgba(16, 185, 129, 0.2);
@@ -414,7 +418,9 @@
           <div class="feature">
             <div class="feature-icon">📈</div>
             <h3>Statistics</h3>
-            <p>Compare top and bottom countries with pie chart visualizations.</p>
+            <p>
+              Compare top and bottom countries with pie chart visualizations.
+            </p>
           </div>
         </div>
 
@@ -437,10 +443,7 @@
               <p>China vs India population trends (1955-2020)</p>
             </div>
             <div class="demo-content">
-              <iframe
-                id="demo-graph-iframe"
-                loading="lazy"
-              ></iframe>
+              <iframe id="demo-graph-iframe" loading="lazy"></iframe>
             </div>
           </div>
           <div class="demo-card">
@@ -449,10 +452,7 @@
               <p>Top and bottom 5 countries by forest area (2020)</p>
             </div>
             <div class="demo-content">
-              <iframe
-                id="demo-stats-iframe"
-                loading="lazy"
-              ></iframe>
+              <iframe id="demo-stats-iframe" loading="lazy"></iframe>
             </div>
           </div>
         </div>
@@ -468,8 +468,12 @@
     <script>
       // Set iframe sources with dynamic base URL
       const baseUrl = window.location.origin;
-      document.getElementById('demo-graph-iframe').src = baseUrl + '/graph?Year=%221955,2020,1%22&Region=[%22India%22,%22China%22]&Plot=bar&Theme=aquamarine&Query_type=population';
-      document.getElementById('demo-stats-iframe').src = baseUrl + '/stats?Year=2020&Number=5&Theme=blackpink&Query_type=forest_area';
+      document.getElementById("demo-graph-iframe").src =
+        baseUrl +
+        "/graph?Year=%221955,2020,1%22&Region=[%22India%22,%22China%22]&Plot=bar&Theme=aquamarine&Query_type=population";
+      document.getElementById("demo-stats-iframe").src =
+        baseUrl +
+        "/stats?Year=2020&Number=5&Theme=blackpink&Query_type=forest_area";
     </script>
   </body>
 </html>
