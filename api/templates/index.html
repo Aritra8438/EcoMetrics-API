@@ -5,83 +5,471 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Homepage</title>
+    <title>EcoMetrics API - Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
+      :root {
+        --primary: #10b981;
+        --primary-dark: #059669;
+        --primary-light: #d1fae5;
+        --secondary: #0ea5e9;
+        --dark: #1e293b;
+        --darker: #0f172a;
+        --light: #f8fafc;
+        --gray: #64748b;
+        --card-bg: rgba(255, 255, 255, 0.95);
+        --gradient: linear-gradient(135deg, #10b981 0%, #0ea5e9 100%);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--darker);
+        color: var(--dark);
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+
       .background {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-image: url("{{ url_for('static', filename='images/img.jpg') }}");
+        background: linear-gradient(
+            135deg,
+            rgba(16, 185, 129, 0.1) 0%,
+            rgba(14, 165, 233, 0.1) 100%
+          ),
+          url("{{ url_for('static', filename='images/img.jpg') }}");
         background-size: cover;
         background-position: center;
+        z-index: -2;
+      }
+
+      .background::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          180deg,
+          rgba(15, 23, 42, 0.7) 0%,
+          rgba(15, 23, 42, 0.85) 50%,
+          rgba(15, 23, 42, 0.95) 100%
+        );
         z-index: -1;
-        opacity: 0.4;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      /* Header */
+      .header {
+        text-align: center;
+        padding: 4rem 0 3rem;
+      }
+
+      .logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .logo-icon {
+        width: 56px;
+        height: 56px;
+        background: var(--gradient);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        box-shadow: 0 10px 40px rgba(16, 185, 129, 0.3);
+      }
+
+      .logo-text {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 2rem;
+        font-weight: 700;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .header h1 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+      }
+
+      .header h1 span {
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .header .subtitle {
+        font-size: 1.25rem;
+        color: var(--gray);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      /* Cards */
+      .card {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(10px);
+      }
+
+      .card h2 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.75rem;
+        color: var(--dark);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .card h2::before {
+        content: "";
+        width: 4px;
+        height: 28px;
+        background: var(--gradient);
+        border-radius: 2px;
+      }
+
+      .card p {
+        color: var(--gray);
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+      }
+
+      .card p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* Feature Grid */
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+
+      .feature {
+        background: linear-gradient(135deg, var(--primary-light) 0%, #e0f2fe 100%);
+        padding: 1.5rem;
+        border-radius: 16px;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+      }
+
+      .feature-icon {
+        width: 48px;
+        height: 48px;
+        background: var(--gradient);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .feature h3 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.1rem;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+      }
+
+      .feature p {
+        font-size: 0.95rem;
+        color: var(--gray);
+        margin: 0;
+      }
+
+      /* Buttons */
+      .btn-group {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.875rem 1.75rem;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: var(--gradient);
+        color: white;
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4);
+      }
+
+      .btn-secondary {
+        background: white;
+        color: var(--dark);
+        border: 2px solid #e2e8f0;
+      }
+
+      .btn-secondary:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      /* Demo Section */
+      .demo-section {
+        margin-top: 3rem;
+      }
+
+      .demo-section h2 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 2rem;
+        color: white;
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .demo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        gap: 2rem;
+      }
+
+      @media (max-width: 600px) {
+        .demo-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .demo-card {
+        background: var(--card-bg);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      }
+
+      .demo-header {
+        background: var(--gradient);
+        padding: 1.25rem 1.5rem;
+        color: white;
+      }
+
+      .demo-header h3 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+
+      .demo-header p {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin: 0.25rem 0 0;
+      }
+
+      .demo-content {
+        padding: 1rem;
+      }
+
+      .demo-content iframe {
+        width: 100%;
+        height: 450px;
+        border: none;
+        border-radius: 12px;
+        background: #f1f5f9;
+      }
+
+      /* Footer */
+      .footer {
+        text-align: center;
+        padding: 3rem 0;
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+
+      .footer a {
+        color: var(--primary);
+        text-decoration: none;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
+      }
+
+      /* Animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate {
+        animation: fadeInUp 0.6s ease forwards;
+      }
+
+      .delay-1 {
+        animation-delay: 0.1s;
+      }
+      .delay-2 {
+        animation-delay: 0.2s;
+      }
+      .delay-3 {
+        animation-delay: 0.3s;
       }
     </style>
   </head>
   <body>
     <div class="background"></div>
-    <div>
-      <h2><strong> Welcome to the ECO-METRICS API.</strong></h2>
-      <div style="color: black; font-size: 18px">
-        <p><strong>How this API might help you?</strong></p>
+
+    <div class="container">
+      <header class="header animate">
+        <div class="logo">
+          <div class="logo-icon">🌍</div>
+          <span class="logo-text">EcoMetrics</span>
+        </div>
+        <h1>Global Data at Your <span>Fingertips</span></h1>
+        <p class="subtitle">
+          Access population, GDP, and forest area data for countries worldwide.
+          Build visualizations, export data, and power your applications.
+        </p>
+      </header>
+
+      <div class="card animate delay-1">
+        <h2>What is EcoMetrics API?</h2>
         <p>
-          Well, you are working on a project that deals with populations of
-          different countries. Or, you may need to know the forest area
-          percentage of different countries while writing a blog on
-          <strong>Global warming</strong>. Similarly, you might be intereseted
-          in how fast your countries GDP per capita is growing.
+          Whether you're building a project that analyzes country populations,
+          writing a blog about <strong>global warming</strong> and need forest
+          coverage data, or tracking GDP per capita growth rates, EcoMetrics API
+          provides the data you need.
         </p>
         <p>
-          If that's the case, this API might provide you with necessities. Given
-          countries and years, this will fetch you pretty and customizable graph
-          (with different themes) or a cool-looking table. They are returned as
-          an HTML, so, you can easily embed them using iframe tag. Need raw
-          data? We got you covered. Our '/json' endpoint will fetch you
-          structured data which you can further use for development or ML
-          purposes.
+          Get beautiful, customizable graphs and tables returned as embeddable
+          HTML, or fetch structured JSON data for your development and machine
+          learning projects.
         </p>
 
-        <p>
-          Please visit our
-          <a href="/api-documentation">API documentation</a>
-          to get started.
-        </p>
-        <p>
-          If you want to build queries in UI, you might want to try the
-          <a href="/querybuilder">querybuilder page.</a>
-        </p>
-        <br />
-        <p>Please scroll through to view some pretty demos.</p>
-        <ul>
-          <li>
+        <div class="features">
+          <div class="feature">
+            <div class="feature-icon">📊</div>
+            <h3>Interactive Graphs</h3>
             <p>
-              Here is the graph that compares China and India's population over
-              the years:
+              Generate bar charts and scatter plots with multiple theme options.
             </p>
-            <iframe
-              src="/graph?Year=%221955,2020,1%22&Region=[%22India%22,%22China%22]&Plot=bar&Theme=aquamarine&Query_type=population"
-              frameborder="0"
-              height="600"
-              width="1000"
-            ></iframe>
-          </li>
-          <li>
-            <p>
-              Here is the graph that compares top and bottom 5 countries wrt
-              forest area on 2020:
-            </p>
-            <iframe
-              src="/stats?Year=2020&Number=5&Theme=blackpink&Query_type=forest_area"
-              frameborder="0"
-              height="600"
-              width="1000"
-            ></iframe>
-          </li>
-        </ul>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">📋</div>
+            <h3>Data Tables</h3>
+            <p>Get formatted tables with customizable pivot options.</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">🔌</div>
+            <h3>JSON API</h3>
+            <p>Raw structured data for developers and ML applications.</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">📈</div>
+            <h3>Statistics</h3>
+            <p>Compare top and bottom countries with pie chart visualizations.</p>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <a href="/api-documentation" class="btn btn-primary">
+            📚 API Documentation
+          </a>
+          <a href="/querybuilder" class="btn btn-secondary">
+            🛠️ Query Builder
+          </a>
+        </div>
       </div>
+
+      <section class="demo-section animate delay-2">
+        <h2>See It In Action</h2>
+        <div class="demo-grid">
+          <div class="demo-card">
+            <div class="demo-header">
+              <h3>Population Comparison</h3>
+              <p>China vs India population trends (1955-2020)</p>
+            </div>
+            <div class="demo-content">
+              <iframe
+                id="demo-graph-iframe"
+                loading="lazy"
+              ></iframe>
+            </div>
+          </div>
+          <div class="demo-card">
+            <div class="demo-header">
+              <h3>Forest Area Statistics</h3>
+              <p>Top and bottom 5 countries by forest area (2020)</p>
+            </div>
+            <div class="demo-content">
+              <iframe
+                id="demo-stats-iframe"
+                loading="lazy"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer animate delay-3">
+        <p>
+          Built with 💚 for data enthusiasts |
+          <a href="/api-documentation">Documentation</a>
+        </p>
+      </footer>
     </div>
+    <script>
+      // Set iframe sources with dynamic base URL
+      const baseUrl = window.location.origin;
+      document.getElementById('demo-graph-iframe').src = baseUrl + '/graph?Year=%221955,2020,1%22&Region=[%22India%22,%22China%22]&Plot=bar&Theme=aquamarine&Query_type=population';
+      document.getElementById('demo-stats-iframe').src = baseUrl + '/stats?Year=2020&Number=5&Theme=blackpink&Query_type=forest_area';
+    </script>
   </body>
 </html>
