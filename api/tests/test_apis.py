@@ -2,8 +2,8 @@ def test_home_okay(client):
     """test get method"""
     response = client.get("/")
     assert response.status_code == 200
-    assert b"<title>Homepage</title>" in response.data
-    assert b" Welcome to the ECO-METRICS API." in response.data
+    assert b"<title>EcoMetrics API - Home</title>" in response.data
+    assert b"EcoMetrics" in response.data
 
 
 def test_home_method_not_allowed(client):
@@ -20,7 +20,7 @@ def test_documentation_okay(client):
     """test get method"""
     response = client.get("/api-documentation")
     assert response.status_code == 200
-    assert b"<title>API documentation</title>" in response.data
+    assert b"<title>API Documentation - EcoMetrics</title>" in response.data
 
 
 def test_documentation_method_not_allowed(client):
@@ -37,7 +37,7 @@ def test_querybuilder_okay(client):
     """test get method"""
     response = client.get("/querybuilder")
     assert response.status_code == 200
-    assert b"<title>Query Builder</title>" in response.data
+    assert b"<title>Query Builder - EcoMetrics</title>" in response.data
 
 
 def test_querybuilder_method_not_allowed(client):
